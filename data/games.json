@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "generated_at": "2026-02-28T21:20:20.893Z",
+  "total_games": 2,
+  "by_category": {
+    "cli": 1,
+    "web": 1,
+    "algorithm": 0
+  },
+  "by_difficulty": {
+    "beginner": 2,
+    "intermediate": 0,
+    "advanced": 0
+  },
+  "games": [
+    {
+      "id": "cli/example-number-guessing",
+      "name": "Number Guessing Game",
+      "author": "platform-bot",
+      "category": "cli",
+      "difficulty": "beginner",
+      "language": "python",
+      "version": "1.0.0",
+      "description": "A simple number guessing game where you guess a number between 1-100",
+      "tags": [
+        "beginner",
+        "python",
+        "cli",
+        "random"
+      ],
+      "created_at": "2026-02-28",
+      "entry_point": "game.py",
+      "path": "games/cli/example-number-guessing",
+      "votes": 0
+    },
+    {
+      "id": "web/example-rock-paper-scissors",
+      "name": "Rock Paper Scissors",
+      "author": "platform-bot",
+      "category": "web",
+      "difficulty": "beginner",
+      "language": "html/css/javascript",
+      "version": "1.0.0",
+      "description": "Classic rock paper scissors game with a beautiful UI",
+      "tags": [
+        "beginner",
+        "javascript",
+        "web",
+        "html",
+        "css"
+      ],
+      "created_at": "2026-02-28",
+      "entry_point": "index.html",
+      "path": "games/web/example-rock-paper-scissors",
+      "votes": 0,
+      "play_url": "/play/web/example-rock-paper-scissors"
+    }
+  ]
+}
