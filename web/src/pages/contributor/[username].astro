@@ -1,0 +1,171 @@
+---
+/**
+ * Individual Contributor Profile Page
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Get contributor from URL
+const { username } = Astro.params;
+
+// Load contributors data
+let contributor: any = null;
+let allGames: any[] = [];
+
+try {
+  const contributorsData = await import('../../../../data/contributors.json');
+  contributor = (contributorsData.default?.contributors || contributorsData.contributors)?.find((c: any) => c.username === username);
+} catch (e) {}
+
+try {
+  const gamesData = await import('../../../../data/games.json');
+  allGames = (gamesData.default?.games || gamesData.games)?.filter((g: any) => g.author === username) || [];
+} catch (e) {}
+
+// 404 if not found
+if (!contributor) {
+  return Astro.redirect('/Platform/contributors');
+}
+
+const baseUrl = import.meta.env.BASE_URL;
+
+// XP progress to next level
+const levelThresholds = [0, 100, 300, 600, 1000, 2000, 5000, 10000];
+const currentLevelXP = levelThresholds[contributor.level - 1] || 0;
+const nextLevelXP = levelThresholds[contributor.level] || levelThresholds[levelThresholds.length - 1];
+const progressPercent = Math.min(100, ((contributor.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100);
+
+// Badge rarity colors
+const rarityColors: Record<string, string> = {
+  common: 'border-gray-500',
+  uncommon: 'border-green-500',
+  rare: 'border-blue-500',
+  epic: 'border-purple-500',
+  legendary: 'border-yellow-500',
+};
+
+// Generate dynamic getStaticPaths
+export async function getStaticPaths() {
+  let contributors: any[] = [];
+  try {
+    const data = await import('../../../../data/contributors.json');
+    contributors = data.default?.contributors || data.contributors || [];
+  } catch (e) {}
+  
+  return contributors.map((c: any) => ({
+    params: { username: c.username },
+  }));
+}
+---
+
+<BaseLayout title={`@${contributor.username}`} description={`Profile of ${contributor.username} - Platform contributor`}>
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Back Button -->
+      <a href={`${baseUrl}contributors`} class="inline-flex items-center gap-2 text-dark-muted hover:text-white mb-8">
+        ← Back to Contributors
+      </a>
+
+      <!-- Profile Header -->
+      <div class="bg-dark-card border border-dark-border rounded-xl p-8 mb-8">
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          <img 
+            src={contributor.avatar_url}
+            alt={contributor.username}
+            class="w-32 h-32 rounded-full border-4 border-primary-500"
+          />
+          
+          <div class="flex-1 text-center md:text-left">
+            <h1 class="text-3xl font-bold mb-2">@{contributor.username}</h1>
+            <p class="text-dark-muted mb-4">Level {contributor.level} Contributor</p>
+            
+            <!-- XP Progress -->
+            <div class="max-w-md mx-auto md:mx-0">
+              <div class="flex justify-between text-sm text-dark-muted mb-1">
+                <span>{contributor.xp.toLocaleString()} XP</span>
+                <span>{nextLevelXP.toLocaleString()} XP</span>
+              </div>
+              <div class="h-3 bg-dark-bg rounded-full overflow-hidden">
+                <div 
+                  class="h-full bg-gradient-to-r from-primary-500 to-cyan-500 rounded-full transition-all"
+                  style={`width: ${progressPercent}%`}
+                ></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center">
+            <a href={`https://github.com/${contributor.username}`} target="_blank"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-dark-bg border border-dark-border rounded-lg hover:border-primary-500 transition">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-dark-card border border-dark-border rounded-xl p-6 text-center">
+          <p class="text-3xl font-bold text-primary-400">{contributor.games_submitted}</p>
+          <p class="text-sm text-dark-muted">Games</p>
+        </div>
+        <div class="bg-dark-card border border-dark-border rounded-xl p-6 text-center">
+          <p class="text-3xl font-bold">{contributor.prs_merged || 0}</p>
+          <p class="text-sm text-dark-muted">PRs Merged</p>
+        </div>
+        <div class="bg-dark-card border border-dark-border rounded-xl p-6 text-center">
+          <p class="text-3xl font-bold">{contributor.reviews_given || 0}</p>
+          <p class="text-sm text-dark-muted">Reviews</p>
+        </div>
+        <div class="bg-dark-card border border-dark-border rounded-xl p-6 text-center">
+          <p class="text-3xl font-bold">{contributor.badges?.length || 0}</p>
+          <p class="text-sm text-dark-muted">Badges</p>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      {contributor.badges?.length > 0 && (
+        <div class="bg-dark-card border border-dark-border rounded-xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🏅 Badges</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {contributor.badges.map((badge: any) => (
+              <div class={`bg-dark-bg rounded-lg p-4 text-center border-2 ${rarityColors[badge.rarity] || 'border-dark-border'}`}>
+                <span class="text-4xl block mb-2">{badge.icon}</span>
+                <p class="font-medium text-sm">{badge.name}</p>
+                <p class="text-xs text-dark-muted capitalize">{badge.rarity}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Games -->
+      {allGames.length > 0 && (
+        <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+          <h2 class="text-xl font-bold mb-4">🎮 Games by @{contributor.username}</h2>
+          <div class="space-y-4">
+            {allGames.map(game => (
+              <a href={`${baseUrl}games/${game.id}`} class="block p-4 bg-dark-bg rounded-lg hover:border-primary-500/50 border border-dark-border transition">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="font-medium">{game.name}</h3>
+                    <p class="text-sm text-dark-muted">{game.category} • {game.language} • {game.difficulty}</p>
+                  </div>
+                  <span class="text-dark-muted">👍 {game.votes || 0}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Embed Badge -->
+      <div class="mt-8 text-center">
+        <p class="text-sm text-dark-muted mb-2">Add to your GitHub profile:</p>
+        <code class="text-xs bg-dark-card px-3 py-2 rounded border border-dark-border">
+          ![Platform Contributor](https://abdullahoztoprak.github.io/Platform/api/badge/{contributor.username}.svg)
+        </code>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,163 @@
+---
+/**
+ * Individual Game Detail Page
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const { id } = Astro.params;
+
+let game: any = null;
+
+try {
+  const gamesData = await import('../../../../data/games.json');
+  game = (gamesData.default?.games || gamesData.games)?.find((g: any) => g.id === id);
+} catch (e) {}
+
+if (!game) {
+  return Astro.redirect('/Platform/games');
+}
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const categoryIcons: Record<string, string> = { cli: '💻', web: '🌐', algorithm: '🧮' };
+const difficultyColors: Record<string, string> = {
+  beginner: 'bg-green-500/10 text-green-400 border-green-500/30',
+  intermediate: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30',
+  advanced: 'bg-red-500/10 text-red-400 border-red-500/30',
+};
+
+export async function getStaticPaths() {
+  let games: any[] = [];
+  try {
+    const data = await import('../../../../data/games.json');
+    games = data.default?.games || data.games || [];
+  } catch (e) {}
+  
+  return games.map((g: any) => ({
+    params: { id: g.id },
+  }));
+}
+---
+
+<BaseLayout title={game.name} description={game.description}>
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Back Button -->
+      <a href={`${baseUrl}games`} class="inline-flex items-center gap-2 text-dark-muted hover:text-white mb-8">
+        ← Back to Games
+      </a>
+
+      <!-- Game Header -->
+      <div class="bg-dark-card border border-dark-border rounded-xl p-8 mb-8">
+        <div class="flex items-start justify-between mb-6">
+          <div class="flex items-center gap-4">
+            <span class="text-5xl">{categoryIcons[game.category]}</span>
+            <div>
+              <h1 class="text-3xl font-bold mb-2">{game.name}</h1>
+              <div class="flex items-center gap-3">
+                <img 
+                  src={`https://github.com/${game.author}.png`}
+                  alt={game.author}
+                  class="w-6 h-6 rounded-full"
+                />
+                <a href={`${baseUrl}contributor/${game.author}`} class="text-primary-400 hover:text-primary-300">
+                  @{game.author}
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4 text-2xl">
+            <span>👍 {game.votes || 0}</span>
+          </div>
+        </div>
+
+        <p class="text-dark-muted text-lg mb-6">{game.description}</p>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="px-3 py-1 rounded-full bg-dark-bg border border-dark-border text-sm">
+            {game.language}
+          </span>
+          <span class={`px-3 py-1 rounded-full border text-sm ${difficultyColors[game.difficulty]}`}>
+            {game.difficulty}
+          </span>
+          <span class="px-3 py-1 rounded-full bg-dark-bg border border-dark-border text-sm">
+            {game.category}
+          </span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <a href={`https://github.com/AbdullahOztoprak/Platform/tree/main/games/${game.category}/${game.id}`}
+           target="_blank"
+           class="flex items-center justify-center gap-2 px-6 py-4 bg-dark-card border border-dark-border rounded-xl hover:border-primary-500/50 transition">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View Source Code
+        </a>
+        
+        <a href={`https://github.com/AbdullahOztoprak/Platform/pulls?q=is:pr+${game.name}`}
+           target="_blank"
+           class="flex items-center justify-center gap-2 px-6 py-4 bg-primary-500 hover:bg-primary-600 rounded-xl transition">
+          👍 Vote on Pull Request
+        </a>
+      </div>
+
+      <!-- How to Play -->
+      <div class="bg-dark-card border border-dark-border rounded-xl p-6 mb-8">
+        <h2 class="text-xl font-bold mb-4">How to Play</h2>
+        <div class="space-y-4">
+          {game.category === 'cli' && (
+            <div class="bg-dark-bg rounded-lg p-4">
+              <p class="text-sm text-dark-muted mb-2">Run in terminal:</p>
+              <code class="text-primary-400">
+                cd games/cli/{game.id} && {game.language === 'python' ? 'python main.py' : game.language === 'javascript' ? 'node main.js' : './main'}
+              </code>
+            </div>
+          )}
+          {game.category === 'web' && (
+            <div class="bg-dark-bg rounded-lg p-4">
+              <p class="text-sm text-dark-muted mb-2">Open in browser:</p>
+              <code class="text-primary-400">
+                open games/web/{game.id}/index.html
+              </code>
+            </div>
+          )}
+          {game.category === 'algorithm' && (
+            <div class="bg-dark-bg rounded-lg p-4">
+              <p class="text-sm text-dark-muted mb-2">Run tests:</p>
+              <code class="text-primary-400">
+                cd games/algorithm/{game.id} && {game.language === 'python' ? 'python test.py' : game.language === 'javascript' ? 'npm test' : 'make test'}
+              </code>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- Metadata -->
+      {(game.created_at || game.tags?.length > 0) && (
+        <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+          <h2 class="text-xl font-bold mb-4">Details</h2>
+          <dl class="grid grid-cols-2 gap-4 text-sm">
+            {game.created_at && (
+              <>
+                <dt class="text-dark-muted">Submitted</dt>
+                <dd>{new Date(game.created_at).toLocaleDateString()}</dd>
+              </>
+            )}
+            {game.tags?.length > 0 && (
+              <>
+                <dt class="text-dark-muted">Tags</dt>
+                <dd class="flex flex-wrap gap-1">
+                  {game.tags.map((tag: string) => (
+                    <span class="px-2 py-0.5 bg-dark-bg rounded text-xs">{tag}</span>
+                  ))}
+                </dd>
+              </>
+            )}
+          </dl>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

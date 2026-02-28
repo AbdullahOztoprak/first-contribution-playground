@@ -1,0 +1,192 @@
+---
+/**
+ * Homepage - Platform Landing Page
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GameCard from '../components/GameCard.astro';
+import LeaderboardTable from '../components/LeaderboardTable.astro';
+
+// Import data (generated at build time)
+let games: any[] = [];
+let leaderboard: any = { current_week: { entries: [] } };
+let stats = { total_games: 0, total_contributors: 0, total_countries: 0 };
+
+try {
+  const gamesData = await import('../../../data/games.json');
+  games = gamesData.default?.games || gamesData.games || [];
+  stats.total_games = games.length;
+} catch (e) {
+  console.log('Games data not found, using defaults');
+}
+
+try {
+  const leaderboardData = await import('../../../data/leaderboard.json');
+  leaderboard = leaderboardData.default || leaderboardData;
+} catch (e) {
+  console.log('Leaderboard data not found, using defaults');
+}
+
+try {
+  const contributorsData = await import('../../../data/contributors.json');
+  stats.total_contributors = contributorsData.default?.contributors?.length || contributorsData.contributors?.length || 0;
+} catch (e) {
+  console.log('Contributors data not found, using defaults');
+}
+
+const featuredGames = games.slice(0, 6);
+const topEntries = leaderboard.current_week?.entries?.slice(0, 5) || [];
+const baseUrl = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Home">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-600/20 via-transparent to-purple-600/10"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">
+          Build Games.
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-cyan-400">
+            Level Up.
+          </span>
+        </h1>
+        <p class="text-xl text-dark-muted max-w-2xl mx-auto mb-8">
+          The open-source platform for junior developers to contribute games, 
+          earn XP, collect badges, and build an impressive portfolio.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="https://github.com/AbdullahOztoprak/Platform/blob/main/CONTRIBUTING.md" 
+             class="px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-lg transition">
+            Start Contributing
+          </a>
+          <a href={`${baseUrl}games`}
+             class="px-8 py-3 bg-dark-card border border-dark-border hover:border-primary-500/50 rounded-lg transition">
+            Browse Games
+          </a>
+        </div>
+      </div>
+      
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
+        <div class="text-center">
+          <p class="text-4xl font-bold text-primary-400">{stats.total_games}</p>
+          <p class="text-dark-muted">Games</p>
+        </div>
+        <div class="text-center">
+          <p class="text-4xl font-bold text-primary-400">{stats.total_contributors}</p>
+          <p class="text-dark-muted">Contributors</p>
+        </div>
+        <div class="text-center">
+          <p class="text-4xl font-bold text-primary-400">∞</p>
+          <p class="text-dark-muted">Possibilities</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-20 bg-dark-card/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center mb-12">How It Works</h2>
+      <div class="grid md:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 mx-auto mb-4 bg-primary-500/10 rounded-2xl flex items-center justify-center text-3xl">
+            🍴
+          </div>
+          <h3 class="font-semibold mb-2">Fork & Clone</h3>
+          <p class="text-sm text-dark-muted">Fork the repo and set up your local environment</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 mx-auto mb-4 bg-primary-500/10 rounded-2xl flex items-center justify-center text-3xl">
+            🎮
+          </div>
+          <h3 class="font-semibold mb-2">Build a Game</h3>
+          <p class="text-sm text-dark-muted">Create CLI, web, or algorithm games in any language</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 mx-auto mb-4 bg-primary-500/10 rounded-2xl flex items-center justify-center text-3xl">
+            🔍
+          </div>
+          <h3 class="font-semibold mb-2">Submit PR</h3>
+          <p class="text-sm text-dark-muted">Automated validation ensures quality code</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 mx-auto mb-4 bg-primary-500/10 rounded-2xl flex items-center justify-center text-3xl">
+            🏆
+          </div>
+          <h3 class="font-semibold mb-2">Earn XP & Badges</h3>
+          <p class="text-sm text-dark-muted">Climb the leaderboard and unlock achievements</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Games -->
+  <section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-bold">Featured Games</h2>
+        <a href={`${baseUrl}games`} class="text-primary-400 hover:text-primary-300 transition">
+          View all →
+        </a>
+      </div>
+      
+      {featuredGames.length > 0 ? (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredGames.map(game => (
+            <GameCard 
+              id={game.id}
+              name={game.name}
+              author={game.author}
+              category={game.category}
+              difficulty={game.difficulty}
+              language={game.language}
+              description={game.description}
+              votes={game.votes}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 bg-dark-card rounded-xl border border-dark-border">
+          <p class="text-4xl mb-4">🎮</p>
+          <p class="text-dark-muted mb-4">No games yet. Be the first to contribute!</p>
+          <a href="https://github.com/AbdullahOztoprak/Platform/blob/main/CONTRIBUTING.md" 
+             class="inline-block px-6 py-2 bg-primary-500 hover:bg-primary-600 rounded-lg transition">
+            Submit a Game
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Leaderboard Preview -->
+  <section class="py-20 bg-dark-card/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-bold">This Week's Leaders</h2>
+        <a href={`${baseUrl}leaderboard`} class="text-primary-400 hover:text-primary-300 transition">
+          Full leaderboard →
+        </a>
+      </div>
+      
+      <div class="max-w-3xl mx-auto">
+        <LeaderboardTable entries={topEntries} title="Top 5 Games" />
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold mb-4">Ready to Start Contributing?</h2>
+      <p class="text-dark-muted mb-8">
+        Join hundreds of developers building open-source games and leveling up their skills.
+      </p>
+      <a href="https://github.com/AbdullahOztoprak/Platform" 
+         class="inline-flex items-center gap-2 px-8 py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </section>
+</BaseLayout>
