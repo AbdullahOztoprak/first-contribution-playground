@@ -1,0 +1,29 @@
+{
+  "name": "platform",
+  "version": "2.0.0",
+  "description": "The open-source playground for junior developers",
+  "type": "module",
+  "scripts": {
+    "validate": "tsx scripts/validate.ts",
+    "build:data": "tsx scripts/build-data.ts",
+    "build:badges": "tsx scripts/badge-generator.ts",
+    "dev": "cd web && npm run dev",
+    "build": "npm run build:data && cd web && npm run build",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.14.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbdullahOztoprak/Platform"
+  },
+  "keywords": ["open-source", "junior-developers", "games", "contributions", "gamification"],
+  "author": "AbdullahOztoprak",
+  "license": "MIT"
+}
