@@ -3,14 +3,19 @@
   <strong>The open-source playground for junior developers</strong>
 </p>
 <p align="center">
-  Submit games · Contribute translations · Climb the leaderboard · Build your GitHub profile
+  Submit games · Earn XP · Collect badges · Build your portfolio
 </p>
 <p align="center">
+  <a href="https://abdullahoztoprak.github.io/Platform">🌐 Live Site</a> •
   <a href="#-quick-start">Quick Start</a> •
   <a href="#-how-to-contribute">Contribute</a> •
-  <a href="#-leaderboard">Leaderboard</a> •
-  <a href="#-hall-of-fame">Hall of Fame</a> •
+  <a href="#-gamification">Gamification</a> •
   <a href="CONTRIBUTING.md">Guidelines</a>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/github/stars/AbdullahOztoprak/Platform?style=flat-square" alt="Stars">
+  <img src="https://img.shields.io/github/forks/AbdullahOztoprak/Platform?style=flat-square" alt="Forks">
+  <img src="https://img.shields.io/github/contributors/AbdullahOztoprak/Platform?style=flat-square" alt="Contributors">
 </p>
 
 ---
@@ -41,13 +46,14 @@ Platform/
 │   ├── README/           # README translations
 │   ├── CONTRIBUTING/     # Contributing guide translations
 │   └── guides/           # Guide translations
-├── leaderboard/          # Auto-generated leaderboard data
-├── scripts/              # Automation scripts
+├── data/                 # TypeScript data schemas
+├── scripts/              # Build & validation scripts
+├── web/                  # Astro web platform
+│   ├── src/pages/        # Pages (games, leaderboard, profiles)
+│   └── src/components/   # Reusable UI components
 ├── docs/                 # Documentation & guides
 ├── .github/
-│   ├── workflows/        # GitHub Actions automation
-│   ├── ISSUE_TEMPLATE/   # Issue templates
-│   └── PULL_REQUEST_TEMPLATE/ # PR templates
+│   └── workflows/        # CI/CD automation (4 workflows)
 ├── CONTRIBUTING.md        # Contribution guidelines
 ├── CODE_OF_CONDUCT.md     # Code of conduct
 └── README.md              # You are here!
@@ -136,20 +142,47 @@ Special recognition for outstanding contributors:
 
 ## 🤖 Automation
 
-This project is **fully automated** with GitHub Actions:
+This project is **fully automated** with 4 consolidated GitHub Actions:
 
 | Workflow | Trigger | What it Does |
 |----------|---------|--------------|
-| **PR Triage** | PR opened | Auto-detects type, applies labels |
-| **Game Validation** | Game PR | Validates structure, files, security |
-| **Translation Validation** | Translation PR | Validates naming, encoding, format |
-| **Lint Check** | Game PR | Runs Python/JS/HTML linting |
-| **Security Scan** | Game PR | Detects dangerous code patterns |
-| **Auto-Merge** | Translation PR | Merges if all checks pass |
-| **Welcome Bot** | PR/Issue opened | Guides new contributors |
-| **Leaderboard** | Weekly (Sunday) | Updates rankings from votes |
-| **Anti-Spam** | PR opened | Rate-limits + detects abuse |
-| **Stale Management** | Weekly (Monday) | Closes abandoned PRs/Issues |
+| **CI Pipeline** | PR opened/updated | Detects type, validates, lints, security scan |
+| **Deploy** | Push to main | Builds data index, deploys web site |
+| **Community** | PR/Issue | Welcome bot, anti-spam, stale management |
+| **Leaderboard** | Weekly (Sunday) | Calculates XP-weighted rankings |
+
+---
+
+## 🎮 Gamification System
+
+### XP Rewards
+| Action | XP Earned |
+|--------|-----------|
+| First contribution | +50 |
+| Game merged | +100 |
+| Translation merged | +30 |
+| Reviewed a PR | +20 |
+| Received 👍 vote | +5 |
+| Weekly #1 | +200 |
+| Weekly #2 | +100 |
+| Weekly #3 | +50 |
+
+### Difficulty Multipliers
+- 🟢 **Beginner games**: 1.0x points
+- 🟡 **Intermediate games**: 1.5x points
+- 🔴 **Advanced games**: 2.0x points
+
+### Levels
+| Level | XP Required | Title |
+|-------|-------------|-------|
+| 1 | 0 | Newcomer |
+| 2 | 100 | Contributor |
+| 3 | 300 | Regular |
+| 4 | 600 | Expert |
+| 5 | 1000+ | Master |
+
+### Badges
+🎮 **Game Master** (5+ games) • 🌍 **Translator** (3+ translations) • ⭐ **Champion** (Weekly #1) • 🔥 **Streak Hero** (4-week streak) • 👀 **Reviewer** (10+ reviews) • 💎 **OG** (First 10 contributors)
 
 ---
 
