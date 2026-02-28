@@ -1,0 +1,132 @@
+---
+/**
+ * Contributors Page
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContributorCard from '../../components/ContributorCard.astro';
+
+let contributors: any[] = [];
+
+try {
+  const data = await import('../../../../data/contributors.json');
+  contributors = data.default?.contributors || data.contributors || [];
+} catch (e) {
+  console.log('Contributors data not found, using defaults');
+}
+
+// Sort by XP (descending)
+contributors.sort((a, b) => b.xp - a.xp);
+---
+
+<BaseLayout title="Contributors" description="Meet the amazing developers contributing to Platform">
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-4">👩‍💻 Contributors</h1>
+        <p class="text-dark-muted max-w-2xl mx-auto">
+          Meet the amazing developers building games and contributing to Platform.
+          {contributors.length > 0 && `${contributors.length} contributors and counting!`}
+        </p>
+      </div>
+
+      <!-- Level Legend -->
+      <div class="bg-dark-card border border-dark-border rounded-xl p-6 mb-8">
+        <h3 class="font-semibold mb-4">Level System</h3>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded bg-gray-600 flex items-center justify-center text-xs">1</span>
+            <span class="text-dark-muted">0 XP - Newcomer</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded bg-green-600 flex items-center justify-center text-xs">2</span>
+            <span class="text-dark-muted">100 XP - Contributor</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded bg-blue-600 flex items-center justify-center text-xs">3</span>
+            <span class="text-dark-muted">300 XP - Regular</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">4</span>
+            <span class="text-dark-muted">600 XP - Expert</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded bg-yellow-600 flex items-center justify-center text-xs">5</span>
+            <span class="text-dark-muted">1000 XP - Master</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search/Filter -->
+      <div class="mb-8">
+        <input 
+          type="text" 
+          id="search"
+          placeholder="Search contributors..."
+          class="w-full max-w-md px-4 py-2 bg-dark-card border border-dark-border rounded-lg focus:outline-none focus:border-primary-500"
+        />
+      </div>
+
+      <!-- Contributors Grid -->
+      {contributors.length > 0 ? (
+        <div id="contributors-grid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {contributors.map((contributor, i) => (
+            <div class="contributor-card" data-username={contributor.username.toLowerCase()}>
+              <ContributorCard 
+                username={contributor.username}
+                avatar_url={contributor.avatar_url}
+                rank={i + 1}
+                xp={contributor.xp}
+                level={contributor.level}
+                games_submitted={contributor.games_submitted}
+                badges={contributor.badges}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 bg-dark-card rounded-xl border border-dark-border">
+          <p class="text-4xl mb-4">👋</p>
+          <p class="text-dark-muted mb-4">No contributors yet. Be the first!</p>
+          <a href="https://github.com/AbdullahOztoprak/Platform/blob/main/CONTRIBUTING.md" 
+             class="inline-block px-6 py-2 bg-primary-500 hover:bg-primary-600 rounded-lg transition">
+            Start Contributing
+          </a>
+        </div>
+      )}
+
+      <!-- No Results -->
+      <div id="no-results" class="hidden text-center py-16">
+        <p class="text-4xl mb-4">🔍</p>
+        <p class="text-dark-muted">No contributors found matching your search.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const search = document.getElementById('search') as HTMLInputElement;
+    const noResults = document.getElementById('no-results');
+    
+    search?.addEventListener('input', () => {
+      const term = search.value.toLowerCase();
+      const cards = document.querySelectorAll('.contributor-card');
+      let visibleCount = 0;
+      
+      cards.forEach(card => {
+        const el = card as HTMLElement;
+        const username = el.dataset.username || '';
+        
+        if (username.includes(term)) {
+          el.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+      
+      if (noResults) {
+        noResults.classList.toggle('hidden', visibleCount > 0 || cards.length === 0);
+      }
+    });
+  </script>
+</BaseLayout>

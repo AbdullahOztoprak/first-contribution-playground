@@ -1,0 +1,177 @@
+---
+/**
+ * Games Listing Page with Filters
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GameCard from '../../components/GameCard.astro';
+
+// Import data
+let games: any[] = [];
+let stats = { by_category: {}, by_difficulty: {}, by_language: {} };
+
+try {
+  const gamesData = await import('../../../../data/games.json');
+  games = gamesData.default?.games || gamesData.games || [];
+  stats = gamesData.default?.stats || gamesData.stats || stats;
+} catch (e) {
+  console.log('Games data not found, using defaults');
+}
+
+// Get unique values for filters
+const categories = ['cli', 'web', 'algorithm'];
+const difficulties = ['beginner', 'intermediate', 'advanced'];
+const languages = [...new Set(games.map(g => g.language))].sort();
+---
+
+<BaseLayout title="Games" description="Browse all open-source games contributed by the community">
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-4">Game Library</h1>
+        <p class="text-dark-muted max-w-2xl mx-auto">
+          Browse {games.length} games contributed by the community. Filter by category, difficulty, or language.
+        </p>
+      </div>
+
+      <!-- Filters -->
+      <div class="bg-dark-card border border-dark-border rounded-xl p-6 mb-8" id="filters">
+        <div class="grid md:grid-cols-4 gap-4">
+          <!-- Search -->
+          <div>
+            <label class="block text-sm text-dark-muted mb-2">Search</label>
+            <input 
+              type="text" 
+              id="search"
+              placeholder="Search games..."
+              class="w-full px-4 py-2 bg-dark-bg border border-dark-border rounded-lg focus:outline-none focus:border-primary-500"
+            />
+          </div>
+          
+          <!-- Category Filter -->
+          <div>
+            <label class="block text-sm text-dark-muted mb-2">Category</label>
+            <select id="category" class="w-full px-4 py-2 bg-dark-bg border border-dark-border rounded-lg focus:outline-none focus:border-primary-500">
+              <option value="">All Categories</option>
+              {categories.map(cat => (
+                <option value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
+              ))}
+            </select>
+          </div>
+          
+          <!-- Difficulty Filter -->
+          <div>
+            <label class="block text-sm text-dark-muted mb-2">Difficulty</label>
+            <select id="difficulty" class="w-full px-4 py-2 bg-dark-bg border border-dark-border rounded-lg focus:outline-none focus:border-primary-500">
+              <option value="">All Difficulties</option>
+              {difficulties.map(diff => (
+                <option value={diff}>{diff.charAt(0).toUpperCase() + diff.slice(1)}</option>
+              ))}
+            </select>
+          </div>
+          
+          <!-- Language Filter -->
+          <div>
+            <label class="block text-sm text-dark-muted mb-2">Language</label>
+            <select id="language" class="w-full px-4 py-2 bg-dark-bg border border-dark-border rounded-lg focus:outline-none focus:border-primary-500">
+              <option value="">All Languages</option>
+              {languages.map(lang => (
+                <option value={lang}>{lang}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Games Grid -->
+      <div id="games-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {games.length > 0 ? (
+          games.map(game => (
+            <div 
+              class="game-card" 
+              data-name={game.name.toLowerCase()}
+              data-category={game.category}
+              data-difficulty={game.difficulty}
+              data-language={game.language}
+            >
+              <GameCard 
+                id={game.id}
+                name={game.name}
+                author={game.author}
+                category={game.category}
+                difficulty={game.difficulty}
+                language={game.language}
+                description={game.description}
+                votes={game.votes}
+              />
+            </div>
+          ))
+        ) : (
+          <div class="col-span-full text-center py-16 bg-dark-card rounded-xl border border-dark-border">
+            <p class="text-4xl mb-4">🎮</p>
+            <p class="text-dark-muted mb-4">No games yet. Be the first to contribute!</p>
+            <a href="https://github.com/AbdullahOztoprak/Platform/blob/main/CONTRIBUTING.md" 
+               class="inline-block px-6 py-2 bg-primary-500 hover:bg-primary-600 rounded-lg transition">
+              Submit a Game
+            </a>
+          </div>
+        )}
+      </div>
+
+      <!-- No Results Message -->
+      <div id="no-results" class="hidden text-center py-16">
+        <p class="text-4xl mb-4">🔍</p>
+        <p class="text-dark-muted">No games match your filters. Try adjusting your search.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Client-side filtering
+    const search = document.getElementById('search') as HTMLInputElement;
+    const category = document.getElementById('category') as HTMLSelectElement;
+    const difficulty = document.getElementById('difficulty') as HTMLSelectElement;
+    const language = document.getElementById('language') as HTMLSelectElement;
+    const grid = document.getElementById('games-grid');
+    const noResults = document.getElementById('no-results');
+    
+    function filterGames() {
+      const searchTerm = search.value.toLowerCase();
+      const selectedCategory = category.value;
+      const selectedDifficulty = difficulty.value;
+      const selectedLanguage = language.value;
+      
+      const cards = document.querySelectorAll('.game-card');
+      let visibleCount = 0;
+      
+      cards.forEach(card => {
+        const el = card as HTMLElement;
+        const name = el.dataset.name || '';
+        const cat = el.dataset.category || '';
+        const diff = el.dataset.difficulty || '';
+        const lang = el.dataset.language || '';
+        
+        const matchesSearch = name.includes(searchTerm);
+        const matchesCategory = !selectedCategory || cat === selectedCategory;
+        const matchesDifficulty = !selectedDifficulty || diff === selectedDifficulty;
+        const matchesLanguage = !selectedLanguage || lang === selectedLanguage;
+        
+        if (matchesSearch && matchesCategory && matchesDifficulty && matchesLanguage) {
+          el.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+      
+      if (noResults) {
+        noResults.classList.toggle('hidden', visibleCount > 0 || cards.length === 0);
+      }
+    }
+    
+    search?.addEventListener('input', filterGames);
+    category?.addEventListener('change', filterGames);
+    difficulty?.addEventListener('change', filterGames);
+    language?.addEventListener('change', filterGames);
+  </script>
+</BaseLayout>

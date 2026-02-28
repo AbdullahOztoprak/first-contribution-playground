@@ -1,0 +1,124 @@
+---
+/**
+ * Leaderboard Page
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LeaderboardTable from '../../components/LeaderboardTable.astro';
+
+let leaderboard: any = { current_week: { entries: [] }, history: [] };
+
+try {
+  const data = await import('../../../../data/leaderboard.json');
+  leaderboard = data.default || data;
+} catch (e) {
+  console.log('Leaderboard data not found, using defaults');
+}
+
+const currentWeek = leaderboard.current_week || { entries: [], week_start: '', week_end: '' };
+const history = leaderboard.history || [];
+---
+
+<BaseLayout title="Leaderboard" description="Weekly game rankings based on community votes">
+  <section class="py-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-4">🏆 Leaderboard</h1>
+        <p class="text-dark-muted max-w-2xl mx-auto mb-4">
+          Weekly rankings based on community votes. Games with higher difficulty earn multiplied points.
+        </p>
+        <div class="inline-flex gap-4 text-sm text-dark-muted">
+          <span>🟢 Beginner: 1x</span>
+          <span>🟡 Intermediate: 1.5x</span>
+          <span>🔴 Advanced: 2x</span>
+        </div>
+      </div>
+
+      <!-- Current Week -->
+      <div class="mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold">This Week</h2>
+          {currentWeek.week_start && (
+            <span class="text-sm text-dark-muted">
+              {currentWeek.week_start} – {currentWeek.week_end}
+            </span>
+          )}
+        </div>
+        <LeaderboardTable entries={currentWeek.entries} title="" />
+      </div>
+
+      <!-- Top 3 Cards (if we have entries) -->
+      {currentWeek.entries.length >= 3 && (
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+          {/* Second Place */}
+          <div class="bg-dark-card border border-dark-border rounded-xl p-6 text-center order-1 md:order-1 md:mt-12">
+            <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center">
+              <img src={currentWeek.entries[1].avatar_url} class="w-16 h-16 rounded-full" alt="" />
+            </div>
+            <p class="text-2xl mb-2">🥈</p>
+            <h3 class="font-bold">{currentWeek.entries[1].game_name}</h3>
+            <p class="text-sm text-dark-muted mb-2">@{currentWeek.entries[1].username}</p>
+            <p class="text-xl font-bold text-primary-400">{currentWeek.entries[1].votes} votes</p>
+          </div>
+          
+          {/* First Place */}
+          <div class="bg-dark-card border-2 border-yellow-500/50 rounded-xl p-6 text-center order-0 md:order-0">
+            <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center">
+              <img src={currentWeek.entries[0].avatar_url} class="w-20 h-20 rounded-full" alt="" />
+            </div>
+            <p class="text-3xl mb-2">🥇</p>
+            <h3 class="font-bold text-lg">{currentWeek.entries[0].game_name}</h3>
+            <p class="text-sm text-dark-muted mb-2">@{currentWeek.entries[0].username}</p>
+            <p class="text-2xl font-bold text-yellow-400">{currentWeek.entries[0].votes} votes</p>
+          </div>
+          
+          {/* Third Place */}
+          <div class="bg-dark-card border border-dark-border rounded-xl p-6 text-center order-2 md:order-2 md:mt-12">
+            <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center">
+              <img src={currentWeek.entries[2].avatar_url} class="w-16 h-16 rounded-full" alt="" />
+            </div>
+            <p class="text-2xl mb-2">🥉</p>
+            <h3 class="font-bold">{currentWeek.entries[2].game_name}</h3>
+            <p class="text-sm text-dark-muted mb-2">@{currentWeek.entries[2].username}</p>
+            <p class="text-xl font-bold text-primary-400">{currentWeek.entries[2].votes} votes</p>
+          </div>
+        </div>
+      )}
+
+      <!-- Historical Weeks -->
+      {history.length > 0 && (
+        <div>
+          <h2 class="text-2xl font-bold mb-6">Previous Weeks</h2>
+          <div class="space-y-6">
+            {history.slice(0, 4).map((week: any) => (
+              <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="font-semibold">{week.week_start} – {week.week_end}</h3>
+                  <span class="text-sm text-dark-muted">{week.entries.length} entries</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  {week.entries.slice(0, 3).map((entry: any, i: number) => (
+                    <div class="flex items-center gap-2">
+                      <span class="text-lg">{['🥇', '🥈', '🥉'][i]}</span>
+                      <img src={entry.avatar_url} class="w-6 h-6 rounded-full" alt="" />
+                      <span class="text-sm">{entry.game_name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- CTA -->
+      <div class="mt-12 text-center">
+        <p class="text-dark-muted mb-4">Want to see your game on the leaderboard?</p>
+        <a href="https://github.com/AbdullahOztoprak/Platform/blob/main/CONTRIBUTING.md" 
+           class="inline-block px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-lg transition">
+          Submit Your Game
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

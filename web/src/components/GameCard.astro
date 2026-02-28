@@ -1,0 +1,61 @@
+---
+/**
+ * Game Card Component
+ */
+interface Props {
+  id: string;
+  name: string;
+  author: string;
+  category: 'cli' | 'web' | 'algorithm';
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  language: string;
+  description: string;
+  votes?: number;
+}
+
+const { id, name, author, category, difficulty, language, description, votes = 0 } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
+
+const categoryIcons = { cli: '💻', web: '🌐', algorithm: '🧮' };
+const difficultyColors = {
+  beginner: 'bg-green-500/10 text-green-400 border-green-500/30',
+  intermediate: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30',
+  advanced: 'bg-red-500/10 text-red-400 border-red-500/30',
+};
+---
+
+<a href={`${baseUrl}games/${id}`} class="block group">
+  <div class="bg-dark-card border border-dark-border rounded-xl p-6 hover:border-primary-500/50 transition-all hover:shadow-lg hover:shadow-primary-500/10">
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">{categoryIcons[category]}</span>
+        <h3 class="text-lg font-semibold group-hover:text-primary-400 transition">{name}</h3>
+      </div>
+      {votes > 0 && (
+        <span class="text-dark-muted text-sm">👍 {votes}</span>
+      )}
+    </div>
+    
+    <p class="text-dark-muted text-sm mb-4 line-clamp-2">{description}</p>
+    
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <img 
+          src={`https://github.com/${author}.png`} 
+          alt={author}
+          class="w-6 h-6 rounded-full"
+        />
+        <span class="text-sm text-dark-muted">@{author}</span>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <span class="text-xs px-2 py-1 rounded-full bg-dark-border text-dark-muted">
+          {language}
+        </span>
+        <span class={`text-xs px-2 py-1 rounded-full border ${difficultyColors[difficulty]}`}>
+          {difficulty}
+        </span>
+      </div>
+    </div>
+  </div>
+</a>

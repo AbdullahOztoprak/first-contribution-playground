@@ -1,0 +1,79 @@
+---
+/**
+ * Contributor Card Component
+ */
+interface Badge {
+  id: string;
+  name: string;
+  icon: string;
+  rarity: string;
+}
+
+interface Props {
+  username: string;
+  avatar_url: string;
+  rank: number;
+  xp: number;
+  level: number;
+  games_submitted: number;
+  badges: Badge[];
+}
+
+const { username, avatar_url, rank, xp, level, games_submitted, badges } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
+
+const rankColors: Record<number, string> = {
+  1: 'from-yellow-400 to-amber-500',
+  2: 'from-gray-300 to-gray-400',
+  3: 'from-amber-600 to-amber-700',
+};
+---
+
+<a href={`${baseUrl}contributor/${username}`} class="block group">
+  <div class="bg-dark-card border border-dark-border rounded-xl p-6 hover:border-primary-500/50 transition-all">
+    <div class="flex items-center gap-4 mb-4">
+      {rank <= 3 ? (
+        <div class={`w-8 h-8 rounded-full bg-gradient-to-br ${rankColors[rank]} flex items-center justify-center text-sm font-bold text-black`}>
+          {rank}
+        </div>
+      ) : (
+        <div class="w-8 h-8 rounded-full bg-dark-border flex items-center justify-center text-sm text-dark-muted">
+          {rank}
+        </div>
+      )}
+      
+      <img 
+        src={avatar_url}
+        alt={username}
+        class="w-12 h-12 rounded-full border-2 border-dark-border"
+      />
+      
+      <div>
+        <h3 class="font-semibold group-hover:text-primary-400 transition">@{username}</h3>
+        <p class="text-xs text-dark-muted">Level {level}</p>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+      <div class="bg-dark-bg rounded-lg p-3">
+        <p class="text-xl font-bold text-primary-400">{xp.toLocaleString()}</p>
+        <p class="text-xs text-dark-muted">XP</p>
+      </div>
+      <div class="bg-dark-bg rounded-lg p-3">
+        <p class="text-xl font-bold">{games_submitted}</p>
+        <p class="text-xs text-dark-muted">Games</p>
+      </div>
+    </div>
+    
+    {badges.length > 0 && (
+      <div class="flex flex-wrap gap-1">
+        {badges.slice(0, 5).map(badge => (
+          <span class="text-lg" title={badge.name}>{badge.icon}</span>
+        ))}
+        {badges.length > 5 && (
+          <span class="text-xs text-dark-muted self-center">+{badges.length - 5}</span>
+        )}
+      </div>
+    )}
+  </div>
+</a>
