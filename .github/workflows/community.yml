@@ -1,0 +1,172 @@
+# ============================================================
+# Community: Welcome bot, anti-spam, stale management
+# Replaces: welcome.yml, anti-spam.yml, stale.yml
+# ============================================================
+name: Community
+
+on:
+  pull_request:
+    types: [opened]
+  issues:
+    types: [opened]
+  schedule:
+    - cron: '0 0 * * 1'  # Weekly cleanup on Monday
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  # ─────────────────────────────────────────────────────────
+  # WELCOME: Greet new contributors
+  # ─────────────────────────────────────────────────────────
+  welcome:
+    name: Welcome
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'issues'
+    steps:
+      - name: Welcome contributor
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const isPR = context.eventName === 'pull_request';
+            const author = isPR 
+              ? context.payload.pull_request.user.login 
+              : context.payload.issue.user.login;
+            const number = isPR 
+              ? context.payload.pull_request.number 
+              : context.payload.issue.number;
+
+            // Check if first-time contributor
+            const { data: items } = isPR
+              ? await github.rest.pulls.list({ owner: context.repo.owner, repo: context.repo.repo, state: 'all', per_page: 5 })
+              : await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'all', per_page: 5 });
+
+            const previousByAuthor = items.filter(i => i.user.login === author && i.number !== number);
+            const isFirstTime = previousByAuthor.length === 0;
+
+            let body = '';
+            if (isFirstTime) {
+              body = `## 🎉 Welcome @${author}!
+
+Thank you for your **first contribution** to Platform!
+
+### What happens next?
+1. 🤖 Automated checks will validate your submission
+2. 📋 A maintainer will review${isPR ? ' your PR' : ''}
+3. ✅ Once approved, ${isPR ? "your contribution will be merged" : "we'll get back to you"}
+
+### Resources
+- 📖 [Contributing Guide](../CONTRIBUTING.md)
+- 📖 [Beginner's Guide](../docs/BEGINNER_GUIDE.md)
+- 💬 [Discussions](../../discussions)
+
+*Every expert was once a beginner!* 🚀`;
+            } else {
+              body = `## 👋 Welcome back @${author}!
+
+Great to see you contributing again! 🌟
+
+🤖 Automated checks are running now.`;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: number,
+              body,
+            });
+
+  # ─────────────────────────────────────────────────────────
+  # ANTI-SPAM: Rate limit and abuse detection
+  # ─────────────────────────────────────────────────────────
+  anti-spam:
+    name: Anti-Spam
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check for spam
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const author = context.payload.pull_request.user.login;
+            const prBody = context.payload.pull_request.body || '';
+            const prNumber = context.payload.pull_request.number;
+
+            const issues = [];
+
+            // 1. Rate limit: Max 5 open PRs per author
+            const { data: openPRs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            });
+            const authorPRs = openPRs.filter(pr => pr.user.login === author);
+            if (authorPRs.length > 5) {
+              issues.push(`Rate limit: ${authorPRs.length} open PRs (max 5)`);
+            }
+
+            // 2. Account age
+            const { data: user } = await github.rest.users.getByUsername({ username: author });
+            const ageInDays = (Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24);
+            if (ageInDays < 3) {
+              issues.push(`New account: ${Math.floor(ageInDays)} days old`);
+            }
+
+            // 3. Empty PR
+            if (prBody.length < 10) {
+              issues.push('PR description too short');
+            }
+
+            // 4. Empty changes
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            if (files.length === 0) {
+              issues.push('No file changes');
+            }
+
+            // Take action on severe issues
+            if (issues.some(i => i.includes('No file changes') || i.includes('Rate limit'))) {
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                state: 'closed',
+              });
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `## 🚫 PR Closed\n\nThis PR was flagged:\n${issues.map(i => `- ${i}`).join('\n')}\n\nContact a maintainer if this is a mistake.`,
+              });
+            } else if (issues.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `## ⚠️ Review Notes\n\n${issues.map(i => `- ${i}`).join('\n')}\n\nA maintainer will review.`,
+              });
+            }
+
+  # ─────────────────────────────────────────────────────────
+  # STALE: Close abandoned PRs/Issues
+  # ─────────────────────────────────────────────────────────
+  stale:
+    name: Stale Cleanup
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message: 'This issue has been marked stale due to inactivity. It will close in 7 days.'
+          stale-pr-message: 'This PR has been marked stale due to inactivity. It will close in 7 days.'
+          days-before-stale: 14
+          days-before-close: 7
+          stale-issue-label: '⏰ stale'
+          stale-pr-label: '⏰ stale'
+          exempt-issue-labels: '📌 pinned'
+          exempt-pr-labels: '📌 pinned'

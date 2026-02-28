@@ -1,0 +1,113 @@
+# ============================================================
+# Deploy: Build data index + deploy website
+# Triggers on: push to main, manual dispatch
+# ============================================================
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # ─────────────────────────────────────────────────────────
+  # BUILD DATA: Generate games.json, contributors.json, etc.
+  # ─────────────────────────────────────────────────────────
+  build-data:
+    name: Build Data Index
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Build data
+        run: npm run build:data
+
+      - name: Commit data changes
+        run: |
+          git config user.name "Platform Bot"
+          git config user.email "bot@platform.dev"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "📊 Update data index [skip ci]"
+            git push
+          fi
+
+      - name: Upload data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-data
+          path: data/
+          retention-days: 1
+
+  # ─────────────────────────────────────────────────────────
+  # BUILD SITE: Astro static site generation
+  # ─────────────────────────────────────────────────────────
+  build-site:
+    name: Build Website
+    runs-on: ubuntu-latest
+    needs: build-data
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: platform-data
+          path: data/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci || npm install
+
+      - name: Copy games to public
+        run: |
+          mkdir -p web/public/games
+          cp -r games/* web/public/games/ || true
+
+      - name: Build Astro site
+        working-directory: web
+        run: npm run build
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  # ─────────────────────────────────────────────────────────
+  # DEPLOY: GitHub Pages
+  # ─────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build-site
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

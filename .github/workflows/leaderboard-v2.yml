@@ -1,0 +1,163 @@
+# ============================================================
+# Leaderboard: Weekly calculation of votes, XP, badges
+# Runs every Sunday at noon UTC
+# ============================================================
+name: Leaderboard
+
+on:
+  schedule:
+    - cron: '0 12 * * 0'  # Every Sunday at noon UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  update-leaderboard:
+    name: Update Leaderboard & Badges
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Calculate leaderboard
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            const now = new Date();
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            // Fetch merged game PRs
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 100,
+            });
+
+            const gamePRs = prs.filter(pr => {
+              const mergedAt = pr.merged_at ? new Date(pr.merged_at) : null;
+              const hasGameLabel = pr.labels.some(l => l.name.includes('game'));
+              return mergedAt && mergedAt >= weekAgo && hasGameLabel;
+            });
+
+            console.log(`Found ${gamePRs.length} game PRs this week`);
+
+            // Fetch reactions and calculate scores
+            const DIFFICULTY_MULT = { beginner: 1.0, intermediate: 1.5, advanced: 2.0 };
+            const entries = [];
+
+            for (const pr of gamePRs) {
+              const { data: reactions } = await github.rest.reactions.listForIssue({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+              });
+
+              const votes = reactions.filter(r => 
+                r.content === '+1' && r.user.login !== pr.user.login
+              ).length;
+
+              // Try to get difficulty from metadata
+              let difficulty = 'beginner';
+              try {
+                const { data: files } = await github.rest.pulls.listFiles({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                });
+                const metaFile = files.find(f => f.filename.includes('metadata.json'));
+                if (metaFile) {
+                  const { data: content } = await github.rest.repos.getContent({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    path: metaFile.filename,
+                  });
+                  const meta = JSON.parse(Buffer.from(content.content, 'base64').toString());
+                  difficulty = meta.difficulty || 'beginner';
+                }
+              } catch {}
+
+              const multiplier = DIFFICULTY_MULT[difficulty] || 1.0;
+              entries.push({
+                username: pr.user.login,
+                avatar_url: pr.user.avatar_url,
+                game_name: pr.title.replace(/^\[GAME\]\s*/i, ''),
+                votes,
+                pr_number: pr.number,
+                difficulty,
+                weighted_score: votes * multiplier,
+              });
+            }
+
+            // Sort and rank
+            entries.sort((a, b) => b.weighted_score - a.weighted_score);
+            entries.forEach((e, i) => e.rank = i + 1);
+
+            // Load existing data
+            let leaderboardData = { history: [] };
+            try {
+              leaderboardData = JSON.parse(fs.readFileSync('data/leaderboard.json', 'utf8'));
+            } catch {}
+
+            // Build new leaderboard
+            const weekId = `${now.getFullYear()}-W${Math.ceil((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000))}`;
+            const newLeaderboard = {
+              version: 2,
+              generated_at: now.toISOString(),
+              current_week: {
+                week_id: weekId,
+                week_start: weekAgo.toISOString().split('T')[0],
+                week_end: now.toISOString().split('T')[0],
+                entries: entries.slice(0, 10),
+                total_votes: entries.reduce((s, e) => s + e.votes, 0),
+                total_games: entries.length,
+              },
+              all_time_top: entries.slice(0, 10),
+              history: [leaderboardData.current_week, ...(leaderboardData.history || [])].filter(Boolean).slice(0, 12),
+            };
+
+            fs.writeFileSync('data/leaderboard.json', JSON.stringify(newLeaderboard, null, 2));
+
+            // Update README markers
+            let readme = fs.readFileSync('README.md', 'utf8');
+            const medals = ['🥇', '🥈', '🥉'];
+            let leaderboardMd = entries.length > 0
+              ? `| Rank | Game | Author | Votes | Score |\n|------|------|--------|-------|-------|\n` +
+                entries.slice(0, 3).map((e, i) => 
+                  `| ${medals[i]} | ${e.game_name} | [@${e.username}](https://github.com/${e.username}) | 👍 ${e.votes} | ${e.weighted_score.toFixed(1)} |`
+                ).join('\n')
+              : '*No game submissions this week. Be the first!*';
+
+            readme = readme.replace(
+              /<!-- LEADERBOARD:WEEKLY:START -->[\s\S]*?<!-- LEADERBOARD:WEEKLY:END -->/,
+              `<!-- LEADERBOARD:WEEKLY:START -->\n### 🏆 Top Games This Week\n\n${leaderboardMd}\n<!-- LEADERBOARD:WEEKLY:END -->`
+            );
+
+            readme = readme.replace(
+              /<!-- LEADERBOARD:TIMESTAMP:START -->[\s\S]*?<!-- LEADERBOARD:TIMESTAMP:END -->/,
+              `<!-- LEADERBOARD:TIMESTAMP:START -->\n*Last updated: ${now.toUTCString()}*\n<!-- LEADERBOARD:TIMESTAMP:END -->`
+            );
+
+            fs.writeFileSync('README.md', readme);
+            console.log('Leaderboard updated!');
+
+      - name: Commit changes
+        run: |
+          git config user.name "Platform Bot"
+          git config user.email "bot@platform.dev"
+          git add data/leaderboard.json README.md
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "🏆 Update leaderboard [skip ci]"
+            git push
+          fi

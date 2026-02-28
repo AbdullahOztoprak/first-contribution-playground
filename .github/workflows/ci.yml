@@ -1,0 +1,250 @@
+# ============================================================
+# CI Pipeline: Unified validation for all PRs
+# Replaces: pr-triage.yml, validate-game.yml, validate-translation.yml,
+#           lint.yml, security-scan.yml
+# ============================================================
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # ─────────────────────────────────────────────────────────
+  # DETECT: What type of PR is this?
+  # ─────────────────────────────────────────────────────────
+  detect:
+    name: Detect PR Type
+    runs-on: ubuntu-latest
+    outputs:
+      type: ${{ steps.detect.outputs.type }}
+      category: ${{ steps.detect.outputs.category }}
+      files: ${{ steps.files.outputs.files }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: files
+        run: |
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
+          echo "Changed files: $FILES"
+
+      - name: Detect submission type
+        id: detect
+        run: |
+          FILES='${{ steps.files.outputs.files }}'
+          
+          if echo "$FILES" | grep -q '"games/cli/'; then
+            echo "type=game" >> "$GITHUB_OUTPUT"
+            echo "category=cli" >> "$GITHUB_OUTPUT"
+          elif echo "$FILES" | grep -q '"games/web/'; then
+            echo "type=game" >> "$GITHUB_OUTPUT"
+            echo "category=web" >> "$GITHUB_OUTPUT"
+          elif echo "$FILES" | grep -q '"games/algorithm/'; then
+            echo "type=game" >> "$GITHUB_OUTPUT"
+            echo "category=algorithm" >> "$GITHUB_OUTPUT"
+          elif echo "$FILES" | grep -q '"translations/'; then
+            echo "type=translation" >> "$GITHUB_OUTPUT"
+            echo "category=" >> "$GITHUB_OUTPUT"
+          else
+            echo "type=other" >> "$GITHUB_OUTPUT"
+            echo "category=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Apply labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const type = '${{ steps.detect.outputs.type }}';
+            const category = '${{ steps.detect.outputs.category }}';
+            const labels = ['🟢 beginner-friendly'];
+
+            if (type === 'game') {
+              labels.push('🎮 game');
+              if (category) labels.push(category === 'cli' ? '💻 cli' : category === 'web' ? '🌐 web' : '🧮 algorithm');
+            } else if (type === 'translation') {
+              labels.push('🌍 translation');
+            }
+
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels,
+              });
+            } catch (e) {
+              console.log('Label error (may not exist yet):', e.message);
+            }
+
+  # ─────────────────────────────────────────────────────────
+  # VALIDATE: Run unified validation script
+  # ─────────────────────────────────────────────────────────
+  validate:
+    name: Validate Submission
+    runs-on: ubuntu-latest
+    needs: detect
+    if: needs.detect.outputs.type == 'game' || needs.detect.outputs.type == 'translation'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci || npm install typescript ts-node @types/node --save-dev
+
+      - name: Run validation
+        id: validate
+        run: |
+          FILES='${{ needs.detect.outputs.files }}'
+          npx ts-node scripts/validate.ts "$FILES" . > validation_result.json 2>&1 || true
+          cat validation_result.json
+          
+          # Extract results
+          VALID=$(cat validation_result.json | jq -r '.valid')
+          echo "valid=$VALID" >> "$GITHUB_OUTPUT"
+
+      - name: Comment results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let result;
+            try {
+              result = JSON.parse(fs.readFileSync('validation_result.json', 'utf8'));
+            } catch {
+              result = { valid: false, errors: ['Validation script failed to run'], warnings: [], security: { severity: 'safe', issues: [] } };
+            }
+
+            let body = result.valid 
+              ? '## ✅ Validation Passed\n\nYour submission meets all requirements!\n'
+              : '## ❌ Validation Failed\n\nPlease fix the following issues:\n\n';
+
+            if (result.errors.length > 0) {
+              body += '### Errors\n' + result.errors.map(e => `- ❌ ${e}`).join('\n') + '\n\n';
+            }
+            if (result.warnings.length > 0) {
+              body += '### Warnings\n' + result.warnings.map(w => `- ⚠️ ${w}`).join('\n') + '\n\n';
+            }
+            if (result.security.issues.length > 0) {
+              body += `### Security (${result.security.severity.toUpperCase()})\n`;
+              body += result.security.issues.map(i => 
+                `- ${i.severity === 'critical' ? '🔴' : i.severity === 'high' ? '🟠' : '🟡'} **${i.message}** in \`${i.file}:${i.line}\``
+              ).join('\n') + '\n\n';
+            }
+
+            // Upsert comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const botComment = comments.find(c => c.user.type === 'Bot' && c.body.includes('Validation'));
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Fail on invalid
+        if: steps.validate.outputs.valid == 'false'
+        run: exit 1
+
+  # ─────────────────────────────────────────────────────────
+  # LINT: Code quality checks
+  # ─────────────────────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: detect
+    if: needs.detect.outputs.type == 'game'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get changed files
+        id: files
+        run: |
+          PY_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.py' | tr '\n' ' ')
+          JS_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.js' | tr '\n' ' ')
+          echo "py=$PY_FILES" >> "$GITHUB_OUTPUT"
+          echo "js=$JS_FILES" >> "$GITHUB_OUTPUT"
+
+      - name: Lint Python
+        if: steps.files.outputs.py != ''
+        run: |
+          pip install flake8
+          flake8 ${{ steps.files.outputs.py }} --max-line-length=120 --ignore=E501,W503 || true
+
+      - name: Lint JavaScript
+        if: steps.files.outputs.js != ''
+        run: |
+          for file in ${{ steps.files.outputs.js }}; do
+            node --check "$file" || echo "Syntax error in $file"
+          done
+
+  # ─────────────────────────────────────────────────────────
+  # AUTO-MERGE: Translations only (if all checks pass)
+  # ─────────────────────────────────────────────────────────
+  auto-merge:
+    name: Auto-Merge Translation
+    runs-on: ubuntu-latest
+    needs: [detect, validate]
+    if: needs.detect.outputs.type == 'translation' && needs.validate.result == 'success'
+    steps:
+      - name: Merge PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                merge_method: 'squash',
+                commit_title: `🌍 Translation: PR #${context.issue.number}`,
+              });
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: '## 🎉 Auto-Merged!\n\nYour translation passed all checks and has been merged. Thank you!',
+              });
+            } catch (e) {
+              console.log('Auto-merge failed:', e.message);
+            }
