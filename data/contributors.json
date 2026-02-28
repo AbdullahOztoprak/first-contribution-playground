@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "generated_at": "2026-02-28T21:20:20.894Z",
+  "total_contributors": 1,
+  "contributors": [
+    {
+      "username": "platform-bot",
+      "avatar_url": "https://github.com/platform-bot.png",
+      "profile_url": "https://github.com/platform-bot",
+      "total_contributions": 2,
+      "games_submitted": 2,
+      "translations_submitted": 0,
+      "issues_opened": 0,
+      "reviews_given": 0,
+      "xp": 200,
+      "level": 2,
+      "rank": 1,
+      "badges": [
+        {
+          "id": "first-contribution",
+          "name": "First Steps",
+          "description": "Made your first contribution",
+          "icon": "🎉",
+          "rarity": "common",
+          "earned_at": "2026-02-28"
+        }
+      ],
+      "votes_received": 0,
+      "votes_given": 0,
+      "first_contribution": "2026-02-28",
+      "last_contribution": "2026-02-28",
+      "games": [
+        "cli/example-number-guessing",
+        "web/example-rock-paper-scissors"
+      ]
+    }
+  ]
+}
