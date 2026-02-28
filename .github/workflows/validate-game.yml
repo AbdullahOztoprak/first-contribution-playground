@@ -1,0 +1,267 @@
+# ============================================================
+# Validate Game Submissions
+# Checks structure, file limits, allowed types, security
+# ============================================================
+name: Validate Game Submission
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'games/**'
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  validate-game:
+    name: Validate Game Structure & Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate submission
+        id: validate
+        run: |
+          set +e  # Don't exit on error
+          ERRORS=""
+          WARNINGS=""
+
+          # Get changed files in games/
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'games/' 2>/dev/null)
+          
+          if [ -z "$FILES" ]; then
+            echo "No game files detected."
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "=== Changed game files ==="
+          echo "$FILES"
+          echo ""
+
+          # ── 1. Check allowed file extensions ──
+          ALLOWED_EXTENSIONS="py|js|html|css|json|md|txt"
+          INVALID_FILES=$(echo "$FILES" | grep -vE "\.($ALLOWED_EXTENSIONS)$" | grep -v ".gitkeep")
+          if [ -n "$INVALID_FILES" ]; then
+            ERRORS="$ERRORS\n❌ **Invalid file types detected:**\n\`\`\`\n$INVALID_FILES\n\`\`\`\nAllowed: .py, .js, .html, .css, .json, .md, .txt\n"
+          fi
+
+          # ── 2. Check total file count (max 5 per game folder) ──
+          GAME_DIRS=$(echo "$FILES" | sed 's|/[^/]*$||' | sort -u)
+          for dir in $GAME_DIRS; do
+            FILE_COUNT=$(echo "$FILES" | grep "^$dir/" | wc -l | tr -d ' ')
+            if [ "$FILE_COUNT" -gt 5 ]; then
+              ERRORS="$ERRORS\n❌ **Too many files in \`$dir/\`**: $FILE_COUNT files (max 5)\n"
+            fi
+          done
+
+          # ── 3. Check total line count per game (max 500) ──
+          for dir in $GAME_DIRS; do
+            TOTAL_LINES=0
+            for f in $(echo "$FILES" | grep "^$dir/" | grep -E "\.(py|js|html|css)$"); do
+              if [ -f "$f" ]; then
+                LINES=$(wc -l < "$f" | tr -d ' ')
+                TOTAL_LINES=$((TOTAL_LINES + LINES))
+              fi
+            done
+            if [ "$TOTAL_LINES" -gt 500 ]; then
+              ERRORS="$ERRORS\n❌ **Too many lines in \`$dir/\`**: $TOTAL_LINES lines (max 500)\n"
+            fi
+          done
+
+          # ── 4. Check required files (README.md + metadata.json) ──
+          for dir in $GAME_DIRS; do
+            if ! echo "$FILES" | grep -q "^$dir/README.md"; then
+              # Check if it already exists
+              if [ ! -f "$dir/README.md" ]; then
+                ERRORS="$ERRORS\n❌ **Missing \`README.md\` in \`$dir/\`**\n"
+              fi
+            fi
+            if ! echo "$FILES" | grep -q "^$dir/metadata.json"; then
+              if [ ! -f "$dir/metadata.json" ]; then
+                ERRORS="$ERRORS\n❌ **Missing \`metadata.json\` in \`$dir/\`**\n"
+              fi
+            fi
+          done
+
+          # ── 5. Validate metadata.json structure ──
+          for dir in $GAME_DIRS; do
+            META="$dir/metadata.json"
+            if [ -f "$META" ]; then
+              # Check valid JSON
+              if ! python3 -c "import json; json.load(open('$META'))" 2>/dev/null; then
+                ERRORS="$ERRORS\n❌ **Invalid JSON in \`$META\`**\n"
+              else
+                # Check required fields
+                REQUIRED_FIELDS="name author category difficulty language description entry_point"
+                for field in $REQUIRED_FIELDS; do
+                  if ! python3 -c "import json; d=json.load(open('$META')); assert '$field' in d" 2>/dev/null; then
+                    ERRORS="$ERRORS\n❌ **Missing field \`$field\` in \`$META\`**\n"
+                  fi
+                done
+              fi
+            fi
+          done
+
+          # ── 6. Security checks ──
+          for f in $(echo "$FILES" | grep -E "\.(py|js)$"); do
+            if [ -f "$f" ]; then
+              # Check for dangerous patterns
+              DANGEROUS=$(grep -nE "(subprocess|os\.system|exec\(|eval\(|__import__|open\(.*/etc|\.popen|child_process|require\('fs'\)|require\('net'\)|require\('http'\)|fetch\(|XMLHttpRequest|WebSocket|localStorage|document\.cookie)" "$f" 2>/dev/null || true)
+              if [ -n "$DANGEROUS" ]; then
+                ERRORS="$ERRORS\n🔒 **Potential security issue in \`$f\`:**\n\`\`\`\n$DANGEROUS\n\`\`\`\nExternal calls, system access, and dangerous functions are not allowed.\n"
+              fi
+
+              # Check for network-related imports
+              NETWORK=$(grep -nE "(import requests|import urllib|import http|import socket|import aiohttp|require\('axios'\)|require\('node-fetch'\))" "$f" 2>/dev/null || true)
+              if [ -n "$NETWORK" ]; then
+                ERRORS="$ERRORS\n🔒 **Network library detected in \`$f\`:**\n\`\`\`\n$NETWORK\n\`\`\`\nNetwork access is not permitted in game submissions.\n"
+              fi
+
+              # Check for file system access (outside game dir)
+              FILESYSTEM=$(grep -nE "(open\(|with open|os\.path|pathlib|fs\.read|fs\.write|fs\.unlink|fs\.mkdir)" "$f" 2>/dev/null || true)
+              if [ -n "$FILESYSTEM" ]; then
+                WARNINGS="$WARNINGS\n⚠️ **File system access detected in \`$f\`** — will be reviewed manually:\n\`\`\`\n$FILESYSTEM\n\`\`\`\n"
+              fi
+
+              # Check for obfuscated/minified code
+              LONG_LINES=$(awk 'length > 300' "$f" 2>/dev/null || true)
+              if [ -n "$LONG_LINES" ]; then
+                ERRORS="$ERRORS\n❌ **Possible obfuscated/minified code in \`$f\`** (lines > 300 chars)\nCode must be readable and well-formatted.\n"
+              fi
+            fi
+          done
+
+          # ── Output results ──
+          if [ -n "$ERRORS" ]; then
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            # Write errors to file for the comment step
+            printf "$ERRORS" > /tmp/validation_errors.txt
+            printf "$WARNINGS" > /tmp/validation_warnings.txt
+          else
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+            printf "$WARNINGS" > /tmp/validation_warnings.txt
+          fi
+
+      - name: Comment validation results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const valid = '${{ steps.validate.outputs.valid }}' === 'true';
+
+            let body = '';
+
+            if (valid) {
+              body = '## ✅ Game Validation Passed\n\nYour submission meets all requirements! A maintainer will review your game shortly.\n\n';
+
+              // Check for warnings
+              try {
+                const warnings = fs.readFileSync('/tmp/validation_warnings.txt', 'utf8').trim();
+                if (warnings) {
+                  body += '### ⚠️ Warnings (non-blocking)\n\n' + warnings + '\n';
+                }
+              } catch {}
+
+              body += '> 💡 Community members can vote on your game using 👍 reactions on this PR!';
+
+            } else {
+              body = '## ❌ Game Validation Failed\n\nPlease fix the following issues and push again:\n\n';
+
+              try {
+                const errors = fs.readFileSync('/tmp/validation_errors.txt', 'utf8').trim();
+                body += errors + '\n\n';
+              } catch {
+                body += 'Could not read error details.\n\n';
+              }
+
+              try {
+                const warnings = fs.readFileSync('/tmp/validation_warnings.txt', 'utf8').trim();
+                if (warnings) {
+                  body += '### ⚠️ Warnings\n\n' + warnings + '\n\n';
+                }
+              } catch {}
+
+              body += '---\n📖 See the [Contributing Guide](../CONTRIBUTING.md) for submission rules.';
+            }
+
+            // Find existing bot comment to update
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.data.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Game Validation')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            }
+
+      - name: Apply validation label
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const valid = '${{ steps.validate.outputs.valid }}' === 'true';
+            const label = valid ? '✅ ready-to-merge' : '❌ validation-failed';
+            const removeLabel = valid ? '❌ validation-failed' : '✅ ready-to-merge';
+
+            // Remove opposite label if exists
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: removeLabel,
+              });
+            } catch {}
+
+            // Ensure label exists
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label,
+              });
+            } catch {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label,
+                color: valid ? '0e8a16' : 'e11d48',
+              });
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: [label],
+            });
+
+      - name: Fail if validation failed
+        if: steps.validate.outputs.valid == 'false'
+        run: |
+          echo "::error::Game submission validation failed. See PR comments for details."
+          exit 1

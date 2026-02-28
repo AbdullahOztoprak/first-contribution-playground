@@ -1,0 +1,10 @@
+# Allowed file types for game submissions
+*.py
+*.js
+*.html
+*.css
+*.json
+*.md
+*.txt
+
+# Everything else is blocked by validation workflows

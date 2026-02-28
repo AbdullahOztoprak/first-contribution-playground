@@ -1,0 +1,107 @@
+# ============================================================
+# Lint Check: Run basic linting on game submissions
+# ============================================================
+name: Lint Check
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'games/**'
+
+permissions:
+  contents: read
+
+jobs:
+  lint-python:
+    name: Lint Python Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install linters
+        run: pip install flake8 pycodestyle
+
+      - name: Find changed Python files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.py' | tr '\n' ' ')
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
+          echo "Changed Python files: $FILES"
+
+      - name: Run flake8
+        if: steps.changed.outputs.files != ''
+        run: |
+          echo "Running flake8 on: ${{ steps.changed.outputs.files }}"
+          flake8 ${{ steps.changed.outputs.files }} \
+            --max-line-length=120 \
+            --ignore=E501,W503,E402 \
+            --count \
+            --show-source \
+            --statistics || true
+
+  lint-javascript:
+    name: Lint JavaScript Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Find changed JS files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.js' | tr '\n' ' ')
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
+
+      - name: Lint with basic checks
+        if: steps.changed.outputs.files != ''
+        run: |
+          # Basic syntax check using Node.js
+          for file in ${{ steps.changed.outputs.files }}; do
+            echo "Checking syntax: $file"
+            node --check "$file" 2>&1 || echo "⚠️ Syntax error in $file"
+          done
+
+  lint-html:
+    name: Validate HTML Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find changed HTML files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.html' | tr '\n' ' ')
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
+
+      - name: Basic HTML validation
+        if: steps.changed.outputs.files != ''
+        run: |
+          for file in ${{ steps.changed.outputs.files }}; do
+            echo "Checking: $file"
+            # Check for basic HTML structure
+            if ! grep -qi '<!DOCTYPE\|<html' "$file"; then
+              echo "⚠️ Warning: $file may not have proper HTML structure"
+            fi
+            if ! grep -qi '</html>' "$file"; then
+              echo "⚠️ Warning: $file missing closing </html> tag"
+            fi
+          done

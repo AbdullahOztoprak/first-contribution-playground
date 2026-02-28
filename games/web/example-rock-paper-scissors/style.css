@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+    padding: 2rem;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #a0a0b0;
+    margin-bottom: 2rem;
+}
+
+.choices {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.choice-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.choice-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #4fc3f7;
+    transform: scale(1.05);
+}
+
+.result {
+    font-size: 1.3rem;
+    min-height: 2rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+}
+
+.scoreboard {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.reset-btn {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.reset-btn:hover {
+    background: #c0392b;
+}

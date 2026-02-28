@@ -1,0 +1,110 @@
+# ============================================================
+# Auto-merge Translation PRs if all checks pass
+# ============================================================
+name: Auto-Merge Translations
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled]
+    paths:
+      - 'translations/**'
+  check_suite:
+    types: [completed]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  auto-merge-translation:
+    name: Auto-Merge Valid Translations
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'check_suite' && github.event.check_suite.conclusion == 'success')
+    steps:
+      - name: Check if translation PR
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request || null;
+            let prNumber;
+
+            if (pr) {
+              prNumber = pr.number;
+            } else if (context.payload.check_suite) {
+              const prs = context.payload.check_suite.pull_requests;
+              if (prs.length === 0) {
+                core.setOutput('should_merge', 'false');
+                return;
+              }
+              prNumber = prs[0].number;
+            }
+
+            // Get PR details
+            const { data: prData } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+
+            // Check if it's a translation PR (only translations/ files changed)
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+
+            const allTranslations = files.every(f => f.filename.startsWith('translations/'));
+            const hasTranslationLabel = prData.labels.some(l => l.name === '🌍 translation');
+
+            if (!allTranslations || !hasTranslationLabel) {
+              core.setOutput('should_merge', 'false');
+              core.info('Not a pure translation PR, skipping auto-merge.');
+              return;
+            }
+
+            // Check all status checks passed
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: prData.head.sha,
+            });
+
+            const allPassed = checks.check_runs
+              .filter(c => c.name !== 'Auto-Merge Valid Translations')
+              .every(c => c.conclusion === 'success' || c.conclusion === 'skipped');
+
+            if (!allPassed) {
+              core.setOutput('should_merge', 'false');
+              core.info('Not all checks passed yet.');
+              return;
+            }
+
+            core.setOutput('should_merge', 'true');
+            core.setOutput('pr_number', prNumber.toString());
+
+      - name: Enable auto-merge
+        if: steps.check.outputs.should_merge == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.check.outputs.pr_number }}');
+
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              merge_method: 'squash',
+              commit_title: `🌍 Auto-merge translation PR #${prNumber}`,
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: '## 🎉 Auto-Merged!\n\nYour translation passed all checks and has been automatically merged. Thank you for your contribution!\n\n🌟 Your contribution is now live!',
+            });
+
+            console.log(`Auto-merged translation PR #${prNumber}`);

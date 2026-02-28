@@ -1,0 +1,228 @@
+# ============================================================
+# Leaderboard: Weekly gamification cron job
+# Fetches reactions on game PRs, ranks top games, updates README
+# ============================================================
+name: Update Leaderboard
+
+on:
+  schedule:
+    - cron: '0 12 * * 0'  # Every Sunday at noon UTC
+  workflow_dispatch:       # Manual trigger for testing
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  update-leaderboard:
+    name: Calculate & Update Leaderboard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Calculate leaderboard
+        id: leaderboard
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // ── Get date range for this week ──
+            const now = new Date();
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const weekStart = weekAgo.toISOString().split('T')[0];
+            const weekEnd = now.toISOString().split('T')[0];
+
+            console.log(`Leaderboard period: ${weekStart} to ${weekEnd}`);
+
+            // ── Fetch merged game PRs from the last week ──
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 100,
+            });
+
+            const gamePRs = prs.filter(pr => {
+              const mergedAt = pr.merged_at ? new Date(pr.merged_at) : null;
+              const hasGameLabel = pr.labels.some(l => l.name === '🎮 game');
+              return mergedAt && mergedAt >= weekAgo && hasGameLabel;
+            });
+
+            console.log(`Found ${gamePRs.length} game PRs this week`);
+
+            // ── Fetch reactions for each game PR ──
+            const scores = [];
+
+            for (const pr of gamePRs) {
+              const { data: reactions } = await github.rest.reactions.listForIssue({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+              });
+
+              // Count thumbs up reactions (excluding the PR author)
+              const thumbsUp = reactions.filter(r =>
+                r.content === '+1' && r.user.login !== pr.user.login
+              ).length;
+
+              // Get game details from changed files
+              const { data: files } = await github.rest.pulls.listFiles({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+              });
+
+              const gameDir = files.find(f => f.filename.includes('metadata.json'));
+              let gameName = pr.title.replace(/^\[GAME\]\s*/i, '');
+
+              if (gameDir) {
+                try {
+                  const { data: content } = await github.rest.repos.getContent({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    path: gameDir.filename,
+                  });
+                  const metadata = JSON.parse(Buffer.from(content.content, 'base64').toString());
+                  gameName = metadata.name || gameName;
+                } catch (e) {
+                  console.log(`Could not read metadata for PR #${pr.number}`);
+                }
+              }
+
+              scores.push({
+                name: gameName,
+                author: pr.user.login,
+                votes: thumbsUp,
+                pr_number: pr.number,
+                pr_url: pr.html_url,
+              });
+            }
+
+            // ── Sort by votes ──
+            scores.sort((a, b) => b.votes - a.votes);
+            const top3 = scores.slice(0, 3);
+
+            console.log('Top 3 games:', JSON.stringify(top3, null, 2));
+
+            // ── Also calculate all-time top contributors ──
+            const { data: allPRs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              sort: 'created',
+              direction: 'desc',
+              per_page: 100,
+            });
+
+            const contributorMap = {};
+            for (const pr of allPRs) {
+              if (pr.merged_at) {
+                const login = pr.user.login;
+                contributorMap[login] = (contributorMap[login] || 0) + 1;
+              }
+            }
+
+            const topContributors = Object.entries(contributorMap)
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 10)
+              .map(([login, count]) => ({ login, contributions: count }));
+
+            // ── Build leaderboard markdown ──
+            const medals = ['🥇', '🥈', '🥉'];
+            let weeklySection = '';
+
+            if (top3.length > 0) {
+              weeklySection = `| Rank | Game | Author | Votes |\n|------|------|--------|-------|\n`;
+              top3.forEach((game, i) => {
+                weeklySection += `| ${medals[i]} | [${game.name}](${game.pr_url}) | [@${game.author}](https://github.com/${game.author}) | 👍 ${game.votes} |\n`;
+              });
+            } else {
+              weeklySection = '*No game submissions this week. Be the first to submit!*\n';
+            }
+
+            let contributorSection = '';
+            if (topContributors.length > 0) {
+              contributorSection = `| Rank | Contributor | Contributions |\n|------|------------|---------------|\n`;
+              topContributors.forEach((c, i) => {
+                const badge = i < 3 ? medals[i] : `${i + 1}.`;
+                contributorSection += `| ${badge} | [@${c.login}](https://github.com/${c.login}) | ${c.contributions} |\n`;
+              });
+            } else {
+              contributorSection = '*No contributions yet. Be the first!*\n';
+            }
+
+            // ── Save leaderboard data ──
+            const leaderboardData = {
+              updated_at: now.toISOString(),
+              week_start: weekStart,
+              week_end: weekEnd,
+              weekly_top3: top3,
+              all_time_contributors: topContributors,
+              total_game_prs_this_week: gamePRs.length,
+            };
+
+            fs.writeFileSync('leaderboard/data.json', JSON.stringify(leaderboardData, null, 2));
+
+            // ── Update README.md ──
+            let readme = fs.readFileSync('README.md', 'utf8');
+
+            // Replace weekly leaderboard section
+            const weeklyMarkerStart = '<!-- LEADERBOARD:WEEKLY:START -->';
+            const weeklyMarkerEnd = '<!-- LEADERBOARD:WEEKLY:END -->';
+            const weeklyRegex = new RegExp(`${weeklyMarkerStart}[\\s\\S]*?${weeklyMarkerEnd}`);
+
+            if (weeklyRegex.test(readme)) {
+              readme = readme.replace(weeklyRegex,
+                `${weeklyMarkerStart}\n### 🏆 Top Games This Week (${weekStart} — ${weekEnd})\n\n${weeklySection}\n${weeklyMarkerEnd}`
+              );
+            }
+
+            // Replace contributors section
+            const contribMarkerStart = '<!-- LEADERBOARD:CONTRIBUTORS:START -->';
+            const contribMarkerEnd = '<!-- LEADERBOARD:CONTRIBUTORS:END -->';
+            const contribRegex = new RegExp(`${contribMarkerStart}[\\s\\S]*?${contribMarkerEnd}`);
+
+            if (contribRegex.test(readme)) {
+              readme = readme.replace(contribRegex,
+                `${contribMarkerStart}\n### 🌟 Top Contributors (All Time)\n\n${contributorSection}\n${contribMarkerEnd}`
+              );
+            }
+
+            // Update last-updated timestamp
+            const tsMarkerStart = '<!-- LEADERBOARD:TIMESTAMP:START -->';
+            const tsMarkerEnd = '<!-- LEADERBOARD:TIMESTAMP:END -->';
+            const tsRegex = new RegExp(`${tsMarkerStart}[\\s\\S]*?${tsMarkerEnd}`);
+
+            if (tsRegex.test(readme)) {
+              readme = readme.replace(tsRegex,
+                `${tsMarkerStart}\n*Last updated: ${now.toUTCString()}*\n${tsMarkerEnd}`
+              );
+            }
+
+            fs.writeFileSync('README.md', readme);
+            console.log('README.md and leaderboard data updated successfully!');
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "Platform Bot"
+          git config user.email "bot@platform.dev"
+          git add README.md leaderboard/data.json
+          
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🏆 Update weekly leaderboard [skip ci]"
+            git push
+          fi

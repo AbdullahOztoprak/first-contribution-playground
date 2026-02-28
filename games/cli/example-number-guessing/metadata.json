@@ -1,0 +1,12 @@
+{
+  "name": "Number Guessing Game",
+  "author": "platform-bot",
+  "category": "cli",
+  "difficulty": "beginner",
+  "language": "python",
+  "version": "1.0.0",
+  "description": "A simple number guessing game where you guess a number between 1-100",
+  "tags": ["beginner", "python", "cli", "random"],
+  "created_at": "2026-02-28",
+  "entry_point": "game.py"
+}

@@ -1,0 +1,43 @@
+# ============================================================
+# Stale PR/Issue Management
+# Auto-close abandoned PRs and issues
+# ============================================================
+name: Stale Management
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Every Monday at midnight UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: Close Stale Items
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message: >
+            👋 This issue has been automatically marked as stale because it has not had
+            activity in the last 14 days. It will be closed in 7 days if no further
+            activity occurs. If this is still relevant, please comment to keep it open.
+          stale-pr-message: >
+            👋 This PR has been automatically marked as stale because it has not had
+            activity in the last 14 days. It will be closed in 7 days if no further
+            activity occurs. Please push new changes or comment to keep it open.
+          close-issue-message: >
+            🔒 This issue has been automatically closed due to inactivity.
+            Feel free to reopen it if it's still relevant.
+          close-pr-message: >
+            🔒 This PR has been automatically closed due to inactivity.
+            Feel free to reopen it when you're ready to continue.
+          days-before-stale: 14
+          days-before-close: 7
+          stale-issue-label: '⏰ stale'
+          stale-pr-label: '⏰ stale'
+          exempt-issue-labels: '📌 pinned,🔒 needs-security-review'
+          exempt-pr-labels: '📌 pinned,🔒 needs-security-review'

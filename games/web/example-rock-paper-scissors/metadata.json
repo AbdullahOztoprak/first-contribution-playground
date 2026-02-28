@@ -1,0 +1,12 @@
+{
+  "name": "Rock Paper Scissors",
+  "author": "platform-bot",
+  "category": "web",
+  "difficulty": "beginner",
+  "language": "html/css/javascript",
+  "version": "1.0.0",
+  "description": "Classic rock paper scissors game with a beautiful UI",
+  "tags": ["beginner", "javascript", "web", "html", "css"],
+  "created_at": "2026-02-28",
+  "entry_point": "index.html"
+}

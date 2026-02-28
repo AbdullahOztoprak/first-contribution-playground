@@ -1,0 +1,67 @@
+---
+name: 🌍 Translation Proposal
+description: Propose a new translation for documentation
+title: "[TRANSLATION] "
+labels: ["🌍 translation", "📝 proposal"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🌍 Translation Proposal
+        Thank you for helping us reach a global audience! Please fill out the details below.
+
+  - type: dropdown
+    id: document
+    attributes:
+      label: Document to Translate
+      description: Which document do you want to translate?
+      options:
+        - README.md
+        - CONTRIBUTING.md
+        - Beginner's Guide
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: input
+    id: language
+    attributes:
+      label: Target Language
+      description: What language will you translate to?
+      placeholder: "e.g., Turkish, Spanish, French, Japanese"
+    validations:
+      required: true
+
+  - type: input
+    id: language-code
+    attributes:
+      label: Language Code
+      description: The ISO language code
+      placeholder: "e.g., tr, es, fr, ja, zh-CN, pt-BR"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Translation Rules Confirmation
+      description: Please confirm you understand the rules
+      options:
+        - label: This will be a human translation (not pure machine translation)
+          required: true
+        - label: I will maintain the original document structure
+          required: true
+        - label: I will keep all links and references intact
+          required: true
+        - label: The file will use UTF-8 encoding
+          required: true
+        - label: I have read the [Contributing Guide](../CONTRIBUTING.md)
+          required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Any notes about your translation approach?
+      placeholder: Optional

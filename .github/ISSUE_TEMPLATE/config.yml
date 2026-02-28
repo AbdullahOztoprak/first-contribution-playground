@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/AbdullahOztoprak/Platform/discussions
+    about: Ask questions, share ideas, or get help from the community
+  - name: 📖 Beginner's Guide
+    url: https://github.com/AbdullahOztoprak/Platform/blob/main/docs/BEGINNER_GUIDE.md
+    about: New to open source? Start here!

@@ -1,0 +1,25 @@
+# ============================================================
+# CODEOWNERS - Automatic review assignment
+# ============================================================
+# These owners will be automatically requested for review
+# when someone opens a PR that modifies these paths.
+# ============================================================
+
+# Default - require review for all changes
+*                       @AbdullahOztoprak
+
+# Game submissions - require maintainer review
+/games/                 @AbdullahOztoprak
+
+# Translations - auto-merge handles these, but assign for visibility
+/translations/          @AbdullahOztoprak
+
+# Workflow changes - restrict to owner only
+/.github/workflows/     @AbdullahOztoprak
+/.github/ISSUE_TEMPLATE/ @AbdullahOztoprak
+
+# Critical files
+/README.md              @AbdullahOztoprak
+/CONTRIBUTING.md        @AbdullahOztoprak
+/SECURITY.md            @AbdullahOztoprak
+/CODE_OF_CONDUCT.md     @AbdullahOztoprak
