@@ -1,8 +1,13 @@
 {
-  "updated_at": "2026-02-28T12:00:00.000Z",
-  "week_start": "2026-02-21",
-  "week_end": "2026-02-28",
+  "updated_at": "2026-03-01T12:04:30.772Z",
+  "week_start": "2026-02-22",
+  "week_end": "2026-03-01",
   "weekly_top3": [],
-  "all_time_contributors": [],
+  "all_time_contributors": [
+    {
+      "login": "AbdullahOztoprak",
+      "contributions": 8
+    }
+  ],
   "total_game_prs_this_week": 0
 }
