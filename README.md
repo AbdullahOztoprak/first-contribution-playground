@@ -104,10 +104,9 @@ Platform/
 ## 🏆 Leaderboard
 
 <!-- LEADERBOARD:WEEKLY:START -->
-### 🏆 Top Games This Week (2026-03-01 — 2026-03-08)
+### 🏆 Top Games This Week
 
-*No game submissions this week. Be the first to submit!*
-
+*No game submissions this week. Be the first!*
 <!-- LEADERBOARD:WEEKLY:END -->
 
 <!-- LEADERBOARD:CONTRIBUTORS:START -->
@@ -120,7 +119,7 @@ Platform/
 <!-- LEADERBOARD:CONTRIBUTORS:END -->
 
 <!-- LEADERBOARD:TIMESTAMP:START -->
-*Last updated: Sun, 08 Mar 2026 12:04:35 GMT*
+*Last updated: Sun, 08 Mar 2026 12:06:01 GMT*
 <!-- LEADERBOARD:TIMESTAMP:END -->
 
 > 💡 **How voting works:** React with 👍 on game PRs to vote! Top 3 games are featured weekly.

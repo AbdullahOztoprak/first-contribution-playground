@@ -1,16 +1,24 @@
 {
   "version": 2,
-  "generated_at": "2026-03-01T12:05:55.918Z",
+  "generated_at": "2026-03-08T12:06:01.589Z",
   "current_week": {
-    "week_id": "2026-W9",
-    "week_start": "2026-02-22",
-    "week_end": "2026-03-01",
+    "week_id": "2026-W10",
+    "week_start": "2026-03-01",
+    "week_end": "2026-03-08",
     "entries": [],
     "total_votes": 0,
     "total_games": 0
   },
   "all_time_top": [],
   "history": [
+    {
+      "week_id": "2026-W9",
+      "week_start": "2026-02-22",
+      "week_end": "2026-03-01",
+      "entries": [],
+      "total_votes": 0,
+      "total_games": 0
+    },
     {
       "week_id": "2026-W10",
       "week_start": "2026-02-23",
