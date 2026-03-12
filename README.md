@@ -1,36 +1,37 @@
 <h1 align="center">🎮 Platform</h1>
 <p align="center">
-  <strong>The open-source playground for junior developers</strong>
+  <strong>Make your first open-source contribution by submitting a small game</strong>
 </p>
 <p align="center">
-  Submit games · Earn XP · Collect badges · Build your portfolio
+  Fork → Build a game → Open a PR → Get it reviewed and merged
 </p>
 <p align="center">
   <a href="https://abdullahoztoprak.github.io/Platform">🌐 Live Site</a> •
   <a href="#-quick-start">Quick Start</a> •
-  <a href="#-how-to-contribute">Contribute</a> •
-  <a href="#-gamification">Gamification</a> •
-  <a href="CONTRIBUTING.md">Guidelines</a>
+  <a href="CONTRIBUTING.md">Guidelines</a> •
+  <a href="docs/BEGINNER_GUIDE.md">Beginner's Guide</a> •
+  <a href="docs/GAME_IDEAS.md">Game Ideas</a>
 </p>
 <p align="center">
   <img src="https://img.shields.io/github/stars/AbdullahOztoprak/Platform?style=flat-square" alt="Stars">
   <img src="https://img.shields.io/github/forks/AbdullahOztoprak/Platform?style=flat-square" alt="Forks">
   <img src="https://img.shields.io/github/contributors/AbdullahOztoprak/Platform?style=flat-square" alt="Contributors">
+  <img src="https://img.shields.io/github/issues/AbdullahOztoprak/Platform?style=flat-square&label=open%20issues" alt="Issues">
 </p>
 
 ---
 
 ## 🚀 What is Platform?
 
-**Platform** is a GitHub-based community where junior developers can make their first open-source contributions by:
+**Platform** is an open-source playground where junior developers learn real-world open-source workflows by building and submitting small games.
 
-- 🎮 **Submitting simple games** — CLI, web, or algorithm games
-- 🌍 **Contributing translations** — Help us reach a global audience
-- 🏆 **Competing on leaderboards** — Community votes rank the best games weekly
-- 📊 **Building GitHub history** — Every merged PR appears on your profile
-- 🎓 **Learning real workflows** — PRs, code review, CI/CD, and automation
+- 🎮 **Submit a game** — CLI, web, or algorithm. Max 5 files, max 500 lines.
+- 🌍 **Contribute translations** — Help make the docs multilingual.
+- 📊 **Build your GitHub profile** — Every merged PR is real contribution history.
+- 🎓 **Learn real workflows** — Forks, branches, PRs, code review, CI/CD.
+- 🏆 **Earn XP and badges** — Gamification rewards active contributors.
 
-> **Every expert was once a beginner.** This is where your open-source journey starts.
+> **This project is early-stage and actively looking for first contributors.** If you've never made an open-source PR before, this is a great place to start.
 
 ---
 
@@ -39,24 +40,17 @@
 ```
 Platform/
 ├── games/
-│   ├── cli/              # Terminal-based games
-│   ├── web/              # Browser-based games
-│   └── algorithm/        # Algorithm puzzles & challenges
-├── translations/
-│   ├── README/           # README translations
-│   ├── CONTRIBUTING/     # Contributing guide translations
-│   └── guides/           # Guide translations
-├── data/                 # TypeScript data schemas
-├── scripts/              # Build & validation scripts
-├── web/                  # Astro web platform
-│   ├── src/pages/        # Pages (games, leaderboard, profiles)
-│   └── src/components/   # Reusable UI components
-├── docs/                 # Documentation & guides
-├── .github/
-│   └── workflows/        # CI/CD automation (4 workflows)
-├── CONTRIBUTING.md        # Contribution guidelines
-├── CODE_OF_CONDUCT.md     # Code of conduct
-└── README.md              # You are here!
+│   ├── cli/              # Terminal-based games (Python)
+│   └── web/              # Browser-based games (HTML/CSS/JS)
+├── data/                 # TypeScript data schemas & generated JSON
+├── scripts/              # Build & validation scripts (TypeScript)
+├── web/                  # Astro static site (deployed to GitHub Pages)
+├── docs/                 # Guides for contributors
+├── translations/         # Translated docs (help wanted!)
+├── .github/workflows/    # CI/CD automation (4 workflows)
+├── CONTRIBUTING.md
+├── SECURITY.md
+└── CODE_OF_CONDUCT.md
 ```
 
 ---
@@ -106,7 +100,7 @@ Platform/
 <!-- LEADERBOARD:WEEKLY:START -->
 ### 🏆 Top Games This Week
 
-*No game submissions this week. Be the first!*
+*No game submissions this week yet — [be the first!](../../issues/new?template=game-submission.yml)*
 <!-- LEADERBOARD:WEEKLY:END -->
 
 <!-- LEADERBOARD:CONTRIBUTORS:START -->
@@ -126,24 +120,9 @@ Platform/
 
 ---
 
-## 🏅 Hall of Fame
-
-Special recognition for outstanding contributors:
-
-| Badge | Criteria | Recipients |
-|-------|----------|------------|
-| 🥇 **First Contributor** | First merged PR | — |
-| 🎮 **Game Master** | 5+ games submitted | — |
-| 🌍 **Translation Champion** | 3+ translations | — |
-| ⭐ **Weekly Champion** | #1 on weekly leaderboard | — |
-| 🔥 **Streak Hero** | 4 consecutive weekly contributions | — |
-| 🐛 **Bug Hunter** | Found & reported a significant bug | — |
-
----
-
 ## 🤖 Automation
 
-This project is **fully automated** with 4 consolidated GitHub Actions:
+This project uses **4 GitHub Actions** workflows:
 
 | Workflow | Trigger | What it Does |
 |----------|---------|--------------|
@@ -207,15 +186,16 @@ This project is **fully automated** with 4 consolidated GitHub Actions:
 
 - 📋 [Contributing Guide](CONTRIBUTING.md) — Rules, templates, and process
 - 📖 [Beginner's Guide](docs/BEGINNER_GUIDE.md) — Step-by-step for first-timers
+- � [Game Ideas](docs/GAME_IDEAS.md) — Don't know what to build? Start here
+- 🗺️ [Roadmap](docs/ROADMAP.md) — What's done and what's planned
 - 🔒 [Security Policy](SECURITY.md) — How we keep submissions safe
 - 📜 [Code of Conduct](CODE_OF_CONDUCT.md) — Community standards
-- 🗺️ [Roadmap](docs/ROADMAP.md) — Future plans for the platform
 
 ---
 
 ## 🛡️ Security
 
-We take security seriously. Game submissions are:
+Game submissions are automatically scanned before they can be merged:
 
 - ✅ Scanned for dangerous functions (`eval`, `exec`, `subprocess`, etc.)
 - ✅ Checked for network access attempts
@@ -223,30 +203,53 @@ We take security seriously. Game submissions are:
 - ✅ Limited to 5 files and 500 lines per submission
 - ✅ Reviewed by maintainers before merging
 
-See our full [Security Policy](SECURITY.md) for details.
+See the full [Security Policy](SECURITY.md) for details.
 
 ---
 
 ## 🗺️ Roadmap
 
-- [x] Core repository structure
-- [x] GitHub Actions automation
-- [x] Gamification & leaderboard system
-- [x] Anti-spam & security protection
-- [ ] Web frontend for browsing games
-- [ ] Contributor profiles & badges
-- [ ] API for game metadata
-- [ ] Hosted game playground (try games in browser)
-- [ ] Monthly community challenges
-- [ ] Integration with Discord/Slack
+### Shipped
+- [x] Core repository structure & contribution guidelines
+- [x] GitHub Actions CI/CD (validation, deploy, community, leaderboard)
+- [x] Gamification system (XP, badges, levels, weekly leaderboard)
+- [x] Security scanning & anti-spam protection
+- [x] Astro web frontend with game catalog, leaderboard, contributor profiles
+- [x] Auto-deploy to GitHub Pages on merge
+- [x] Example games (CLI + Web)
+- [x] Beginner's guide & documentation
+
+### Next Up
+- [ ] Grow to 10+ community-submitted games
+- [ ] First community translations
+- [ ] Monthly themed game challenges
+- [ ] Embed web games playable in the browser
+- [ ] Community Discord/Slack channel
+
+### Future
+- [ ] Python CLI games playable via WebAssembly (Pyodide)
+- [ ] Contributor dashboard with shareable profile URL
+- [ ] Integration with coding bootcamps
+- [ ] Annual community awards
 
 See the full [Roadmap](docs/ROADMAP.md) for details.
 
 ---
 
+## 🤝 Contributing
+
+We welcome contributions of all kinds! This project is designed for first-time open-source contributors.
+
+**Not sure where to start?**
+- Browse [open issues](https://github.com/AbdullahOztoprak/Platform/issues) for ideas
+- Check [Game Ideas](docs/GAME_IDEAS.md) for game inspiration
+- Read the [Beginner's Guide](docs/BEGINNER_GUIDE.md) for a step-by-step walkthrough
+
+---
+
 ## ⭐ Star This Repo
 
-If you find this project useful, please give it a ⭐ star! It helps others discover the platform.
+If you think this project is a good idea, give it a ⭐ star. It helps others find it.
 
 ---
 
