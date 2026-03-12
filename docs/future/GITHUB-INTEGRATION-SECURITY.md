@@ -1,7 +1,10 @@
 # GitHub Integration Security Architecture
 
-> Production-Grade OAuth & PR Pipeline for Browser IDE  
-> Senior Backend Security Engineering Document
+> **⚠️ NOT BUILT YET — This is a design document for a potential future feature.**  
+> Nothing described below exists in the current codebase.
+
+> OAuth & PR Pipeline for Browser IDE  
+> Design Exploration Document
 
 ---
 

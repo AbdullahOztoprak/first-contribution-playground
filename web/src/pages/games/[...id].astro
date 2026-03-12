@@ -1,10 +1,11 @@
 ---
 /**
- * Individual Game Detail Page
+ * Individual Game Detail Page (catch-all)
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const { id } = Astro.params;
+const rawId = Astro.params.id;
+const id = Array.isArray(rawId) ? rawId.join('/') : rawId;
 
 let game: any = null;
 

@@ -1,7 +1,10 @@
 # Async PR Processing Pipeline
 
-> Production-Grade Queue-Based Architecture for Serverless  
-> Senior Distributed Systems Engineering Document
+> **⚠️ NOT BUILT YET — This is a design document for a potential future feature.**  
+> Nothing described below exists in the current codebase.
+
+> Queue-Based Architecture for Serverless PR Processing  
+> Design Exploration Document
 
 ---
 

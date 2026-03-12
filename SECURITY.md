@@ -69,9 +69,10 @@ Every code file is scanned for dangerous patterns:
 If you discover a security vulnerability in the platform automation:
 
 1. **DO NOT** create a public issue
-2. Email us at **[INSERT EMAIL]** with details
-3. Include steps to reproduce, if possible
-4. We will respond within 48 hours
+2. Use [GitHub Security Advisories](https://github.com/AbdullahOztoprak/Platform/security/advisories/new) to report privately
+3. Alternatively, contact the maintainer via [GitHub Discussions (Security)](https://github.com/AbdullahOztoprak/Platform/discussions) with a private message
+4. Include steps to reproduce, if possible
+5. We will respond within 48 hours
 
 ### Responsible Disclosure
 
