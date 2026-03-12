@@ -1,7 +1,10 @@
 # Platform Browser IDE — Technical Architecture
 
+> **⚠️ NOT BUILT YET — This is a design document for a potential future feature.**  
+> Nothing described below exists in the current codebase.
+
 > A lightweight VS Code-like experience for submitting games directly from the browser  
-> Senior Full-Stack Architecture Document
+> Design Exploration Document
 
 ---
 
