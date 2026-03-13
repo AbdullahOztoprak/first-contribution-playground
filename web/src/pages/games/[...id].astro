@@ -1,17 +1,20 @@
 ---
 /**
- * Individual Game Detail Page
+ * Individual Game Detail Page (catch-all id)
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const { id } = Astro.params;
+const rawId = Astro.params.id;
+const id = Array.isArray(rawId) ? rawId.join('/') : rawId;
 
-let game: any = null;
+let game: any = Astro.props?.game ?? null;
 
-try {
-  const gamesData = await import('../../../../data/games.json');
-  game = (gamesData.default?.games || gamesData.games)?.find((g: any) => g.id === id);
-} catch (e) {}
+if (!game) {
+  try {
+    const gamesData = await import('../../../../data/games.json');
+    game = (gamesData.default?.games || gamesData.games)?.find((g: any) => g.id === id);
+  } catch (e) {}
+}
 
 if (!game) {
   return Astro.redirect('/Platform/games');
