@@ -129,6 +129,26 @@ We accept three types of games:
 
 ---
 
+## Generated Data Files (Important)
+
+The repository generates a set of JSON files from the source-of-truth content (the `games/`, `translations/`, and other content directories). These generated files are:
+
+- `data/games.json`
+- `data/contributors.json`
+- `data/leaderboard.json`
+
+Please do NOT edit or commit these generated files in feature branches. Any pull request that includes changes to these files will fail an automated check and must be updated to remove those changes. The project provides automation that regenerates and commits the canonical data on the `main` branch.
+
+If you need to run the data generation locally for testing, run:
+
+```bash
+npm run build:data
+```
+
+This will update the files in your working tree for local testing only — do not commit those changes. Keep your PRs limited to source files under `games/`, `translations/`, `docs/`, etc.
+
+---
+
 ## Getting Help
 
 - 💬 Open a [Discussion](../../discussions) for questions
