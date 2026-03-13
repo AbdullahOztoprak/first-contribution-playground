@@ -1,0 +1,14 @@
+{
+  "id": "cli/dice-roller",
+  "name": "Dice Roller",
+  "description": "A simple CLI game that simulates rolling a six-sided dice.",
+  "author": "AbdullahOztoprak",
+  "language": "python",
+  "category": "cli",
+  "difficulty": "beginner",
+  "tags": ["cli", "python", "beginner", "random"],
+  "created_at": "2026-03-13",
+  "entry_point": "game.py",
+  "path": "games/cli/dice-roller",
+  "votes": 0
+}

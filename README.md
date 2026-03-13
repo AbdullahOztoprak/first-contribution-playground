@@ -152,6 +152,10 @@ This project is **fully automated** with 4 consolidated GitHub Actions:
 | **Community** | PR/Issue | Welcome bot, anti-spam, stale management |
 | **Leaderboard** | Weekly (Sunday) | Calculates XP-weighted rankings |
 
+**Generated data files**
+
+The canonical generated data files (`data/games.json`, `data/contributors.json`, `data/leaderboard.json`) are produced from the source-of-truth content and are updated automatically on the `main` branch by automation. Contributors should not commit changes to these files in feature branches — pull requests that touch these files will be blocked by automation checks. If you need to preview generated data locally, run `npm run build:data` and do not commit the results.
+
 ---
 
 ## 🎮 Gamification System
