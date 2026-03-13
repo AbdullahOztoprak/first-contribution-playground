@@ -15,6 +15,7 @@ interface Props {
 
 const { id, name, author, category, difficulty, language, description, votes = 0 } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
+const normalizedBase = (baseUrl || '').replace(/\/+$/, '');
 
 const categoryIcons = { cli: '💻', web: '🌐', algorithm: '🧮' };
 const difficultyColors = {
@@ -24,7 +25,7 @@ const difficultyColors = {
 };
 ---
 
-<a href={`${baseUrl}games/${id}`} class="block group">
+<a href={`${normalizedBase}/games/${id}`} class="block group">
   <div class="bg-dark-card border border-dark-border rounded-xl p-6 hover:border-primary-500/50 transition-all hover:shadow-lg hover:shadow-primary-500/10">
     <div class="flex items-start justify-between mb-4">
       <div class="flex items-center gap-2">

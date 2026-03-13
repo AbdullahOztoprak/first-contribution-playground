@@ -21,6 +21,7 @@ if (!game) {
 }
 
 const baseUrl = import.meta.env.BASE_URL;
+const normalizedBase = (baseUrl || '').replace(/\/+$/, '');
 
 const categoryIcons: Record<string, string> = { cli: '💻', web: '🌐', algorithm: '🧮' };
 const difficultyColors: Record<string, string> = {
@@ -46,7 +47,7 @@ export async function getStaticPaths() {
   <section class="py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Back Button -->
-      <a href={`${baseUrl}games`} class="inline-flex items-center gap-2 text-dark-muted hover:text-white mb-8">
+      <a href={`${normalizedBase}/games`} class="inline-flex items-center gap-2 text-dark-muted hover:text-white mb-8">
         ← Back to Games
       </a>
 
@@ -63,7 +64,7 @@ export async function getStaticPaths() {
                   alt={game.author}
                   class="w-6 h-6 rounded-full"
                 />
-                <a href={`${baseUrl}contributor/${game.author}`} class="text-primary-400 hover:text-primary-300">
+                <a href={`${normalizedBase}/contributor/${game.author}`} class="text-primary-400 hover:text-primary-300">
                   @{game.author}
                 </a>
               </div>

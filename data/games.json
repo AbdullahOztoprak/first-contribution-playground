@@ -1,18 +1,38 @@
 {
   "version": 1,
-  "generated_at": "2026-03-13T12:53:19.208Z",
-  "total_games": 2,
+  "generated_at": "2026-03-13T13:12:27.172Z",
+  "total_games": 3,
   "by_category": {
-    "cli": 1,
+    "cli": 2,
     "web": 1,
     "algorithm": 0
   },
   "by_difficulty": {
-    "beginner": 2,
+    "beginner": 3,
     "intermediate": 0,
     "advanced": 0
   },
   "games": [
+    {
+      "id": "cli/dice-roller",
+      "name": "Dice Roller",
+      "author": "AbdullahOztoprak",
+      "category": "cli",
+      "difficulty": "beginner",
+      "language": "python",
+      "version": "1.0.0",
+      "description": "A simple CLI game that simulates rolling a six-sided dice.",
+      "tags": [
+        "cli",
+        "python",
+        "beginner",
+        "random"
+      ],
+      "created_at": "2026-03-13",
+      "entry_point": "game.py",
+      "path": "games/cli/dice-roller",
+      "votes": 0
+    },
     {
       "id": "cli/example-number-guessing",
       "name": "Number Guessing Game",

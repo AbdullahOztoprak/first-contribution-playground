@@ -21,6 +21,7 @@ interface Props {
 
 const { username, avatar_url, rank, xp, level, games_submitted, badges } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
+const normalizedBase = (baseUrl || '').replace(/\/+$/, '');
 
 const rankColors: Record<number, string> = {
   1: 'from-yellow-400 to-amber-500',
@@ -29,7 +30,7 @@ const rankColors: Record<number, string> = {
 };
 ---
 
-<a href={`${baseUrl}contributor/${username}`} class="block group">
+<a href={`${normalizedBase}/contributor/${username}`} class="block group">
   <div class="bg-dark-card border border-dark-border rounded-xl p-6 hover:border-primary-500/50 transition-all">
     <div class="flex items-center gap-4 mb-4">
       {rank <= 3 ? (

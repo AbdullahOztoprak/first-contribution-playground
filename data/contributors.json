@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-03-13T12:53:19.208Z",
-  "total_contributors": 1,
+  "generated_at": "2026-03-13T13:12:27.172Z",
+  "total_contributors": 2,
   "contributors": [
     {
       "username": "platform-bot",
@@ -32,6 +32,36 @@
       "games": [
         "cli/example-number-guessing",
         "web/example-rock-paper-scissors"
+      ]
+    },
+    {
+      "username": "AbdullahOztoprak",
+      "avatar_url": "https://github.com/AbdullahOztoprak.png",
+      "profile_url": "https://github.com/AbdullahOztoprak",
+      "total_contributions": 1,
+      "games_submitted": 1,
+      "translations_submitted": 0,
+      "issues_opened": 0,
+      "reviews_given": 0,
+      "xp": 100,
+      "level": 2,
+      "rank": 2,
+      "badges": [
+        {
+          "id": "first-contribution",
+          "name": "First Steps",
+          "description": "Made your first contribution",
+          "icon": "🎉",
+          "rarity": "common",
+          "earned_at": "2026-03-13"
+        }
+      ],
+      "votes_received": 0,
+      "votes_given": 0,
+      "first_contribution": "2026-03-13",
+      "last_contribution": "2026-03-13",
+      "games": [
+        "cli/dice-roller"
       ]
     }
   ]

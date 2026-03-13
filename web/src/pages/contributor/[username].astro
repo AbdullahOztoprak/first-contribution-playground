@@ -27,6 +27,7 @@ if (!contributor) {
 }
 
 const baseUrl = import.meta.env.BASE_URL;
+const normalizedBase = (baseUrl || '').replace(/\/+$/, '');
 
 // XP progress to next level
 const levelThresholds = [0, 100, 300, 600, 1000, 2000, 5000, 10000];
@@ -61,7 +62,7 @@ export async function getStaticPaths() {
   <section class="py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Back Button -->
-      <a href={`${baseUrl}contributors`} class="inline-flex items-center gap-2 text-dark-muted hover:text-white mb-8">
+      <a href={`${normalizedBase}/contributors`} class="inline-flex items-center gap-2 text-dark-muted hover:text-white mb-8">
         ← Back to Contributors
       </a>
 
@@ -145,7 +146,7 @@ export async function getStaticPaths() {
           <h2 class="text-xl font-bold mb-4">🎮 Games by @{contributor.username}</h2>
           <div class="space-y-4">
             {allGames.map(game => (
-              <a href={`${baseUrl}games/${game.id}`} class="block p-4 bg-dark-bg rounded-lg hover:border-primary-500/50 border border-dark-border transition">
+              <a href={`${normalizedBase}/games/${game.id}`} class="block p-4 bg-dark-bg rounded-lg hover:border-primary-500/50 border border-dark-border transition">
                 <div class="flex items-center justify-between">
                   <div>
                     <h3 class="font-medium">{game.name}</h3>
