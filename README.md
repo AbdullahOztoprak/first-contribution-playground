@@ -46,7 +46,7 @@ Platform/
 │   ├── README/           # README translations
 │   ├── CONTRIBUTING/     # Contributing guide translations
 │   └── guides/           # Guide translations
-├── data/                 # TypeScript data schemas
+├── data/                 # Generated data + schema.ts
 ├── scripts/              # Build & validation scripts
 ├── web/                  # Astro web platform
 │   ├── src/pages/        # Pages (games, leaderboard, profiles)
@@ -82,29 +82,23 @@ Platform/
 3. **Add your translation** in `translations/` with format `FILENAME.LANG_CODE.md`
 4. **Open a PR** using the [Translation template](.github/PULL_REQUEST_TEMPLATE/translation_submission.md)
 5. **Auto-merge** — if all checks pass, translations merge automatically!
-
 ---
 
 ## 🎮 Featured Games
 
 ### CLI Games
-| Game | Author | Language | Difficulty |
 |------|--------|----------|------------|
 | [Number Guessing](games/cli/example-number-guessing/) | @platform-bot | Python | Beginner |
 
-### Web Games
 | Game | Author | Language | Difficulty |
 |------|--------|----------|------------|
 | [Rock Paper Scissors](games/web/example-rock-paper-scissors/) | @platform-bot | HTML/CSS/JS | Beginner |
-
-➡️ *Want to see your game here? [Submit one now!](../../issues/new?template=game-submission.yml)*
+➡️ *Want to see your game here? [Submit one now!](https://github.com/AbdullahOztoprak/Platform/issues/new?template=game-submission.yml)*
 
 ---
-
 ## 🏆 Leaderboard
 
 <!-- LEADERBOARD:WEEKLY:START -->
-### 🏆 Top Games This Week
 
 *No game submissions this week. Be the first!*
 <!-- LEADERBOARD:WEEKLY:END -->
@@ -129,7 +123,6 @@ Platform/
 ## 🏅 Hall of Fame
 
 Special recognition for outstanding contributors:
-
 | Badge | Criteria | Recipients |
 |-------|----------|------------|
 | 🥇 **First Contributor** | First merged PR | — |
@@ -203,7 +196,7 @@ The canonical generated data files (`data/games.json`, `data/contributors.json`,
 | 🇯🇵 Japanese | ❌ Help wanted! | ❌ | ❌ |
 | 🇧🇷 Portuguese | ❌ Help wanted! | ❌ | ❌ |
 
-➡️ *Pick a language and [start translating!](../../issues/new?template=translation.yml)*
+➡️ *Pick a language and [start translating!](https://github.com/AbdullahOztoprak/Platform/issues/new?template=translation.yml)*
 
 ---
 
@@ -237,8 +230,8 @@ See our full [Security Policy](SECURITY.md) for details.
 - [x] GitHub Actions automation
 - [x] Gamification & leaderboard system
 - [x] Anti-spam & security protection
-- [ ] Web frontend for browsing games
-- [ ] Contributor profiles & badges
+- [x] Web frontend for browsing games
+- [ ] Contributor profiles & badges (partial)
 - [ ] API for game metadata
 - [ ] Hosted game playground (try games in browser)
 - [ ] Monthly community challenges

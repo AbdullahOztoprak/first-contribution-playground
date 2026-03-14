@@ -120,6 +120,18 @@ We accept three types of games:
 
 ---
 
+## If CI fails
+
+Short checklist when your pull request fails automated checks:
+
+- **Did you commit generated data?** — Remove `data/*.json` from your branch; these are generated on `main`. Locally use `npm run build:data` for preview only.
+- **Metadata validation errors** — Check `metadata.json` keys: `name`, `author`, `category`, `difficulty`, `language`, `entry_point`. Run `npm run validate` to see validation output.
+- **File/line limits** — Ensure your submission has ≤ 5 files and ≤ 500 total lines.
+- **Security restrictions** — Remove any usage of `eval`, `exec`, subprocess/network calls or access beyond the game folder.
+
+If you're unsure, paste the CI failure output into a Discussion or open an Issue (link in Getting Help). A maintainer will help triage.
+
+
 ## Gamification & Leaderboard
 
 - Community members can **vote** on game submissions using 👍 reactions on the PR
@@ -153,6 +165,8 @@ This will update the files in your working tree for local testing only — do no
 
 - 💬 Open a [Discussion](../../discussions) for questions
 - 🐛 Use [Issue Templates](../../issues/new/choose) for bugs or requests
+ - 💬 Open a [Discussion](https://github.com/AbdullahOztoprak/Platform/discussions) for questions
+ - 🐛 Use [Issue Templates](https://github.com/AbdullahOztoprak/Platform/issues/new/choose) for bugs or requests
 - 📖 Read the [Beginner's Guide](docs/BEGINNER_GUIDE.md) for step-by-step instructions
 
 ---

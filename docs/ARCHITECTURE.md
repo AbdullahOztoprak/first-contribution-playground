@@ -155,7 +155,7 @@ Platform/
 │       │   ├── index.astro
 │       │   ├── games/
 │       │   │   ├── index.astro
-│       │   │   └── [id].astro
+│       │   │   └── [...id].astro
 │       │   ├── leaderboard/
 │       │   │   └── index.astro
 │       │   ├── contributors/
