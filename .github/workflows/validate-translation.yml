@@ -5,10 +5,7 @@
 name: Validate Translation
 
 on:
-  pull_request:
-    types: [opened, synchronize]
-    paths:
-      - 'translations/**'
+  workflow_dispatch:
 
 permissions:
   pull-requests: write

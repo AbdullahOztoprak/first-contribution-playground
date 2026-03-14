@@ -5,10 +5,7 @@
 name: Validate Game Submission
 
 on:
-  pull_request:
-    types: [opened, synchronize]
-    paths:
-      - 'games/**'
+  workflow_dispatch:
 
 permissions:
   pull-requests: write
