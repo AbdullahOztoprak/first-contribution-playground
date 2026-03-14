@@ -28,8 +28,9 @@ This document outlines the vision and future plans for Platform.
 ### 📋 Tasks
 - [ ] Add monthly challenge system (themed game jams)
 - [ ] Create Discord/Slack community integration
-- [ ] Build contributor profiles page (auto-generated from PRs)
+ - [x] Build contributor profiles page (auto-generated from PRs)
 - [ ] Add "good first issue" auto-labeling for easy tasks
+
 - [ ] Create video tutorials for first-time contributors
 - [ ] Add game categories: educational, multiplayer-local, retro
 - [ ] Implement achievement/badge system in README
@@ -42,6 +43,8 @@ This document outlines the vision and future plans for Platform.
 ### 🎯 Goals
 - Launch a web frontend where users can browse and play games
 - Create an API layer for game metadata
+
+> Note: Basic static frontend (browsing, game pages) and contributor profile pages are live in v1.0. Items below describe planned expansions (play-in-browser, APIs, richer dashboards).
 
 ### 📋 Tasks
 - [ ] **API Development**
