@@ -2,6 +2,8 @@
 /**
  * Game Card Component
  */
+import { withBase } from '../utils/url';
+
 interface Props {
   id: string;
   name: string;
@@ -24,7 +26,7 @@ const difficultyColors = {
 };
 ---
 
-<a href={`${baseUrl}games/${id}`} class="block group">
+<a href={withBase(baseUrl, `/games/${id}`)} class="block group">
   <div class="bg-dark-card border border-dark-border rounded-xl p-6 hover:border-primary-500/50 transition-all hover:shadow-lg hover:shadow-primary-500/10">
     <div class="flex items-start justify-between mb-4">
       <div class="flex items-center gap-2">

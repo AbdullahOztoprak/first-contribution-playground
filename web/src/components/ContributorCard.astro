@@ -9,6 +9,8 @@ interface Badge {
   rarity: string;
 }
 
+import { withBase } from '../utils/url';
+
 interface Props {
   username: string;
   avatar_url: string;
@@ -29,7 +31,7 @@ const rankColors: Record<number, string> = {
 };
 ---
 
-<a href={`${baseUrl}contributor/${username}`} class="block group">
+<a href={withBase(baseUrl, `/contributor/${username}`)} class="block group">
   <div class="bg-dark-card border border-dark-border rounded-xl p-6 hover:border-primary-500/50 transition-all">
     <div class="flex items-center gap-4 mb-4">
       {rank <= 3 ? (
