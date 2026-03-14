@@ -37,6 +37,23 @@ const ROOT = path.resolve(__dirname, '..');
 const GAMES_DIR = path.join(ROOT, 'games');
 const DATA_DIR = path.join(ROOT, 'data');
 
+function loadExistingGames(): Map<string, Partial<GameMetadata>> {
+  const existing = new Map<string, Partial<GameMetadata>>();
+  const existingPath = path.join(DATA_DIR, 'games.json');
+  if (!fs.existsSync(existingPath)) return existing;
+  try {
+    const raw = fs.readFileSync(existingPath, 'utf-8');
+    const parsed = JSON.parse(raw);
+    const list = parsed?.games || [];
+    for (const g of list) {
+      if (g?.id) existing.set(g.id, g);
+    }
+  } catch (e) {
+    console.warn('⚠️ Could not read existing games.json; votes will be reset');
+  }
+  return existing;
+}
+
 // ============================================================
 // GAME INDEXING
 // ============================================================
@@ -44,6 +61,7 @@ const DATA_DIR = path.join(ROOT, 'data');
 function scanGames(): GameMetadata[] {
   const games: GameMetadata[] = [];
   const categories = ['cli', 'web', 'algorithm'] as const;
+  const existingGames = loadExistingGames();
 
   for (const category of categories) {
     const categoryPath = path.join(GAMES_DIR, category);
@@ -65,6 +83,7 @@ function scanGames(): GameMetadata[] {
         const raw = fs.readFileSync(metadataPath, 'utf-8');
         const metadata = JSON.parse(raw) as Partial<GameMetadata>;
 
+        const existing = existingGames.get(`${category}/${folder.name}`) || {};
         const game: GameMetadata = {
           id: `${category}/${folder.name}`,
           name: metadata.name || folder.name,
@@ -78,7 +97,10 @@ function scanGames(): GameMetadata[] {
           created_at: metadata.created_at || new Date().toISOString().split('T')[0],
           entry_point: metadata.entry_point || 'index.html',
           path: `games/${category}/${folder.name}`,
-          votes: 0, // Will be populated from leaderboard data
+          votes: existing.votes || 0,
+          vote_breakdown: existing.vote_breakdown || { thumbs_up: 0, rocket: 0, fire: 0 },
+          pr_number: existing.pr_number,
+          merged_at: existing.merged_at,
         };
 
         // Generate play URL for web games
@@ -250,6 +272,7 @@ function buildLeaderboard(games: GameMetadata[]): LeaderboardData {
       avatar_url: `https://github.com/${g.author}.png`,
       game_id: g.id,
       game_name: g.name,
+      difficulty: g.difficulty,
       votes: g.votes || 0,
       pr_number: g.pr_number || 0,
       difficulty_multiplier: DIFFICULTY_MULTIPLIERS[g.difficulty],
