@@ -5,9 +5,7 @@
 name: Update Leaderboard
 
 on:
-  schedule:
-    - cron: '0 12 * * 0'  # Every Sunday at noon UTC
-  workflow_dispatch:       # Manual trigger for testing
+  workflow_dispatch:
 
 permissions:
   contents: write

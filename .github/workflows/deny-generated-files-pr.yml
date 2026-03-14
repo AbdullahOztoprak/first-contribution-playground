@@ -24,4 +24,4 @@ jobs:
       - name: Check for generated data changes
         env:
           BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
-        run: node scripts/check-generated-changes.ts
+        run: npx tsx scripts/check-generated-changes.ts
