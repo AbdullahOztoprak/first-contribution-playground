@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-14T09:30:10.579Z",
+  "generated_at": "2026-03-14T09:40:42.170Z",
   "total_games": 3,
   "by_category": {
     "cli": 2,
@@ -31,7 +31,12 @@
       "created_at": "2026-03-13",
       "entry_point": "game.py",
       "path": "games/cli/dice-roller",
-      "votes": 0
+      "votes": 0,
+      "vote_breakdown": {
+        "thumbs_up": 0,
+        "rocket": 0,
+        "fire": 0
+      }
     },
     {
       "id": "cli/example-number-guessing",
@@ -51,7 +56,12 @@
       "created_at": "2026-02-28",
       "entry_point": "game.py",
       "path": "games/cli/example-number-guessing",
-      "votes": 0
+      "votes": 0,
+      "vote_breakdown": {
+        "thumbs_up": 0,
+        "rocket": 0,
+        "fire": 0
+      }
     },
     {
       "id": "web/example-rock-paper-scissors",
@@ -73,6 +83,11 @@
       "entry_point": "index.html",
       "path": "games/web/example-rock-paper-scissors",
       "votes": 0,
+      "vote_breakdown": {
+        "thumbs_up": 0,
+        "rocket": 0,
+        "fire": 0
+      },
       "play_url": "/play/web/example-rock-paper-scissors"
     }
   ]
