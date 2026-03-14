@@ -25,6 +25,11 @@ export interface GameMetadata {
   pr_number?: number;
   merged_at?: string;
   votes?: number;
+  vote_breakdown?: {
+    thumbs_up: number;
+    rocket: number;
+    fire: number;
+  };
   play_url?: string;             // For web games
 }
 
@@ -213,6 +218,7 @@ export interface LeaderboardEntry {
   avatar_url: string;
   game_id: string;
   game_name: string;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
   votes: number;
   pr_number: number;
   difficulty_multiplier: number;

@@ -51,3 +51,6 @@ htmlcov/
 *.min.js
 *.min.css
 *.map
+
+# Generated data (do not commit generated JSON files)
+data/*.json
