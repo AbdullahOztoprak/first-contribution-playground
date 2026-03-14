@@ -3,6 +3,7 @@
  * Individual Contributor Profile Page
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../utils/url';
 
 // Get contributor from URL
 const { username } = Astro.params;
@@ -61,7 +62,7 @@ export async function getStaticPaths() {
   <section class="py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Back Button -->
-      <a href={`${baseUrl}contributors`} class="inline-flex items-center gap-2 text-dark-muted hover:text-white mb-8">
+      <a href={withBase(baseUrl, '/contributors')} class="inline-flex items-center gap-2 text-dark-muted hover:text-white mb-8">
         ← Back to Contributors
       </a>
 
@@ -140,12 +141,12 @@ export async function getStaticPaths() {
       )}
 
       <!-- Games -->
-      {allGames.length > 0 && (
-        <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-          <h2 class="text-xl font-bold mb-4">🎮 Games by @{contributor.username}</h2>
+      <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+        <h2 class="text-xl font-bold mb-4">🎮 Games by @{contributor.username}</h2>
+        {allGames.length > 0 ? (
           <div class="space-y-4">
             {allGames.map(game => (
-              <a href={`${baseUrl}games/${game.id}`} class="block p-4 bg-dark-bg rounded-lg hover:border-primary-500/50 border border-dark-border transition">
+              <a href={withBase(baseUrl, `/games/${game.id}`)} class="block p-4 bg-dark-bg rounded-lg hover:border-primary-500/50 border border-dark-border transition">
                 <div class="flex items-center justify-between">
                   <div>
                     <h3 class="font-medium">{game.name}</h3>
@@ -156,8 +157,13 @@ export async function getStaticPaths() {
               </a>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <div class="py-8 text-center text-dark-muted">
+            <p class="text-lg font-semibold mb-2">No games submitted yet.</p>
+            <p class="text-sm">Be the first to contribute!</p>
+          </div>
+        )}
+      </div>
 
       <!-- Embed Badge -->
       <div class="mt-8 text-center">
