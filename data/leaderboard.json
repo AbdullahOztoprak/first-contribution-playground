@@ -1,15 +1,53 @@
 {
   "version": 1,
-  "generated_at": "2026-03-14T10:05:14.842Z",
+  "generated_at": "2026-03-15T04:01:01.548Z",
   "current_week": {
     "week_id": "2026-W12",
     "week_start": "2026-03-09",
     "week_end": "2026-03-15",
-    "entries": [],
+    "entries": [
+      {
+        "id": "cli/dice-roller",
+        "name": "Dice Roller",
+        "author": "AbdullahOztoprak",
+        "votes": 0
+      },
+      {
+        "id": "cli/example-number-guessing",
+        "name": "Number Guessing Game",
+        "author": "platform-bot",
+        "votes": 0
+      },
+      {
+        "id": "web/example-rock-paper-scissors",
+        "name": "Rock Paper Scissors",
+        "author": "platform-bot",
+        "votes": 0
+      }
+    ],
     "total_votes": 0,
     "total_games": 0
   },
-  "all_time_top": [],
+  "all_time_top": [
+    {
+      "id": "cli/dice-roller",
+      "name": "Dice Roller",
+      "author": "AbdullahOztoprak",
+      "votes": 0
+    },
+    {
+      "id": "cli/example-number-guessing",
+      "name": "Number Guessing Game",
+      "author": "platform-bot",
+      "votes": 0
+    },
+    {
+      "id": "web/example-rock-paper-scissors",
+      "name": "Rock Paper Scissors",
+      "author": "platform-bot",
+      "votes": 0
+    }
+  ],
   "history": [
     {
       "week_id": "2026-W12",
