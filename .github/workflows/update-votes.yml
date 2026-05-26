@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '18'
       - name: Install dependencies
@@ -22,14 +23,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: npx tsx scripts/update-votes.ts
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain)" ]; then
-            git add data/games.json data/leaderboard.json
-            git commit -m "chore: update votes and leaderboard [skip ci]"
-            git push
-          else
-            echo "No changes to commit"
-          fi
+      - name: Open pull request for vote updates
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/update-votes
+          delete-branch: true
+          add-paths: |
+            data/games.json
+            data/leaderboard.json
+          commit-message: 'chore: update votes and leaderboard'
+          title: 'chore: update votes and leaderboard'
+          body: |
+            Automated vote and leaderboard refresh.

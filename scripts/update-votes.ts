@@ -1,4 +1,42 @@
 import fs from 'fs/promises';
+import type { GameIndex, GameMetadata } from '../data/schema.js';
+
+type PullRequest = {
+  number: number;
+  merged_at: string | null;
+};
+
+type PullRequestFile = {
+  filename: string;
+};
+
+type Reaction = {
+  content?: string;
+  user?: {
+    type?: string;
+  };
+};
+
+type VoteKey = 'thumbs_up' | 'rocket' | 'fire';
+type VoteBreakdown = Record<VoteKey, number>;
+type GameVote = VoteBreakdown & { total: number };
+type LeaderboardGameEntry = {
+  id: string;
+  name: string;
+  author: string;
+  votes: number;
+};
+
+type VotesLeaderboardData = {
+  generated_at?: string;
+  current_week?: {
+    entries?: LeaderboardGameEntry[];
+    total_votes?: number;
+    total_games?: number;
+  };
+  all_time_top?: LeaderboardGameEntry[];
+  [key: string]: unknown;
+};
 
 const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 if (!TOKEN) {
@@ -15,7 +53,7 @@ if (repoEnv) {
 
 const API = `https://api.github.com/repos/${owner}/${repo}`;
 
-async function ghFetch(path: string, init: any = {}) {
+async function ghFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API}${path}`, {
     headers: {
       Authorization: `token ${TOKEN}`,
@@ -28,14 +66,14 @@ async function ghFetch(path: string, init: any = {}) {
     const t = await res.text();
     throw new Error(`GitHub API error ${res.status} ${res.statusText}: ${t}`);
   }
-  return res.json();
+  return res.json() as Promise<T>;
 }
 
 async function fetchAllPulls() {
-  const pulls: any[] = [];
+  const pulls: PullRequest[] = [];
   let page = 1;
   while (true) {
-    const pageData = await ghFetch(`/pulls?state=closed&per_page=100&page=${page}`);
+    const pageData = await ghFetch<PullRequest[]>(`/pulls?state=closed&per_page=100&page=${page}`);
     if (!pageData || pageData.length === 0) break;
     pulls.push(...pageData);
     page += 1;
@@ -44,10 +82,10 @@ async function fetchAllPulls() {
 }
 
 async function fetchAllFiles(pullNumber: number) {
-  const files: any[] = [];
+  const files: PullRequestFile[] = [];
   let page = 1;
   while (true) {
-    const pageData = await ghFetch(`/pulls/${pullNumber}/files?per_page=100&page=${page}`);
+    const pageData = await ghFetch<PullRequestFile[]>(`/pulls/${pullNumber}/files?per_page=100&page=${page}`);
     if (!pageData || pageData.length === 0) break;
     files.push(...pageData);
     page += 1;
@@ -56,10 +94,10 @@ async function fetchAllFiles(pullNumber: number) {
 }
 
 async function fetchAllReactions(issueNumber: number) {
-  const reactions: any[] = [];
+  const reactions: Reaction[] = [];
   let page = 1;
   while (true) {
-    const pageData = await ghFetch(`/issues/${issueNumber}/reactions?per_page=100&page=${page}`);
+    const pageData = await ghFetch<Reaction[]>(`/issues/${issueNumber}/reactions?per_page=100&page=${page}`);
     if (!pageData || pageData.length === 0) break;
     reactions.push(...pageData);
     page += 1;
@@ -67,7 +105,7 @@ async function fetchAllReactions(issueNumber: number) {
   return reactions;
 }
 
-function mapReactionWeight(content: string) {
+function mapReactionWeight(content: string): { key: VoteKey; weight: number } | null {
   switch (content) {
     case 'thumbs_up':
       return { key: 'thumbs_up', weight: 1 };
@@ -85,7 +123,7 @@ async function main() {
   const pulls = await fetchAllPulls();
 
   // Map gameId -> aggregated counts
-  const gameVotes: Record<string, { thumbs_up: number; rocket: number; fire: number; total: number }> = {};
+  const gameVotes: Record<string, GameVote> = {};
 
   for (const pr of pulls) {
     if (!pr.merged_at) continue;
@@ -108,7 +146,7 @@ async function main() {
     const reactions = await fetchAllReactions(pr.number);
 
     // count
-    const counts = { thumbs_up: 0, rocket: 0, fire: 0 };
+    const counts: VoteBreakdown = { thumbs_up: 0, rocket: 0, fire: 0 };
     for (const r of reactions) {
       if (!r || !r.content) continue;
       // ignore bots
@@ -131,13 +169,13 @@ async function main() {
 
   // Load existing data files
   const gamesRaw = await fs.readFile('data/games.json', 'utf8');
-  const gamesData = JSON.parse(gamesRaw);
+  const gamesData = JSON.parse(gamesRaw) as GameIndex;
 
   const leaderboardRaw = await fs.readFile('data/leaderboard.json', 'utf8');
-  const leaderboardData = JSON.parse(leaderboardRaw);
+  const leaderboardData = JSON.parse(leaderboardRaw) as VotesLeaderboardData;
 
   // Update games.json
-  const games = gamesData.games || [];
+  const games: GameMetadata[] = gamesData.games || [];
   for (const g of games) {
     const id = g.id;
     const v = gameVotes[id];

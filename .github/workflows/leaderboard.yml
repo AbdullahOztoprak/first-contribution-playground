@@ -9,7 +9,7 @@ on:
 
 permissions:
   contents: write
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   update-leaderboard:
@@ -17,12 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
 
@@ -211,16 +211,16 @@ jobs:
             fs.writeFileSync('README.md', readme);
             console.log('README.md and leaderboard data updated successfully!');
 
-      - name: Commit and push changes
-        run: |
-          git config user.name "Platform Bot"
-          git config user.email "bot@platform.dev"
-          git add README.md leaderboard/data.json
-          
-          # Only commit if there are changes
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "🏆 Update weekly leaderboard [skip ci]"
-            git push
-          fi
+      - name: Open pull request for leaderboard updates
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/update-weekly-leaderboard
+          delete-branch: true
+          add-paths: |
+            README.md
+            leaderboard/data.json
+          commit-message: 'chore: update weekly leaderboard'
+          title: 'chore: update weekly leaderboard'
+          body: |
+            Automated weekly leaderboard refresh.

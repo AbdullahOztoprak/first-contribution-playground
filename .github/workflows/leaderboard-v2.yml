@@ -9,16 +9,16 @@ on:
 
 permissions:
   contents: write
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   update-leaderboard:
     name: Update Leaderboard & Badges
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '20'
 
@@ -148,14 +148,16 @@ jobs:
             fs.writeFileSync('README.md', readme);
             console.log('Leaderboard updated!');
 
-      - name: Commit changes
-        run: |
-          git config user.name "Platform Bot"
-          git config user.email "bot@platform.dev"
-          git add data/leaderboard.json README.md
-          if git diff --staged --quiet; then
-            echo "No changes"
-          else
-            git commit -m "🏆 Update leaderboard [skip ci]"
-            git push
-          fi
+      - name: Open pull request for leaderboard updates
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/update-leaderboard
+          delete-branch: true
+          add-paths: |
+            data/leaderboard.json
+            README.md
+          commit-message: 'chore: update leaderboard'
+          title: 'chore: update leaderboard'
+          body: |
+            Automated leaderboard refresh.

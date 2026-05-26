@@ -47,27 +47,31 @@ jobs:
 
             let body = '';
             if (isFirstTime) {
-              body = `## 🎉 Welcome @${author}!
-
-Thank you for your **first contribution** to Platform!
-
-### What happens next?
-1. 🤖 Automated checks will validate your submission
-2. 📋 A maintainer will review${isPR ? ' your PR' : ''}
-3. ✅ Once approved, ${isPR ? "your contribution will be merged" : "we'll get back to you"}
-
-### Resources
-- 📖 [Contributing Guide](../CONTRIBUTING.md)
-- 📖 [Beginner's Guide](../docs/BEGINNER_GUIDE.md)
-- 💬 [Discussions](../../discussions)
-
-*Every expert was once a beginner!* 🚀`;
+              body = [
+                `## 🎉 Welcome @${author}!`,
+                '',
+                'Thank you for your **first contribution** to Platform!',
+                '',
+                '### What happens next?',
+                '1. 🤖 Automated checks will validate your submission',
+                `2. 📋 A maintainer will review${isPR ? ' your PR' : ''}`,
+                `3. ✅ Once approved, ${isPR ? "your contribution will be merged" : "we'll get back to you"}`,
+                '',
+                '### Resources',
+                '- 📖 [Contributing Guide](../CONTRIBUTING.md)',
+                "- 📖 [Beginner's Guide](../docs/BEGINNER_GUIDE.md)",
+                '- 💬 [Discussions](../../discussions)',
+                '',
+                '*Every expert was once a beginner!* 🚀',
+              ].join('\n');
             } else {
-              body = `## 👋 Welcome back @${author}!
-
-Great to see you contributing again! 🌟
-
-🤖 Automated checks are running now.`;
+              body = [
+                `## 👋 Welcome back @${author}!`,
+                '',
+                'Great to see you contributing again! 🌟',
+                '',
+                '🤖 Automated checks are running now.',
+              ].join('\n');
             }
 
             await github.rest.issues.createComment({
