@@ -10,6 +10,7 @@ on:
       - 'games/**'
 
 permissions:
+  issues: write
   pull-requests: write
   contents: read
 
@@ -156,21 +157,21 @@ jobs:
                 repo: context.repo.repo,
                 name: '🔒 needs-security-review',
               });
-            } catch {
-              await github.rest.issues.createLabel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                name: '🔒 needs-security-review',
-                color: 'b60205',
-              });
+            } catch (e) {
+              core.warning(`Security label does not exist or cannot be read: ${e.message}`);
+              return;
             }
 
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['🔒 needs-security-review'],
-            });
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ['🔒 needs-security-review'],
+              });
+            } catch (e) {
+              core.warning(`Could not apply security label: ${e.message}`);
+            }
 
       - name: Fail on critical severity
         if: steps.security.outputs.severity == 'critical'

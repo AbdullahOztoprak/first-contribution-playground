@@ -8,6 +8,7 @@ on:
     types: [opened]
 
 permissions:
+  issues: write
   pull-requests: write
 
 jobs:
@@ -97,28 +98,27 @@ jobs:
                 body: `## 🚫 PR Automatically Closed\n\nThis PR was flagged as potential spam and has been automatically closed.\n\n**Reasons:**\n${reasons.map(r => `- ${r}`).join('\n')}\n\nIf this is a mistake, please contact a maintainer to reopen it.`,
               });
 
-              // Add spam label
               try {
                 await github.rest.issues.getLabel({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   name: '🚫 spam',
                 });
-              } catch {
-                await github.rest.issues.createLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name: '🚫 spam',
-                  color: 'b60205',
-                });
+              } catch (e) {
+                core.warning(`Spam label does not exist or cannot be read: ${e.message}`);
+                return;
               }
 
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                labels: ['🚫 spam'],
-              });
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  labels: ['🚫 spam'],
+                });
+              } catch (e) {
+                core.warning(`Could not apply spam label: ${e.message}`);
+              }
 
             } else if (reasons.length > 0) {
               // Just warn, don't close

@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   deny-generated-files:
     if: ${{ !startsWith(github.head_ref, 'automation/') }}
@@ -25,4 +29,6 @@ jobs:
       - name: Check for generated data changes
         env:
           BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: npx tsx scripts/check-generated-changes.ts

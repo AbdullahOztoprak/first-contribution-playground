@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  issues: write
   pull-requests: write
   contents: read
 
@@ -234,28 +235,27 @@ jobs:
               });
             } catch {}
 
-            // Ensure label exists
             try {
               await github.rest.issues.getLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 name: label,
               });
-            } catch {
-              await github.rest.issues.createLabel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                name: label,
-                color: valid ? '0e8a16' : 'e11d48',
-              });
+            } catch (e) {
+              core.warning(`Validation label "${label}" does not exist or cannot be read: ${e.message}`);
+              return;
             }
 
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: [label],
-            });
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: [label],
+              });
+            } catch (e) {
+              core.warning(`Could not apply validation label: ${e.message}`);
+            }
 
       - name: Fail if validation failed
         if: steps.validate.outputs.valid == 'false'

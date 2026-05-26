@@ -1,19 +1,18 @@
 # ============================================================
-# PR Triage: Auto-detect submission type, apply labels, assign
+# PR Triage: Auto-detect submission type
 # ============================================================
-name: PR Triage & Auto-Label
+name: PR Triage
 
 on:
   pull_request:
     types: [opened, synchronize, edited]
 
 permissions:
-  pull-requests: write
   contents: read
 
 jobs:
   triage:
-    name: Detect & Label PR
+    name: Detect PR Type
     runs-on: ubuntu-latest
     outputs:
       pr_type: ${{ steps.detect.outputs.pr_type }}
@@ -63,51 +62,3 @@ jobs:
           echo "Detected PR type: $PR_TYPE (category: $GAME_CATEGORY)"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Apply labels
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prType = '${{ steps.detect.outputs.pr_type }}';
-            const gameCategory = '${{ steps.detect.outputs.game_category }}';
-            const labels = [];
-
-            if (prType === 'game') {
-              labels.push('🎮 game');
-              labels.push('🟢 beginner-friendly');
-              if (gameCategory === 'cli') labels.push('💻 cli');
-              if (gameCategory === 'web') labels.push('🌐 web');
-              if (gameCategory === 'algorithm') labels.push('🧮 algorithm');
-            } else if (prType === 'translation') {
-              labels.push('🌍 translation');
-              labels.push('🟢 beginner-friendly');
-            } else {
-              labels.push('❓ needs-triage');
-            }
-
-            // Create labels if they don't exist, then apply
-            for (const label of labels) {
-              try {
-                await github.rest.issues.getLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name: label,
-                });
-              } catch {
-                await github.rest.issues.createLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name: label,
-                  color: prType === 'game' ? '6f42c1' : prType === 'translation' ? '0075ca' : 'e4e669',
-                });
-              }
-            }
-
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: labels,
-            });
-
-            console.log(`Applied labels: ${labels.join(', ')}`);
