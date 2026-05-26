@@ -157,17 +157,9 @@ jobs:
                 repo: context.repo.repo,
                 name: '🔒 needs-security-review',
               });
-            } catch {
-              try {
-                await github.rest.issues.createLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name: '🔒 needs-security-review',
-                  color: 'b60205',
-                });
-              } catch (e) {
-                core.warning(`Could not create security label: ${e.message}`);
-              }
+            } catch (e) {
+              core.warning(`Security label does not exist or cannot be read: ${e.message}`);
+              return;
             }
 
             try {

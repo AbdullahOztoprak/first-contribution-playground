@@ -97,18 +97,8 @@ jobs:
                     name: label,
                   });
                   availableLabels.push(label);
-                } catch {
-                  try {
-                    await github.rest.issues.createLabel({
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      name: label,
-                      color: prType === 'game' ? '6f42c1' : prType === 'translation' ? '0075ca' : 'e4e669',
-                    });
-                    availableLabels.push(label);
-                  } catch (e) {
-                    core.warning(`Could not create label "${label}": ${e.message}`);
-                  }
+                } catch (e) {
+                  core.warning(`Label "${label}" does not exist or cannot be read: ${e.message}`);
                 }
               }
 
