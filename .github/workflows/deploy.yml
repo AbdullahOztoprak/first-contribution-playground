@@ -20,6 +20,7 @@ concurrency:
 
 env:
   NODE_VERSION: '20'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   # ─────────────────────────────────────────────────────────
@@ -96,6 +97,25 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Verify GitHub Pages is enabled
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.repos.getPages({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              });
+            } catch (error) {
+              if (error.status === 404) {
+                core.setFailed(
+                  'GitHub Pages is not enabled for this repository. Open Settings > Pages and set Source to "GitHub Actions", then rerun this workflow.'
+                );
+                return;
+              }
+              throw error;
+            }
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
