@@ -66,60 +66,65 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Apply labels
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
-            const prType = '${{ steps.detect.outputs.pr_type }}';
-            const gameCategory = '${{ steps.detect.outputs.game_category }}';
-            const labels = [];
+            try {
+              const prType = '${{ steps.detect.outputs.pr_type }}';
+              const gameCategory = '${{ steps.detect.outputs.game_category }}';
+              const labels = [];
 
-            if (prType === 'game') {
-              labels.push('🎮 game');
-              labels.push('🟢 beginner-friendly');
-              if (gameCategory === 'cli') labels.push('💻 cli');
-              if (gameCategory === 'web') labels.push('🌐 web');
-              if (gameCategory === 'algorithm') labels.push('🧮 algorithm');
-            } else if (prType === 'translation') {
-              labels.push('🌍 translation');
-              labels.push('🟢 beginner-friendly');
-            } else {
-              labels.push('❓ needs-triage');
-            }
+              if (prType === 'game') {
+                labels.push('🎮 game');
+                labels.push('🟢 beginner-friendly');
+                if (gameCategory === 'cli') labels.push('💻 cli');
+                if (gameCategory === 'web') labels.push('🌐 web');
+                if (gameCategory === 'algorithm') labels.push('🧮 algorithm');
+              } else if (prType === 'translation') {
+                labels.push('🌍 translation');
+                labels.push('🟢 beginner-friendly');
+              } else {
+                labels.push('❓ needs-triage');
+              }
 
-            const availableLabels = [];
-            for (const label of labels) {
-              try {
-                await github.rest.issues.getLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name: label,
-                });
-                availableLabels.push(label);
-              } catch {
+              const availableLabels = [];
+              for (const label of labels) {
                 try {
-                  await github.rest.issues.createLabel({
+                  await github.rest.issues.getLabel({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     name: label,
-                    color: prType === 'game' ? '6f42c1' : prType === 'translation' ? '0075ca' : 'e4e669',
                   });
                   availableLabels.push(label);
-                } catch (e) {
-                  core.warning(`Could not create label "${label}": ${e.message}`);
+                } catch {
+                  try {
+                    await github.rest.issues.createLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      name: label,
+                      color: prType === 'game' ? '6f42c1' : prType === 'translation' ? '0075ca' : 'e4e669',
+                    });
+                    availableLabels.push(label);
+                  } catch (e) {
+                    core.warning(`Could not create label "${label}": ${e.message}`);
+                  }
                 }
               }
-            }
 
-            if (availableLabels.length > 0) {
-              try {
-                await github.rest.issues.addLabels({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  labels: availableLabels,
-                });
-                console.log(`Applied labels: ${availableLabels.join(', ')}`);
-              } catch (e) {
-                core.warning(`Could not apply labels: ${e.message}`);
+              if (availableLabels.length > 0) {
+                try {
+                  await github.rest.issues.addLabels({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    labels: availableLabels,
+                  });
+                  console.log(`Applied labels: ${availableLabels.join(', ')}`);
+                } catch (e) {
+                  core.warning(`Could not apply labels: ${e.message}`);
+                }
               }
+            } catch (e) {
+              core.warning(`Skipping PR labels because the token cannot access labels: ${e.message}`);
             }
