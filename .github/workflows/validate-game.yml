@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  issues: write
   pull-requests: write
   contents: read
 
@@ -250,12 +251,16 @@ jobs:
               });
             }
 
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: [label],
-            });
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: [label],
+              });
+            } catch (e) {
+              core.warning(`Could not apply validation label: ${e.message}`);
+            }
 
       - name: Fail if validation failed
         if: steps.validate.outputs.valid == 'false'

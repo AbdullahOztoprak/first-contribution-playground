@@ -8,6 +8,7 @@ on:
     types: [opened, synchronize, edited]
 
 permissions:
+  issues: write
   pull-requests: write
   contents: read
 
@@ -85,7 +86,7 @@ jobs:
               labels.push('❓ needs-triage');
             }
 
-            // Create labels if they don't exist, then apply
+            const availableLabels = [];
             for (const label of labels) {
               try {
                 await github.rest.issues.getLabel({
@@ -93,21 +94,32 @@ jobs:
                   repo: context.repo.repo,
                   name: label,
                 });
+                availableLabels.push(label);
               } catch {
-                await github.rest.issues.createLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name: label,
-                  color: prType === 'game' ? '6f42c1' : prType === 'translation' ? '0075ca' : 'e4e669',
-                });
+                try {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: label,
+                    color: prType === 'game' ? '6f42c1' : prType === 'translation' ? '0075ca' : 'e4e669',
+                  });
+                  availableLabels.push(label);
+                } catch (e) {
+                  core.warning(`Could not create label "${label}": ${e.message}`);
+                }
               }
             }
 
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: labels,
-            });
-
-            console.log(`Applied labels: ${labels.join(', ')}`);
+            if (availableLabels.length > 0) {
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  labels: availableLabels,
+                });
+                console.log(`Applied labels: ${availableLabels.join(', ')}`);
+              } catch (e) {
+                core.warning(`Could not apply labels: ${e.message}`);
+              }
+            }
