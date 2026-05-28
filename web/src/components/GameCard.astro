@@ -17,6 +17,7 @@ interface Props {
 
 const { id, name, author, category, difficulty, language, description, votes = 0 } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
+const isDemoAuthor = ['demo-contributor', 'platform-bot'].includes(author.toLowerCase());
 
 const categoryIcons = { cli: '💻', web: '🌐', algorithm: '🧮' };
 const difficultyColors = {
@@ -42,12 +43,16 @@ const difficultyColors = {
     
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <img 
-          src={`https://github.com/${author}.png`} 
-          alt={author}
-          class="w-6 h-6 rounded-full"
-        />
-        <span class="text-sm text-dark-muted">@{author}</span>
+        {isDemoAuthor ? (
+          <span class="w-6 h-6 rounded-full bg-dark-border flex items-center justify-center text-xs">D</span>
+        ) : (
+          <img
+            src={`https://github.com/${author}.png`}
+            alt={author}
+            class="w-6 h-6 rounded-full"
+          />
+        )}
+        <span class="text-sm text-dark-muted">{isDemoAuthor ? 'Demo example' : `@${author}`}</span>
       </div>
       
       <div class="flex items-center gap-2">

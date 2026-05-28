@@ -1,144 +1,41 @@
-# 🗺️ First Contribution Playground Roadmap
+# Roadmap
 
-This document outlines the vision and future plans for First Contribution Playground.
+This roadmap keeps the project grounded. The goal is not to look like a huge platform; the goal is to make first open-source contributions less intimidating.
 
-## Current Status: v1.0 — Foundation ✅
+## Current
 
-### Completed
-- [x] Repository structure (games, translations, leaderboard)
-- [x] Contribution guidelines and templates
-- [x] Issue templates (game proposal, translation, bug, feature request)
-- [x] PR templates (game submission, translation submission)
-- [x] GitHub Actions automation (10 workflows)
-- [x] Gamification system with weekly leaderboard
-- [x] Security scanning and anti-abuse protection
-- [x] Welcome bot and contributor guidance
-- [x] Example game submissions (CLI + Web)
-- [x] Beginner's guide and documentation
+- Beginner issue templates
+- Game and translation submissions
+- Automated validation
+- Generated game, contributor, and leaderboard data
+- Static website on GitHub Pages
+- Contributor listing
+- Security and anti-abuse checks
+- Maintenance and community guidelines
 
----
+## Next
 
-## Phase 2: Community Growth (Q2 2026)
+- Clean contributor profiles
+- Better issue discovery on the website
+- More starter games with clear examples
+- Improved leaderboard data and empty states
+- First small community challenge
+- More realistic documentation screenshots or GIFs
 
-### 🎯 Goals
-- Reach 50+ game submissions
-- Reach 10+ language translations
-- Build an active community of 100+ contributors
+## Later
 
-### 📋 Tasks
-- [ ] Add monthly challenge system (themed game jams)
-- [ ] Create Discord/Slack community integration
- - [x] Build contributor profiles page (auto-generated from PRs)
-- [ ] Add "good first issue" auto-labeling for easy tasks
+- Search and filter improvements
+- Embeddable contributor badges
+- Optional GitHub OAuth experiment
+- More polished game preview pages
+- Lightweight analytics for understanding contributor friction
 
-- [ ] Create video tutorials for first-time contributors
-- [ ] Add game categories: educational, multiplayer-local, retro
-- [ ] Implement achievement/badge system in README
-- [ ] Add automated game testing (run Python/JS games in CI)
+## Not a Goal Right Now
 
----
+- Large-scale community claims
+- Full automation without human review
+- A database-backed platform
+- Discord or Slack integration
+- Paid infrastructure
 
-## Phase 3: Web Playground (Q3 2026)
-
-### 🎯 Goals
-- Launch a web frontend where users can browse and play games
-- Create an API layer for game metadata
-
-> Note: Basic static frontend (browsing, game pages) and contributor profile pages are live in v1.0. Items below describe planned expansions (play-in-browser, APIs, richer dashboards).
-
-### 📋 Tasks
-- [ ] **API Development**
-  - [ ] Build REST API serving game metadata from `metadata.json` files
-  - [ ] Endpoint: `GET /api/games` — list all games with filters
-  - [ ] Endpoint: `GET /api/games/:id` — single game details
-  - [ ] Endpoint: `GET /api/leaderboard` — current rankings
-  - [ ] Endpoint: `GET /api/contributors` — contributor stats
-
-- [ ] **Frontend Development**
-  - [ ] Next.js or Astro static site
-  - [ ] Game catalog with search and filters
-  - [ ] Game detail pages with embedded web games
-  - [ ] Leaderboard visualization
-  - [ ] Contributor profiles
-  - [ ] Dark/light theme
-
-- [ ] **Game Playground**
-  - [ ] Embed web games in iframes (sandboxed)
-  - [ ] Python CLI games via WebAssembly (Pyodide)
-  - [ ] "Try in browser" button for each game
-
-- [ ] **GitHub Integration**
-  - [ ] Webhook to auto-rebuild site on PR merge
-  - [ ] GitHub OAuth for user profiles
-  - [ ] Link contributions to GitHub profiles
-
-### 🏗️ Architecture
-
-```
-┌─────────────┐     ┌──────────────┐     ┌────────────────┐
-│   GitHub     │────▶│   GitHub     │────▶│   Static Site  │
-│   Repository │     │   Actions    │     │   (Vercel/     │
-│              │     │   (Build)    │     │    Netlify)    │
-└─────────────┘     └──────────────┘     └────────────────┘
-       │                                          │
-       ▼                                          ▼
-┌─────────────┐                          ┌────────────────┐
-│  metadata/   │                          │   Web Game     │
-│  JSON files  │─────────────────────────▶│   Playground   │
-└─────────────┘                          │   (iframe)     │
-                                          └────────────────┘
-```
-
----
-
-## Phase 4: Portfolio Playground (Q4 2026)
-
-### 🎯 Goals
-- Transform into a portfolio-ready platform for junior developers
-- Verifiable contribution history
-
-### 📋 Tasks
-- [ ] **Contributor Dashboard**
-  - [ ] Personal stats page (games, translations, votes received)
-  - [ ] Contribution calendar (GitHub-style grid)
-  - [ ] Shareable profile URL
-  - [ ] Downloadable contribution certificate (PDF)
-
-- [ ] **Skill Badges**
-  - [ ] Auto-assign based on contribution types
-  - [ ] "Python Game Developer", "Web Game Developer", "Translator" badges
-  - [ ] Display on GitHub profile README (dynamic SVG)
-
-- [ ] **Integration APIs**
-  - [ ] Embeddable widget for personal portfolios
-  - [ ] JSON API for contribution verification
-  - [ ] LinkedIn-compatible achievement links
-
----
-
-## Phase 5: Ecosystem (2027+)
-
-### 🎯 Vision
-- Become the go-to platform for junior developer open-source experience
-
-### 📋 Ideas
-- [ ] Partner with coding bootcamps and universities
-- [ ] Create "First Contribution Playground Certified Contributor" program
-- [ ] Add mentorship matching (experienced ↔ junior)
-- [ ] Multi-repo support (different project types)
-- [ ] Sponsor/rewards program for top contributors
-- [ ] AI-powered code review assistance for submissions
-- [ ] Game ratings and comments system
-- [ ] Annual "First Contribution Playground Awards" for best contributions
-
----
-
-## How to Suggest Changes to the Roadmap
-
-1. Open a [Feature Request](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new?template=feature-request.yml)
-2. Or start a [Discussion](https://github.com/AbdullahOztoprak/first-contribution-playground/discussions)
-3. Community feedback shapes our priorities!
-
----
-
-*This roadmap is a living document and will be updated as the project evolves.*
+These may become useful later, but the early project should stay simple and maintainable.

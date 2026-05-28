@@ -1,9 +1,9 @@
 <h1 align="center">First Contribution Playground</h1>
 <p align="center">
-  <strong>Make your first open-source pull request through games, translations, and beginner-friendly tasks.</strong>
+  <strong>A small open-source playground that helps beginners make their first real pull request.</strong>
 </p>
 <p align="center">
-  No pressure. No perfect-code expectations. Pick a small task, open a PR, and learn the real GitHub workflow.
+  Start with a tiny docs fix, README translation, beginner game, or small UI improvement.
 </p>
 <p align="center">
   <a href="https://abdullahoztoprak.github.io/first-contribution-playground">Live Site</a> |
@@ -22,48 +22,63 @@
 
 ## Project Status
 
-✅ Maintained actively
-✅ Beginner PRs are welcome
-✅ Translations, games, and docs improvements accepted
-⏱️ Typical review time: 24-72 hours
-🧭 Best first step: pick a `good first issue`
+- Early-stage project with active maintenance
+- Beginner pull requests are welcome
+- Translations, games, docs, and small website improvements are accepted
+- Typical review time: 24-72 hours when maintainers are active
+- Best first step: pick a `good first issue`
 
 ---
 
 ## What Is This?
 
-**First Contribution Playground** is a beginner-friendly open-source repo designed to help new contributors make their first real pull request.
+**First Contribution Playground** is a beginner-friendly open-source repository for practicing the real GitHub workflow.
 
 You can contribute by:
 
+- Fixing a small typo or docs issue
 - Translating documentation into your language
 - Adding a small CLI, web, or algorithm game
 - Improving docs and beginner guides
 - Fixing small website or repository issues
-- Helping other contributors once you get comfortable
 
 The goal is not to be perfect. The goal is to learn the workflow: fork, branch, edit, commit, push, open a PR, get feedback, and merge.
 
 ---
 
+## Why I Built This
+
+Many junior developers want to contribute to open source, but most repositories feel too large or intimidating for a first PR.
+
+I built this project to create a smaller, guided place where beginners can practice issues, branches, pull requests, CI checks, reviews, and merging without needing to understand a huge codebase first.
+
+---
+
 ## Maintainer Highlights
 
-This project is also a small open-source maintenance system, not just a collection of files:
+This project is intentionally simple, but it includes the maintenance pieces a real open-source repository needs:
 
 - Automated PR validation for games, translations, generated data, and security rules
 - Beginner-friendly issue labels that GitHub can surface to first-time contributors
 - GitHub Pages site generated from repository data
 - Generated game, contributor, and leaderboard indexes
 - Anti-abuse checks and friendly CI comments for new contributors
-- Separate workflows for translations, game submissions, labels, and community onboarding
+- Separate workflows for translation, game, label, and community onboarding tasks
 
 ---
 
 ## For Recruiters
 
-This repository demonstrates open-source maintenance, contributor onboarding, CI automation, documentation design, GitHub Actions, and community workflow thinking.
+This repository is not just a coding exercise. It is a small open-source maintenance project where I worked on:
 
-The goal is intentionally practical: help beginners make small real pull requests while keeping the repository structured, validated, and easy to review.
+- contributor onboarding and documentation
+- GitHub issue and pull request workflow design
+- automated validation with GitHub Actions
+- static site generation with Astro and TypeScript
+- generated JSON data for games, contributors, and leaderboards
+- security limits for accepting beginner-submitted code
+
+The project is intentionally small, but it shows how I think about developer experience, automation, maintainability, and trade-offs.
 
 ---
 
@@ -171,6 +186,8 @@ Game submissions should stay small: max 5 files and max 500 lines.
 | [Number Guessing](games/cli/example-number-guessing/) | CLI | demo-contributor | Python | Beginner |
 | [Rock Paper Scissors](games/web/example-rock-paper-scissors/) | Web | demo-contributor | HTML/CSS/JS | Beginner |
 
+`demo-contributor` marks starter examples that show the expected submission format. Demo authors are not counted in real contributor or leaderboard stats.
+
 Want to add your own? Start with the [game contribution guide](CONTRIBUTING.md#submitting-a-game).
 
 ---
@@ -242,6 +259,7 @@ More translation tasks are available in [open issues](https://github.com/Abdulla
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Maintenance Policy](docs/MAINTENANCE.md)
+- [Case Study](docs/CASE_STUDY.md)
 - [Community Growth Plan](docs/COMMUNITY_GROWTH.md)
 - [Reusable Issue Templates](docs/ISSUE_TEMPLATES.md)
 

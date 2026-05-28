@@ -52,14 +52,14 @@ const rankColors: Record<number, string> = {
       
       <div>
         <h3 class="font-semibold group-hover:text-primary-400 transition">@{username}</h3>
-        <p class="text-xs text-dark-muted">Level {level}</p>
+        <p class="text-xs text-dark-muted">{games_submitted} game contribution{games_submitted === 1 ? '' : 's'}</p>
       </div>
     </div>
     
     <div class="grid grid-cols-2 gap-4 mb-4 text-center">
       <div class="bg-dark-bg rounded-lg p-3">
         <p class="text-xl font-bold text-primary-400">{xp.toLocaleString()}</p>
-        <p class="text-xs text-dark-muted">XP</p>
+        <p class="text-xs text-dark-muted">Activity</p>
       </div>
       <div class="bg-dark-bg rounded-lg p-3">
         <p class="text-xl font-bold">{games_submitted}</p>
