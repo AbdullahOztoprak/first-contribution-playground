@@ -58,15 +58,15 @@ Welcome! If this is your **first time contributing to open source**, this guide 
 
 ### Step 1: Fork the Repository
 
-1. Go to [Platform repository](https://github.com/AbdullahOztoprak/Platform)
+1. Go to [First Contribution Playground repository](https://github.com/AbdullahOztoprak/first-contribution-playground)
 2. Click the **Fork** button (top right)
 3. This creates a copy under your account
 
 ### Step 2: Clone Your Fork
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/Platform.git
-cd Platform
+git clone https://github.com/YOUR-USERNAME/first-contribution-playground.git
+cd first-contribution-playground
 ```
 
 ### Step 3: Create a Branch
@@ -170,6 +170,19 @@ git push origin game/my-awesome-game
 
 ## Step-by-Step: Your First Translation
 
+### Fast Path: Use the GitHub Website
+
+For translations and docs, you do not need to install anything:
+
+1. Open the file on GitHub.
+2. Click the pencil icon.
+3. Make your edit.
+4. Choose **Create a new branch**.
+5. Click **Propose changes**.
+6. Open a pull request.
+
+This is the easiest way to make your first PR.
+
 ### Step 1-3: Same as Above
 
 Fork, clone, and create a branch:
@@ -258,8 +271,8 @@ git push origin your-branch-name
 
 ## Need Help?
 
-- 💬 Open a [Discussion](https://github.com/AbdullahOztoprak/Platform/discussions)
+- 💬 Open a [Discussion](https://github.com/AbdullahOztoprak/first-contribution-playground/discussions)
 - 📖 Read the [Contributing Guide](../CONTRIBUTING.md)
-- 🐛 Found a bug? [Report it](https://github.com/AbdullahOztoprak/Platform/issues/new?template=bug-report.yml)
+- 🐛 Found a bug? [Report it](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new?template=bug-report.yml)
 
 **You've got this! 🚀**

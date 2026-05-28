@@ -337,7 +337,7 @@ function getWeekId(date: Date): string {
 // ============================================================
 
 async function main() {
-  console.log('🔨 Building Platform data index...\n');
+  console.log('🔨 Building First Contribution Playground data index...\n');
 
   // Ensure data directory exists
   if (!fs.existsSync(DATA_DIR)) {

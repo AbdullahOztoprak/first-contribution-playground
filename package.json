@@ -1,12 +1,13 @@
 {
-  "name": "platform",
+  "name": "first-contribution-playground",
   "version": "2.0.0",
-  "description": "The open-source playground for junior developers",
+  "description": "Beginner-friendly open-source playground for first pull requests",
   "type": "module",
   "scripts": {
     "validate": "tsx scripts/validate.ts",
     "build:data": "tsx scripts/build-data.ts",
     "build:badges": "tsx scripts/badge-generator.ts",
+    "community:setup": "tsx scripts/community-setup.ts",
     "dev": "cd web && npm run dev",
     "build": "npm run build:data && cd web && npm run build",
     "typecheck": "tsc --noEmit"
@@ -21,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AbdullahOztoprak/Platform"
+    "url": "https://github.com/AbdullahOztoprak/first-contribution-playground"
   },
   "keywords": ["open-source", "junior-developers", "games", "contributions", "gamification"],
   "author": "AbdullahOztoprak",

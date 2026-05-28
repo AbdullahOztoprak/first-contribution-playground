@@ -133,7 +133,7 @@ jobs:
 
             let body = result.valid 
               ? '## ✅ Validation Passed\n\nYour submission meets all requirements!\n'
-              : '## ❌ Validation Failed\n\nPlease fix the following issues:\n\n';
+              : '## ❌ Validation Needs Changes\n\nThanks for opening a PR. One check failed, but no worries — most first PRs need a small fix.\n\nPlease review the items below:\n\n';
 
             if (result.errors.length > 0) {
               body += '### Errors\n' + result.errors.map(e => `- ❌ ${e}`).join('\n') + '\n\n';
@@ -148,33 +148,38 @@ jobs:
               ).join('\n') + '\n\n';
             }
 
-            // Upsert comment
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const botComment = comments.find(c => c.user.type === 'Bot' && c.body.includes('Validation'));
-
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
+            try {
+              const { data: comments } = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body,
               });
+              const botComment = comments.find(c => c.user.type === 'Bot' && c.body.includes('Validation'));
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } catch (e) {
+              core.warning(`Could not post validation comment: ${e.message}`);
             }
 
       - name: Fail on invalid
         if: steps.validate.outputs.valid == 'false'
-        run: exit 1
+        run: |
+          echo "::error::Validation needs changes. See the friendly PR comment for what to fix."
+          exit 1
 
   # ─────────────────────────────────────────────────────────
   # LINT: Code quality checks

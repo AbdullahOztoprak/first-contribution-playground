@@ -139,12 +139,16 @@ jobs:
               body += '⚠️ A maintainer will review these findings during the normal review process.';
             }
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: body,
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            } catch (e) {
+              core.warning(`Could not post security comment: ${e.message}`);
+            }
 
       - name: Apply security label
         if: steps.security.outputs.severity == 'critical' || steps.security.outputs.severity == 'high'

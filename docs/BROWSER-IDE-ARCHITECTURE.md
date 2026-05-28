@@ -1,4 +1,4 @@
-# Platform Browser IDE — Technical Architecture
+# First Contribution Playground Browser IDE — Technical Architecture
 
 > A lightweight VS Code-like experience for submitting games directly from the browser  
 > Senior Full-Stack Architecture Document
@@ -72,7 +72,7 @@ Build a browser-based IDE that lets contributors:
 │                         GITHUB (EXTERNAL)                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  AbdullahOztoprak/Platform (upstream)                                       │
+│  AbdullahOztoprak/first-contribution-playground (upstream)                                       │
 │       │                                                                     │
 │       ├── PR opened by user-fork                                            │
 │       │                                                                     │
@@ -158,7 +158,7 @@ user:email     — Read user email (for commit author)
 **Why `public_repo` and not `repo`?**
 - `repo` grants access to ALL repos including private
 - `public_repo` only grants access to public repos
-- Platform repo is public, so `public_repo` is sufficient
+- First Contribution Playground repo is public, so `public_repo` is sufficient
 - Principle of least privilege
 
 ### PR Creation Flow (Step-by-Step)
@@ -167,7 +167,7 @@ user:email     — Read user email (for commit author)
 // 1. Check if user has forked the repo
 const forks = await octokit.repos.listForks({
   owner: 'AbdullahOztoprak',
-  repo: 'Platform',
+  repo: 'first-contribution-playground',
 });
 const userFork = forks.data.find(f => f.owner.login === username);
 
@@ -175,16 +175,16 @@ const userFork = forks.data.find(f => f.owner.login === username);
 if (!userFork) {
   await octokit.repos.createFork({
     owner: 'AbdullahOztoprak',
-    repo: 'Platform',
+    repo: 'first-contribution-playground',
   });
   // Wait for fork to be ready (can take a few seconds)
-  await waitForFork(username, 'Platform');
+  await waitForFork(username, 'first-contribution-playground');
 }
 
 // 3. Get the default branch's latest SHA
 const { data: ref } = await octokit.git.getRef({
   owner: username,
-  repo: 'Platform',
+  repo: 'first-contribution-playground',
   ref: 'heads/main',
 });
 const baseSha = ref.object.sha;
@@ -193,7 +193,7 @@ const baseSha = ref.object.sha;
 const branchName = `game/${gameName}-${Date.now()}`;
 await octokit.git.createRef({
   owner: username,
-  repo: 'Platform',
+  repo: 'first-contribution-playground',
   ref: `refs/heads/${branchName}`,
   sha: baseSha,
 });
@@ -203,7 +203,7 @@ const blobs = await Promise.all(
   files.map(file =>
     octokit.git.createBlob({
       owner: username,
-      repo: 'Platform',
+      repo: 'first-contribution-playground',
       content: Buffer.from(file.content).toString('base64'),
       encoding: 'base64',
     })
@@ -213,7 +213,7 @@ const blobs = await Promise.all(
 // 6. Create a tree with all files
 const { data: tree } = await octokit.git.createTree({
   owner: username,
-  repo: 'Platform',
+  repo: 'first-contribution-playground',
   base_tree: baseSha,
   tree: files.map((file, i) => ({
     path: file.path,
@@ -226,8 +226,8 @@ const { data: tree } = await octokit.git.createTree({
 // 7. Create a commit
 const { data: commit } = await octokit.git.createCommit({
   owner: username,
-  repo: 'Platform',
-  message: `feat(game): add ${gameName}\n\nSubmitted via Platform Browser IDE`,
+  repo: 'first-contribution-playground',
+  message: `feat(game): add ${gameName}\n\nSubmitted via First Contribution Playground Browser IDE`,
   tree: tree.sha,
   parents: [baseSha],
   author: {
@@ -240,7 +240,7 @@ const { data: commit } = await octokit.git.createCommit({
 // 8. Update branch to point to new commit
 await octokit.git.updateRef({
   owner: username,
-  repo: 'Platform',
+  repo: 'first-contribution-playground',
   ref: `heads/${branchName}`,
   sha: commit.sha,
 });
@@ -248,7 +248,7 @@ await octokit.git.updateRef({
 // 9. Create Pull Request to upstream
 const { data: pr } = await octokit.pulls.create({
   owner: 'AbdullahOztoprak',
-  repo: 'Platform',
+  repo: 'first-contribution-playground',
   title: `feat(game): ${gameName}`,
   body: generatePRBody(metadata),
   head: `${username}:${branchName}`,
@@ -325,7 +325,7 @@ export function CodeEditor() {
       }),
     });
     
-    // Custom theme matching Platform branding
+    // Custom theme matching First Contribution Playground branding
     monaco.editor.defineTheme('platform-dark', {
       base: 'vs-dark',
       inherit: true,
@@ -1113,7 +1113,7 @@ export async function POST(req: Request) {
     │  User   │
     └────┬────┘
          │
-         │ 1. Visit platform.dev/editor
+         │ 1. Visit abdullahoztoprak.github.io/first-contribution-playground
          ▼
     ┌─────────────────────────────────────────┐
     │           BROWSER IDE                   │
@@ -1148,7 +1148,7 @@ export async function POST(req: Request) {
     │  │  - Pyodide (Python)             │   │
     │  └─────────────────────────────────┘   │
     │                                         │
-    │  [Submit to Platform] ────────────────┐ │
+    │  [Submit to First Contribution Playground] ────────────────┐ │
     │                                       │ │
     └───────────────────────────────────────┼─┘
                                             │
@@ -1183,7 +1183,7 @@ export async function POST(req: Request) {
     │                        GITHUB                                           │
     │                                                                         │
     │  ┌─────────────────────────────────────────────────────────────────┐   │
-    │  │  user/Platform (fork)                                           │   │
+    │  │  user/first-contribution-playground (fork)                                           │   │
     │  │                                                                 │   │
     │  │  Branch: game/my-game-1709312400                               │   │
     │  │  Files:                                                         │   │
@@ -1195,7 +1195,7 @@ export async function POST(req: Request) {
     │                      │ 6. PR opened to upstream                         │
     │                      ▼                                                  │
     │  ┌─────────────────────────────────────────────────────────────────┐   │
-    │  │  AbdullahOztoprak/Platform (upstream)                          │   │
+    │  │  AbdullahOztoprak/first-contribution-playground (upstream)                          │   │
     │  │                                                                 │   │
     │  │  PR #123: feat(game): my-game                                  │   │
     │  │  Author: @user                                                 │   │
@@ -1419,7 +1419,7 @@ export const submitGame = inngest.createFunction(
 - Pyodide
 - Upstash Redis
 
-### Phase 3: Full Platform (4-6 weeks)
+### Phase 3: Full First Contribution Playground (4-6 weeks)
 
 **Goal:** Production-ready IDE
 

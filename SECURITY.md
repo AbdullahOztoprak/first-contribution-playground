@@ -1,6 +1,6 @@
 # Security Policy
 
-## 🛡️ How We Protect the Platform
+## 🛡️ How We Protect the First Contribution Playground
 
 Game submissions run through multiple layers of automated security checks before they can be merged.
 
@@ -70,7 +70,7 @@ If you discover a security vulnerability in the platform automation:
 
 1. **DO NOT** create a public issue
 2. Open a private security advisory here:
-	https://github.com/AbdullahOztoprak/Platform/security/advisories/new
+	https://github.com/AbdullahOztoprak/first-contribution-playground/security/advisories/new
 3. Include steps to reproduce, if possible
 4. We will respond within 48 hours
 

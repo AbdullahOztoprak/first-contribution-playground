@@ -3,7 +3,7 @@ import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
   site: 'https://abdullahoztoprak.github.io',
-  base: '/Platform',
+  base: '/first-contribution-playground',
   integrations: [tailwind()],
   output: 'static',
   build: {

@@ -24,7 +24,7 @@ try {
 
 // 404 if not found
 if (!contributor) {
-  return Astro.redirect('/Platform/contributors');
+  return Astro.redirect('/first-contribution-playground/contributors');
 }
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -58,7 +58,7 @@ export async function getStaticPaths() {
 }
 ---
 
-<BaseLayout title={`@${contributor.username}`} description={`Profile of ${contributor.username} - Platform contributor`}>
+<BaseLayout title={`@${contributor.username}`} description={`Profile of ${contributor.username} - First Contribution Playground contributor`}>
   <section class="py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Back Button -->
@@ -169,7 +169,7 @@ export async function getStaticPaths() {
       <div class="mt-8 text-center">
         <p class="text-sm text-dark-muted mb-2">Add to your GitHub profile:</p>
         <code class="text-xs bg-dark-card px-3 py-2 rounded border border-dark-border">
-          ![Platform Contributor](https://abdullahoztoprak.github.io/Platform/api/badge/{contributor.username}.svg)
+          ![First Contribution Playground Contributor](https://abdullahoztoprak.github.io/first-contribution-playground/api/badge/{contributor.username}.svg)
         </code>
       </div>
     </div>

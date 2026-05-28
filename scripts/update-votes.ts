@@ -46,7 +46,7 @@ if (!TOKEN) {
 
 const repoEnv = process.env.GITHUB_REPOSITORY;
 let owner = 'AbdullahOztoprak';
-let repo = 'Platform';
+let repo = 'first-contribution-playground';
 if (repoEnv) {
   [owner, repo] = repoEnv.split('/');
 }
@@ -58,7 +58,7 @@ async function ghFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
     headers: {
       Authorization: `token ${TOKEN}`,
       Accept: 'application/vnd.github.v3+json, application/vnd.github.squirrel-girl-preview+json',
-      'User-Agent': 'platform-update-votes-script',
+      'User-Agent': 'first-contribution-playground-update-votes-script',
     },
     ...init,
   });

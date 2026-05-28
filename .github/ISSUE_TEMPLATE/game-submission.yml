@@ -2,7 +2,7 @@
 name: 🎮 Game Submission Proposal
 description: Propose a new game to add to the platform
 title: "[GAME] "
-labels: ["🎮 game", "📝 proposal"]
+labels: ["good first issue", "🎮 game", "🟢 beginner-friendly"]
 assignees: []
 body:
   - type: markdown
@@ -10,6 +10,8 @@ body:
       value: |
         ## 🎮 Game Submission Proposal
         Thank you for proposing a game! Please fill out the details below so we can review your idea.
+
+        Before starting, comment `I'd like to work on this` so a maintainer can mark it as claimed.
 
   - type: input
     id: game-name
@@ -94,6 +96,8 @@ body:
         - label: My submission will have max 5 files and 500 lines of code
           required: true
         - label: I will include a README.md and metadata.json
+          required: true
+        - label: I will not edit generated files under `data/`
           required: true
         - label: I have read the [Contributing Guide](../CONTRIBUTING.md)
           required: true
