@@ -1,102 +1,182 @@
-<h1 align="center">🎮 Platform</h1>
+<h1 align="center">First Contribution Playground</h1>
 <p align="center">
-  <strong>The open-source playground for junior developers</strong>
+  <strong>Make your first open-source pull request through games, translations, and beginner-friendly tasks.</strong>
 </p>
 <p align="center">
-  Submit games · Earn XP · Collect badges · Build your portfolio
+  No pressure. No perfect-code expectations. Pick a small task, open a PR, and learn the real GitHub workflow.
 </p>
 <p align="center">
-  <a href="https://abdullahoztoprak.github.io/Platform">🌐 Live Site</a> •
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-how-to-contribute">Contribute</a> •
-  <a href="#-gamification">Gamification</a> •
-  <a href="CONTRIBUTING.md">Guidelines</a>
+  <a href="https://abdullahoztoprak.github.io/first-contribution-playground">Live Site</a> |
+  <a href="https://github.com/AbdullahOztoprak/first-contribution-playground/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">Good First Issues</a> |
+  <a href="#choose-your-first-contribution">Choose a Path</a> |
+  <a href="CONTRIBUTING.md">Contributing Guide</a>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/github/stars/AbdullahOztoprak/Platform?style=flat-square" alt="Stars">
-  <img src="https://img.shields.io/github/forks/AbdullahOztoprak/Platform?style=flat-square" alt="Forks">
-  <img src="https://img.shields.io/github/contributors/AbdullahOztoprak/Platform?style=flat-square" alt="Contributors">
+  <img src="https://img.shields.io/github/stars/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="Stars">
+  <img src="https://img.shields.io/github/forks/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="Forks">
+  <img src="https://img.shields.io/github/contributors/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="Contributors">
+  <img src="https://img.shields.io/github/issues/AbdullahOztoprak/first-contribution-playground/good%20first%20issue?style=flat-square" alt="Good first issues">
 </p>
 
 ---
 
-## 🚀 What is Platform?
+## Project Status
 
-**Platform** is a GitHub-based community where junior developers can make their first open-source contributions by:
-
-- 🎮 **Submitting simple games** — CLI, web, or algorithm games
-- 🌍 **Contributing translations** — Help us reach a global audience
-- 🏆 **Competing on leaderboards** — Community votes rank the best games weekly
-- 📊 **Building GitHub history** — Every merged PR appears on your profile
-- 🎓 **Learning real workflows** — PRs, code review, CI/CD, and automation
-
-> **Every expert was once a beginner.** This is where your open-source journey starts.
+✅ Maintained actively
+✅ Beginner PRs are welcome
+✅ Translations, games, and docs improvements accepted
+⏱️ Typical review time: 24-72 hours
+🧭 Best first step: pick a `good first issue`
 
 ---
 
-## 📁 Repository Structure
+## What Is This?
 
-```
-Platform/
+**First Contribution Playground** is a beginner-friendly open-source repo designed to help new contributors make their first real pull request.
+
+You can contribute by:
+
+- Translating documentation into your language
+- Adding a small CLI, web, or algorithm game
+- Improving docs and beginner guides
+- Fixing small website or repository issues
+- Helping other contributors once you get comfortable
+
+The goal is not to be perfect. The goal is to learn the workflow: fork, branch, edit, commit, push, open a PR, get feedback, and merge.
+
+---
+
+## Our Promise to Beginners
+
+- No question is too small.
+- You do not need to be perfect.
+- We explain requested changes respectfully.
+- We help you fix your first PR.
+- Your contribution will be treated seriously.
+
+---
+
+## Choose Your First Contribution
+
+| Path | Best for | Time | Start |
+|---|---|---:|---|
+| Translate README | No-code contributors | 10-20 min | [Translation issues](https://github.com/AbdullahOztoprak/first-contribution-playground/issues?q=is%3Aissue+is%3Aopen+label%3A%22%F0%9F%8C%8D+translation%22) |
+| Improve docs | Writers and learners | 10-30 min | [Docs issues](https://github.com/AbdullahOztoprak/first-contribution-playground/issues?q=is%3Aissue+is%3Aopen+label%3A%22%F0%9F%93%9A+documentation%22) |
+| Add a CLI game | Python or JavaScript beginners | 30-60 min | [Game guide](CONTRIBUTING.md#submitting-a-game) |
+| Add a web game | HTML/CSS/JS beginners | 45-90 min | [Game guide](CONTRIBUTING.md#submitting-a-game) |
+| Fix website UI | Frontend beginners | 30-90 min | [Open issues](https://github.com/AbdullahOztoprak/first-contribution-playground/issues) |
+
+---
+
+## No Local Setup Needed
+
+For documentation and translation tasks, you can make your first PR from the GitHub website:
+
+1. Open the file on GitHub.
+2. Click the pencil icon.
+3. Make your edit.
+4. Click **Commit changes**.
+5. Choose **Create a new branch**.
+6. Open a pull request.
+
+This is the easiest way to make a first contribution without installing Git locally.
+
+---
+
+## Before You Start an Issue
+
+To avoid duplicate work:
+
+1. Open the issue you want.
+2. Comment: `I'd like to work on this`.
+3. Wait for a maintainer to confirm or add the `claimed` label.
+4. Open your PR and include `Closes #ISSUE_NUMBER` in the description.
+
+Inactive claimed issues may be released after 7 days so another beginner can try them.
+
+---
+
+## Repository Structure
+
+```text
+first-contribution-playground/
 ├── games/
 │   ├── cli/              # Terminal-based games
 │   ├── web/              # Browser-based games
-│   └── algorithm/        # Algorithm puzzles & challenges
+│   └── algorithm/        # Algorithm puzzles and challenges
 ├── translations/
 │   ├── README/           # README translations
 │   ├── CONTRIBUTING/     # Contributing guide translations
 │   └── guides/           # Guide translations
-├── data/                 # Generated data + schema.ts
-├── scripts/              # Build & validation scripts
-├── web/                  # Astro web platform
-│   ├── src/pages/        # Pages (games, leaderboard, profiles)
-│   └── src/components/   # Reusable UI components
-├── docs/                 # Documentation & guides
-├── .github/
-│   └── workflows/        # CI/CD automation (4 workflows)
-├── CONTRIBUTING.md        # Contribution guidelines
-├── CODE_OF_CONDUCT.md     # Code of conduct
-└── README.md              # You are here!
+├── data/                 # Generated data and schema
+├── scripts/              # Build and validation scripts
+├── web/                  # Astro website
+├── docs/                 # Guides and architecture notes
+└── .github/              # Templates and workflow automation
 ```
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
-### 🎮 Submit a Game
+### Submit a Translation
 
-1. **Fork** this repository
-2. **Create a branch**: `git checkout -b game/your-game-name`
-3. **Add your game** in `games/<category>/your-game-name/`
-4. **Include these files:**
-   - `README.md` — How to play + what you learned
-   - `metadata.json` — Game info ([template](CONTRIBUTING.md#metadatajson-template))
-   - Your source code (max 5 files, max 500 lines)
-5. **Open a PR** using the [Game Submission template](.github/PULL_REQUEST_TEMPLATE/game_submission.md)
-6. **Wait for review** — our bots will validate automatically!
+1. Pick an open [translation issue](https://github.com/AbdullahOztoprak/first-contribution-playground/issues?q=is%3Aissue+is%3Aopen+label%3A%22%F0%9F%8C%8D+translation%22).
+2. Comment `I'd like to work on this`.
+3. Create the requested file, for example `translations/README/README.es.md`.
+4. Keep headings, links, lists, and code blocks intact.
+5. Open a PR using the [translation template](.github/PULL_REQUEST_TEMPLATE/translation_submission.md).
 
-### 🌍 Submit a Translation
+### Submit a Game
 
-1. **Fork** this repository
-2. **Create a branch**: `git checkout -b translation/lang-code`
-3. **Add your translation** in `translations/` with format `FILENAME.LANG_CODE.md`
-4. **Open a PR** using the [Translation template](.github/PULL_REQUEST_TEMPLATE/translation_submission.md)
-5. **Auto-merge** — if all checks pass, translations merge automatically!
----
+1. Fork this repository.
+2. Create a branch: `git checkout -b game/your-game-name`.
+3. Add your game in `games/<category>/your-game-name/`.
+4. Include:
+   - `README.md` with how to play and what you learned
+   - `metadata.json` with game info
+   - Your source code
+5. Open a PR using the [game template](.github/PULL_REQUEST_TEMPLATE/game_submission.md).
 
-## 🎮 Featured Games
-
-### CLI Games
-|------|--------|----------|------------|
-| [Number Guessing](games/cli/example-number-guessing/) | @platform-bot | Python | Beginner |
-
-| Game | Author | Language | Difficulty |
-|------|--------|----------|------------|
-| [Rock Paper Scissors](games/web/example-rock-paper-scissors/) | @platform-bot | HTML/CSS/JS | Beginner |
-➡️ *Want to see your game here? [Submit one now!](https://github.com/AbdullahOztoprak/Platform/issues/new?template=game-submission.yml)*
+Game submissions should stay small: max 5 files and max 500 lines.
 
 ---
-## 🏆 Leaderboard
+
+## Featured Games
+
+| Game | Type | Author | Language | Difficulty |
+|---|---|---|---|---|
+| [Dice Roller](games/cli/dice-roller/) | CLI | @AbdullahOztoprak | Python | Beginner |
+| [Number Guessing](games/cli/example-number-guessing/) | CLI | @platform-bot | Python | Beginner |
+| [Rock Paper Scissors](games/web/example-rock-paper-scissors/) | Web | @platform-bot | HTML/CSS/JS | Beginner |
+
+Want to add your own? Start with the [game contribution guide](CONTRIBUTING.md#submitting-a-game).
+
+---
+
+## Example Pull Requests
+
+- [Simplified Chinese README translation](https://github.com/AbdullahOztoprak/first-contribution-playground/pull/23)
+- [CI and contributor workflow fixes](https://github.com/AbdullahOztoprak/first-contribution-playground/pull/30)
+- [Dice Roller game contribution](games/cli/dice-roller/)
+
+Use these as examples for PR size, file placement, and formatting.
+
+---
+
+## Contributor Journey
+
+| Level | Goal |
+|---|---|
+| Level 1 | Make your first PR |
+| Level 2 | Add a translation or docs improvement |
+| Level 3 | Add a simple game |
+| Level 4 | Review or help another contributor |
+| Level 5 | Become a community helper |
+
+---
+
+## Leaderboard
 
 <!-- LEADERBOARD:WEEKLY:START -->
 
@@ -104,157 +184,72 @@ Platform/
 <!-- LEADERBOARD:WEEKLY:END -->
 
 <!-- LEADERBOARD:CONTRIBUTORS:START -->
-### 🌟 Top Contributors (All Time)
+### Top Contributors
 
 | Rank | Contributor | Contributions |
-|------|------------|---------------|
-| 🥇 | [@AbdullahOztoprak](https://github.com/AbdullahOztoprak) | 8 |
+|---|---|---:|
+| 1 | [@AbdullahOztoprak](https://github.com/AbdullahOztoprak) | 8 |
 
 <!-- LEADERBOARD:CONTRIBUTORS:END -->
 
-<!-- LEADERBOARD:TIMESTAMP:START -->
-*Last updated: Sun, 08 Mar 2026 12:06:01 GMT*
-<!-- LEADERBOARD:TIMESTAMP:END -->
-
-> 💡 **How voting works:** React with 👍 on game PRs to vote! Top 3 games are featured weekly.
+Community members can vote on game PRs with 👍 reactions.
 
 ---
 
-## 🏅 Hall of Fame
+## Available Translations
 
-Special recognition for outstanding contributors:
-| Badge | Criteria | Recipients |
-|-------|----------|------------|
-| 🥇 **First Contributor** | First merged PR | — |
-| 🎮 **Game Master** | 5+ games submitted | — |
-| 🌍 **Translation Champion** | 3+ translations | — |
-| ⭐ **Weekly Champion** | #1 on weekly leaderboard | — |
-| 🔥 **Streak Hero** | 4 consecutive weekly contributions | — |
-| 🐛 **Bug Hunter** | Found & reported a significant bug | — |
+| Language | README |
+|---|---|
+| English | ✅ |
+| Simplified Chinese | ✅ |
+| Turkish | [Help wanted](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/25) |
+| Spanish | [Help wanted](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/26) |
+| German | [Help wanted](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/27) |
+| French | [Help wanted](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/28) |
+| Arabic | [Help wanted](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/29) |
 
----
-
-## 🤖 Automation
-
-This project is **fully automated** with 4 consolidated GitHub Actions:
-
-| Workflow | Trigger | What it Does |
-|----------|---------|--------------|
-| **CI Pipeline** | PR opened/updated | Detects type, validates, lints, security scan |
-| **Deploy** | Push to main | Builds data index, deploys web site |
-| **Community** | PR/Issue | Welcome bot, anti-spam, stale management |
-| **Leaderboard** | Weekly (Sunday) | Calculates XP-weighted rankings |
-
-**Generated data files**
-
-The canonical generated data files (`data/games.json`, `data/contributors.json`, `data/leaderboard.json`) are produced from the source-of-truth content and are updated automatically on the `main` branch by automation. Contributors should not commit changes to these files in feature branches — pull requests that touch these files will be blocked by automation checks. If you need to preview generated data locally, run `npm run build:data` and do not commit the results.
+More translation tasks are available in [open issues](https://github.com/AbdullahOztoprak/first-contribution-playground/issues?q=is%3Aissue+is%3Aopen+label%3A%22%F0%9F%8C%8D+translation%22).
 
 ---
 
-## 🎮 Gamification System
+## Documentation
 
-### XP Rewards
-| Action | XP Earned |
-|--------|-----------|
-| First contribution | +50 |
-| Game merged | +100 |
-| Translation merged | +30 |
-| Reviewed a PR | +20 |
-| Received 👍 vote | +5 |
-| Weekly #1 | +200 |
-| Weekly #2 | +100 |
-| Weekly #3 | +50 |
-
-### Difficulty Multipliers
-- 🟢 **Beginner games**: 1.0x points
-- 🟡 **Intermediate games**: 1.5x points
-- 🔴 **Advanced games**: 2.0x points
-
-### Levels
-| Level | XP Required | Title |
-|-------|-------------|-------|
-| 1 | 0 | Newcomer |
-| 2 | 100 | Contributor |
-| 3 | 300 | Regular |
-| 4 | 600 | Expert |
-| 5 | 1000+ | Master |
-
-### Badges
-🎮 **Game Master** (5+ games) • 🌍 **Translator** (3+ translations) • ⭐ **Champion** (Weekly #1) • 🔥 **Streak Hero** (4-week streak) • 👀 **Reviewer** (10+ reviews) • 💎 **OG** (First 10 contributors)
+- [Contributing Guide](CONTRIBUTING.md)
+- [Beginner's Guide](docs/BEGINNER_GUIDE.md)
+- [Translation Guide](docs/TRANSLATION_GUIDE.md)
+- [Security Policy](SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Maintenance Policy](docs/MAINTENANCE.md)
+- [Community Growth Plan](docs/COMMUNITY_GROWTH.md)
+- [Reusable Issue Templates](docs/ISSUE_TEMPLATES.md)
 
 ---
 
-## 🌍 Available Translations
+## Generated Data Files
 
-| Language | README | Contributing | Beginner's Guide |
-|----------|--------|-------------|-----------------|
-| 🇬🇧 English | ✅ | ✅ | ✅ |
-| 🇹🇷 Turkish | ❌ Help wanted! | ❌ | ❌ |
-| 🇪🇸 Spanish | ❌ Help wanted! | ❌ | ❌ |
-| 🇫🇷 French | ❌ Help wanted! | ❌ | ❌ |
-| 🇩🇪 German | ❌ Help wanted! | ❌ | ❌ |
-| 🇯🇵 Japanese | ❌ Help wanted! | ❌ | ❌ |
-| 🇧🇷 Portuguese | ❌ Help wanted! | ❌ | ❌ |
+Do not edit these files in contribution branches:
 
-➡️ *Pick a language and [start translating!](https://github.com/AbdullahOztoprak/Platform/issues/new?template=translation.yml)*
+- `data/games.json`
+- `data/contributors.json`
+- `data/leaderboard.json`
+
+They are generated from source files. If you run `npm run build:data` locally, preview the result but do not commit generated JSON changes.
 
 ---
 
-## 📖 Documentation
+## Community
 
-- 📋 [Contributing Guide](CONTRIBUTING.md) — Rules, templates, and process
-- 📖 [Beginner's Guide](docs/BEGINNER_GUIDE.md) — Step-by-step for first-timers
-- 🔒 [Security Policy](SECURITY.md) — How we keep submissions safe
-- 📜 [Code of Conduct](CODE_OF_CONDUCT.md) — Community standards
-- 🗺️ [Roadmap](docs/ROADMAP.md) — Future plans for the platform
+- Ask questions in [Discussions](https://github.com/AbdullahOztoprak/first-contribution-playground/discussions)
+- Report bugs with [issue templates](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new/choose)
+- Pick a small task from [good first issues](https://github.com/AbdullahOztoprak/first-contribution-playground/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 
 ---
 
-## 🛡️ Security
-
-We take security seriously. Game submissions are:
-
-- ✅ Scanned for dangerous functions (`eval`, `exec`, `subprocess`, etc.)
-- ✅ Checked for network access attempts
-- ✅ Validated for allowed file types only
-- ✅ Limited to 5 files and 500 lines per submission
-- ✅ Reviewed by maintainers before merging
-
-See our full [Security Policy](SECURITY.md) for details.
-
----
-
-## 🗺️ Roadmap
-
-- [x] Core repository structure
-- [x] GitHub Actions automation
-- [x] Gamification & leaderboard system
-- [x] Anti-spam & security protection
-- [x] Web frontend for browsing games
-- [ ] Contributor profiles & badges (partial)
-- [ ] API for game metadata
-- [ ] Hosted game playground (try games in browser)
-- [ ] Monthly community challenges
-- [ ] Integration with Discord/Slack
-
-See the full [Roadmap](docs/ROADMAP.md) for details.
-
----
-
-## ⭐ Star This Repo
-
-If you find this project useful, please give it a ⭐ star! It helps others discover the platform.
-
----
-
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
 
----
-
 <p align="center">
-  <strong>Built with ❤️ for the open-source community</strong>
-  <br>
-  <sub>Every contribution matters. Start your journey today.</sub>
+  <strong>Every contribution matters. Start small, learn the workflow, and grow from there.</strong>
 </p>

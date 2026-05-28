@@ -2,7 +2,7 @@
 name: 🌍 Translation Proposal
 description: Propose a new translation for documentation
 title: "[TRANSLATION] "
-labels: ["🌍 translation", "📝 proposal"]
+labels: ["good first issue", "🌍 translation", "🟢 beginner-friendly", "📚 documentation"]
 assignees: []
 body:
   - type: markdown
@@ -10,6 +10,8 @@ body:
       value: |
         ## 🌍 Translation Proposal
         Thank you for helping us reach a global audience! Please fill out the details below.
+
+        Before starting, comment `I'd like to work on this` so a maintainer can mark it as claimed.
 
   - type: dropdown
     id: document
@@ -45,9 +47,11 @@ body:
   - type: checkboxes
     id: rules
     attributes:
-      label: Translation Rules Confirmation
+      label: Acceptance Criteria
       description: Please confirm you understand the rules
       options:
+        - label: I will comment `I'd like to work on this` before opening a PR
+          required: true
         - label: This will be a human translation (not pure machine translation)
           required: true
         - label: I will maintain the original document structure
@@ -55,6 +59,8 @@ body:
         - label: I will keep all links and references intact
           required: true
         - label: The file will use UTF-8 encoding
+          required: true
+        - label: I will not edit generated files under `data/`
           required: true
         - label: I have read the [Contributing Guide](../CONTRIBUTING.md)
           required: true

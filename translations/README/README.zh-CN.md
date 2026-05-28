@@ -1,4 +1,4 @@
-<h1 align="center">🎮 Platform</h1>
+<h1 align="center">🎮 First Contribution Playground</h1>
 <p align="center">
   <strong>面向初级开发者的开源练习场</strong>
 </p>
@@ -6,23 +6,23 @@
   提交游戏 · 赚取 XP · 收集徽章 · 打造你的作品集
 </p>
 <p align="center">
-  <a href="https://abdullahoztoprak.github.io/Platform">🌐 在线站点</a> •
+  <a href="https://abdullahoztoprak.github.io/first-contribution-playground">🌐 在线站点</a> •
   <a href="#-快速开始">快速开始</a> •
   <a href="#-如何贡献">贡献方式</a> •
   <a href="#-游戏化机制">游戏化机制</a> •
   <a href="../../CONTRIBUTING.md">贡献指南</a>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/github/stars/AbdullahOztoprak/Platform?style=flat-square" alt="Star 数">
-  <img src="https://img.shields.io/github/forks/AbdullahOztoprak/Platform?style=flat-square" alt="Fork 数">
-  <img src="https://img.shields.io/github/contributors/AbdullahOztoprak/Platform?style=flat-square" alt="贡献者数">
+  <img src="https://img.shields.io/github/stars/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="Star 数">
+  <img src="https://img.shields.io/github/forks/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="Fork 数">
+  <img src="https://img.shields.io/github/contributors/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="贡献者数">
 </p>
 
 ---
 
-## 🚀 什么是 Platform？
+## 🚀 什么是 First Contribution Playground？
 
-**Platform** 是一个基于 GitHub 的社区，帮助初级开发者通过以下方式完成自己的第一次开源贡献：
+**First Contribution Playground** 是一个基于 GitHub 的社区，帮助初级开发者通过以下方式完成自己的第一次开源贡献：
 
 - 🎮 **提交简单游戏** - CLI、网页或算法类游戏
 - 🌍 **参与翻译** - 帮助我们服务全球开发者
@@ -37,7 +37,7 @@
 ## 📁 仓库结构
 
 ```
-Platform/
+First Contribution Playground/
 ├── games/
 │   ├── cli/              # 终端游戏
 │   ├── web/              # 浏览器游戏
@@ -94,7 +94,7 @@ Platform/
 | 游戏 | 作者 | 语言 | 难度 |
 |------|--------|----------|------------|
 | [Rock Paper Scissors](../../games/web/example-rock-paper-scissors/) | @platform-bot | HTML/CSS/JS | Beginner |
-➡️ *想在这里看到你的游戏吗？[现在就提交！](https://github.com/AbdullahOztoprak/Platform/issues/new?template=game-submission.yml)*
+➡️ *想在这里看到你的游戏吗？[现在就提交！](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new?template=game-submission.yml)*
 
 ---
 ## 🏆 排行榜
@@ -197,7 +197,7 @@ Platform/
 | 🇯🇵 Japanese | ❌ 需要帮助！ | ❌ | ❌ |
 | 🇧🇷 Portuguese | ❌ 需要帮助！ | ❌ | ❌ |
 
-➡️ *选一种语言，然后[开始翻译吧！](https://github.com/AbdullahOztoprak/Platform/issues/new?template=translation.yml)*
+➡️ *选一种语言，然后[开始翻译吧！](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new?template=translation.yml)*
 
 ---
 
@@ -244,7 +244,7 @@ Platform/
 
 ## ⭐ 给仓库点个 Star
 
-如果你觉得这个项目有用，请给这个仓库点个 ⭐ Star！这有助于让更多人发现 Platform。
+如果你觉得这个项目有用，请给这个仓库点个 ⭐ Star！这有助于让更多人发现 First Contribution Playground。
 
 ---
 

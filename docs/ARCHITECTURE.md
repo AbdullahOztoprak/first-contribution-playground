@@ -1,4 +1,4 @@
-# Platform v2 — Web Architecture Design
+# First Contribution Playground v2 — Web Architecture Design
 
 > Senior Product Architecture Document  
 > Designing for 5,000+ contributors at scale
@@ -15,7 +15,7 @@
 - GitHub profiles stay empty → harder to get jobs
 - Bootcamp projects don't demonstrate "real" collaboration
 
-**Platform solves this by:**
+**First Contribution Playground solves this by:**
 - Providing a **safe, supportive environment** for first contributions
 - Offering **instant feedback** via automation (no waiting for maintainer reviews)
 - Creating **visible progress** (XP, badges, leaderboard)
@@ -32,7 +32,7 @@
 
 ### Unique Value Proposition
 
-| Feature | Typical OSS Repo | Platform |
+| Feature | Typical OSS Repo | First Contribution Playground |
 |---------|-----------------|----------|
 | Entry barrier | High (understand codebase) | Low (self-contained games) |
 | Feedback time | Days to weeks | Instant (automated CI) |
@@ -128,7 +128,7 @@ Layer 4: Service Worker (optional, for offline)
 ### Folder Structure (Final)
 
 ```
-Platform/
+First Contribution Playground/
 ├── data/
 │   └── schema.ts              # TypeScript interfaces
 ├── scripts/
@@ -347,7 +347,7 @@ Vercel Edge Functions (recommended)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  [Logo] Platform                    Games  Leaderboard  [GitHub]│
+│  [Logo] First Contribution Playground                    Games  Leaderboard  [GitHub]│
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │              Build Games. Level Up.                             │
@@ -505,7 +505,7 @@ Vercel Edge Functions (recommended)
 │                   Embed This Badge                              │
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────────┐│
-│  │ ![Platform Badge](https://platform.dev/badge/johndoe.svg)   ││
+│  │ ![First Contribution Playground Badge](https://abdullahoztoprak.github.io/first-contribution-playground/badge/johndoe.svg)   ││
 │  └─────────────────────────────────────────────────────────────┘│
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -678,11 +678,11 @@ Returns dynamic SVG with:
 
 ```markdown
 <!-- For GitHub Profile README -->
-![Platform Contributor](https://abdullahoztoprak.github.io/Platform/api/badge/johndoe.svg)
+![First Contribution Playground Contributor](https://abdullahoztoprak.github.io/first-contribution-playground/api/badge/johndoe.svg)
 
 <!-- For CV/Portfolio -->
-<a href="https://platform.dev/contributor/johndoe">
-  <img src="https://platform.dev/api/badge/johndoe.svg" alt="Platform Contributor" />
+<a href="https://abdullahoztoprak.github.io/first-contribution-playground/contributor/johndoe">
+  <img src="https://abdullahoztoprak.github.io/first-contribution-playground/api/badge/johndoe.svg" alt="First Contribution Playground Contributor" />
 </a>
 ```
 
@@ -719,9 +719,9 @@ GET /api/badge/{username}.svg
 ```yaml
 openapi: 3.0.0
 info:
-  title: Platform API
+  title: First Contribution Playground API
   version: 1.0.0
-  description: API for the Platform contribution system
+  description: API for the First Contribution Playground contribution system
 
 paths:
   /api/games:
@@ -874,7 +874,7 @@ Phase 2: Static + Edge
 
         ↓ (5,000+ contributors)
 
-Phase 3: Hybrid Platform
+Phase 3: Hybrid First Contribution Playground
 ├── Vercel + Database
 ├── Real-time leaderboard
 ├── User dashboards
@@ -898,7 +898,7 @@ Phase 3: Hybrid Platform
 - [ ] Deploy to GitHub Pages
 - [ ] Write deployment documentation
 
-**Deliverable:** Live static website at `abdullahoztoprak.github.io/Platform`
+**Deliverable:** Live static website at `abdullahoztoprak.github.io/first-contribution-playground`
 
 ### Phase 2 — Advanced Gamification (Weeks 5-8)
 
@@ -912,7 +912,7 @@ Phase 3: Hybrid Platform
 
 **Deliverable:** Full gamification system with anti-abuse measures
 
-### Phase 3 — Community Platform (Weeks 9-12)
+### Phase 3 — Community Playground (Weeks 9-12)
 
 - [ ] Migrate to Vercel
 - [ ] Add GitHub OAuth

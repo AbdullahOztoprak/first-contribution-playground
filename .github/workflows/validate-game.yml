@@ -170,7 +170,7 @@ jobs:
               body += '> 💡 Community members can vote on your game using 👍 reactions on this PR!';
 
             } else {
-              body = '## ❌ Game Validation Failed\n\nPlease fix the following issues and push again:\n\n';
+              body = '## ❌ Game Validation Needs Changes\n\nThanks for submitting a game. One check failed, but no worries — this usually means a small structure, metadata, or safety rule needs attention.\n\nPlease fix the following items and push again:\n\n';
 
               try {
                 const errors = fs.readFileSync('/tmp/validation_errors.txt', 'utf8').trim();
@@ -260,5 +260,5 @@ jobs:
       - name: Fail if validation failed
         if: steps.validate.outputs.valid == 'false'
         run: |
-          echo "::error::Game submission validation failed. See PR comments for details."
+          echo "::error::Game submission needs changes. See PR comments for details."
           exit 1

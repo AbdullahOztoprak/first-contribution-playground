@@ -356,7 +356,7 @@ export function middleware(request: NextRequest) {
     if (process.env.NODE_ENV === 'production') {
       const allowedOrigins = [
         `https://${host}`,
-        'https://platform.dev', // Your domain
+        'https://abdullahoztoprak.github.io/first-contribution-playground', // Your domain
       ];
       
       if (origin && !allowedOrigins.includes(origin)) {
@@ -404,7 +404,7 @@ async function isSessionBlocked(userId: string): Promise<boolean> {
 # .env.production.local (production - NEVER commit)
 
 # NextAuth Core
-NEXTAUTH_URL=https://platform.dev
+NEXTAUTH_URL=https://abdullahoztoprak.github.io/first-contribution-playground
 NEXTAUTH_SECRET=<openssl rand -base64 32>
 
 # GitHub OAuth App
@@ -413,7 +413,7 @@ GITHUB_CLIENT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # Upstream Repository
 GITHUB_UPSTREAM_OWNER=AbdullahOztoprak
-GITHUB_UPSTREAM_REPO=Platform
+GITHUB_UPSTREAM_REPO=first-contribution-playground
 
 # Upstash Redis (rate limiting)
 UPSTASH_REDIS_REST_URL=https://xxx.upstash.io
@@ -432,7 +432,7 @@ SENTRY_DSN=https://xxx@sentry.io/xxx
 
 In GitHub OAuth App settings:
 ```
-Authorization callback URL: https://platform.dev/api/auth/callback/github
+Authorization callback URL: https://abdullahoztoprak.github.io/first-contribution-playground/api/auth/callback/github
 ```
 
 **For Vercel Preview Deployments:**
@@ -734,7 +734,7 @@ export async function createPullRequest(
   const { data: commit } = await octokit.git.createCommit({
     owner: username,
     repo: UPSTREAM_REPO,
-    message: `feat(game): add ${gameName}\n\n${description}\n\nSubmitted via Platform Browser IDE`,
+    message: `feat(game): add ${gameName}\n\n${description}\n\nSubmitted via First Contribution Playground Browser IDE`,
     tree: tree.sha,
     parents: [baseSha],
   });
@@ -782,7 +782,7 @@ ${params.files.map(f => `- \`${f.path}\``).join('\n')}
 
 ---
 
-*Submitted via [Platform Browser IDE](https://platform.dev/editor)*
+*Submitted via [First Contribution Playground Browser IDE](https://abdullahoztoprak.github.io/first-contribution-playground/editor)*
 *Auto-generated PR - validation will run automatically*
 `;
 }

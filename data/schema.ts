@@ -1,5 +1,5 @@
 /**
- * Platform Data Schema
+ * First Contribution Playground Data Schema
  * TypeScript interfaces for all platform data structures
  * Used by both build scripts and web frontend
  */

@@ -1,10 +1,12 @@
-# 🤝 Contributing to Platform
+# Contributing to First Contribution Playground
 
 Thank you for your interest in contributing! This project is designed specifically for **junior developers** to make their first open-source contributions. Whether you're submitting a game or a translation, we've made the process as smooth as possible.
 
 ## 📋 Table of Contents
 
 - [Code of Conduct](#code-of-conduct)
+- [What Should I Contribute?](#what-should-i-contribute)
+- [No Local Setup Path](#no-local-setup-path)
 - [How Can I Contribute?](#how-can-i-contribute)
   - [🎮 Submitting a Game](#-submitting-a-game)
   - [🌍 Submitting a Translation](#-submitting-a-translation)
@@ -18,6 +20,42 @@ Thank you for your interest in contributing! This project is designed specifical
 ## Code of Conduct
 
 This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold a welcoming, inclusive, and harassment-free environment.
+
+---
+
+## What Should I Contribute?
+
+| If this sounds like you... | Start with |
+|---|---|
+| I do not code yet | README translation or docs improvement |
+| I know basic Python | Small CLI game |
+| I know HTML/CSS/JavaScript | Small web game |
+| I like writing | Beginner guide, docs, or issue improvements |
+| I want to learn GitHub Actions | Workflow docs or CI error message improvements |
+| I found a bug | Open a bug issue with clear steps |
+
+The best first move is to pick an open issue with `good first issue`, then comment:
+
+```text
+I'd like to work on this
+```
+
+A maintainer can confirm the issue is available. If an issue is marked `claimed` and there is no activity for 7 days, it may be released for someone else.
+
+---
+
+## No Local Setup Path
+
+For docs and translation tasks, you can contribute entirely from GitHub:
+
+1. Open the file in the GitHub web UI.
+2. Click the pencil icon.
+3. Make your changes.
+4. Choose **Create a new branch**.
+5. Click **Propose changes**.
+6. Fill in the pull request template.
+
+This is the easiest path for first-time contributors.
 
 ---
 
@@ -66,8 +104,9 @@ We accept three types of games:
 1. **Fork** this repository
 2. **Create a new branch**: `git checkout -b translation/language-code`
 3. **Create or find the file** to translate in `translations/`
-4. **Use the correct naming convention**: `FILENAME.LANG_CODE.md`
-   - Example: `README.tr.md` for Turkish, `README.es.md` for Spanish
+4. **Use the correct naming convention** inside the matching folder:
+   - Example: `translations/README/README.tr.md` for Turkish
+   - Example: `translations/README/README.es.md` for Spanish
 5. **Submit a Pull Request** using the **Translation** template
 
 ---
@@ -107,7 +146,7 @@ We accept three types of games:
 4. **Address feedback** if changes are requested
 5. **Celebrate** when merged! 🎉
 
-### PR Labels (Auto-assigned)
+### PR Labels
 
 | Label | Meaning |
 |-------|---------|
@@ -117,6 +156,10 @@ We accept three types of games:
 | `✅ ready-to-merge` | All checks passed |
 | `❌ validation-failed` | Checks did not pass |
 | `🔒 needs-security-review` | Flagged for security review |
+| `claimed` | Someone is working on this issue |
+| `available` | This issue is ready to be picked up |
+| `no-code` | Can be completed without writing code |
+| `10-minute-task` | Very small contribution |
 
 ---
 
@@ -129,7 +172,7 @@ Short checklist when your pull request fails automated checks:
 - **File/line limits** — Ensure your submission has ≤ 5 files and ≤ 500 total lines.
 - **Security restrictions** — Remove any usage of `eval`, `exec`, subprocess/network calls or access beyond the game folder.
 
-If you're unsure, paste the CI failure output into a Discussion or open an Issue (link in Getting Help). A maintainer will help triage.
+If you're unsure, paste the CI failure output into a Discussion or open an Issue (link in Getting Help). A maintainer will help triage. One failed check does not mean you failed; it usually means the automation found something fixable.
 
 
 ## Gamification & Leaderboard
@@ -165,10 +208,8 @@ This will update the files in your working tree for local testing only — do no
 
 - 💬 Open a [Discussion](../../discussions) for questions
 - 🐛 Use [Issue Templates](../../issues/new/choose) for bugs or requests
- - 💬 Open a [Discussion](https://github.com/AbdullahOztoprak/Platform/discussions) for questions
- - 🐛 Use [Issue Templates](https://github.com/AbdullahOztoprak/Platform/issues/new/choose) for bugs or requests
 - 📖 Read the [Beginner's Guide](docs/BEGINNER_GUIDE.md) for step-by-step instructions
 
 ---
 
-**Welcome aboard! Every expert was once a beginner.** 🚀
+**Welcome aboard. Start small, ask questions, and keep going.**

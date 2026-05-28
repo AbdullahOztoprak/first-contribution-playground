@@ -1,6 +1,6 @@
-# 🗺️ Platform Roadmap
+# 🗺️ First Contribution Playground Roadmap
 
-This document outlines the vision and future plans for Platform.
+This document outlines the vision and future plans for First Contribution Playground.
 
 ## Current Status: v1.0 — Foundation ✅
 
@@ -38,7 +38,7 @@ This document outlines the vision and future plans for Platform.
 
 ---
 
-## Phase 3: Web Platform (Q3 2026)
+## Phase 3: Web Playground (Q3 2026)
 
 ### 🎯 Goals
 - Launch a web frontend where users can browse and play games
@@ -91,7 +91,7 @@ This document outlines the vision and future plans for Platform.
 
 ---
 
-## Phase 4: Portfolio Platform (Q4 2026)
+## Phase 4: Portfolio Playground (Q4 2026)
 
 ### 🎯 Goals
 - Transform into a portfolio-ready platform for junior developers
@@ -123,20 +123,20 @@ This document outlines the vision and future plans for Platform.
 
 ### 📋 Ideas
 - [ ] Partner with coding bootcamps and universities
-- [ ] Create "Platform Certified Contributor" program
+- [ ] Create "First Contribution Playground Certified Contributor" program
 - [ ] Add mentorship matching (experienced ↔ junior)
 - [ ] Multi-repo support (different project types)
 - [ ] Sponsor/rewards program for top contributors
 - [ ] AI-powered code review assistance for submissions
 - [ ] Game ratings and comments system
-- [ ] Annual "Platform Awards" for best contributions
+- [ ] Annual "First Contribution Playground Awards" for best contributions
 
 ---
 
 ## How to Suggest Changes to the Roadmap
 
-1. Open a [Feature Request](https://github.com/AbdullahOztoprak/Platform/issues/new?template=feature-request.yml)
-2. Or start a [Discussion](https://github.com/AbdullahOztoprak/Platform/discussions)
+1. Open a [Feature Request](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new?template=feature-request.yml)
+2. Or start a [Discussion](https://github.com/AbdullahOztoprak/first-contribution-playground/discussions)
 3. Community feedback shapes our priorities!
 
 ---

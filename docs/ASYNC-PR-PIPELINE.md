@@ -1067,7 +1067,7 @@ export class PRPipeline {
     const { data: commit } = await this.octokit.git.createCommit({
       owner: username,
       repo: UPSTREAM_REPO,
-      message: `feat(game): add ${gameName}\n\n${description}\n\nSubmitted via Platform Browser IDE`,
+      message: `feat(game): add ${gameName}\n\n${description}\n\nSubmitted via First Contribution Playground Browser IDE`,
       tree: this.state.treeSha!,
       parents: [this.state.baseSha!],
     });
@@ -1131,7 +1131,7 @@ ${description || 'No description provided.'}
 
 ---
 
-*Submitted via [Platform Browser IDE](https://platform.dev/editor)*
+*Submitted via [First Contribution Playground Browser IDE](https://abdullahoztoprak.github.io/first-contribution-playground/editor)*
 *This is an automatically generated PR - validation will run automatically*
 `;
   }

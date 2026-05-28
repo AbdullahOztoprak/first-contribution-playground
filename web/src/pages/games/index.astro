@@ -40,14 +40,14 @@ const languages = [...new Set(games.map(g => g.language))].sort();
           <!-- Search -->
           <div>
             <label class="block text-sm text-dark-muted mb-2">Search</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="search"
               placeholder="Search games..."
               class="w-full px-4 py-2 bg-dark-bg border border-dark-border rounded-lg focus:outline-none focus:border-primary-500"
             />
           </div>
-          
+
           <!-- Category Filter -->
           <div>
             <label class="block text-sm text-dark-muted mb-2">Category</label>
@@ -58,7 +58,7 @@ const languages = [...new Set(games.map(g => g.language))].sort();
               ))}
             </select>
           </div>
-          
+
           <!-- Difficulty Filter -->
           <div>
             <label class="block text-sm text-dark-muted mb-2">Difficulty</label>
@@ -69,7 +69,7 @@ const languages = [...new Set(games.map(g => g.language))].sort();
               ))}
             </select>
           </div>
-          
+
           <!-- Language Filter -->
           <div>
             <label class="block text-sm text-dark-muted mb-2">Language</label>
@@ -87,14 +87,14 @@ const languages = [...new Set(games.map(g => g.language))].sort();
       <div id="games-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {games.length > 0 ? (
           games.map(game => (
-            <div 
-              class="game-card" 
+            <div
+              class="game-card"
               data-name={game.name.toLowerCase()}
               data-category={game.category}
               data-difficulty={game.difficulty}
               data-language={game.language}
             >
-              <GameCard 
+              <GameCard
                 id={game.id}
                 name={game.name}
                 author={game.author}
@@ -110,7 +110,7 @@ const languages = [...new Set(games.map(g => g.language))].sort();
           <div class="col-span-full text-center py-16 bg-dark-card rounded-xl border border-dark-border">
             <p class="text-4xl mb-4">🎮</p>
             <p class="text-dark-muted mb-4">No games yet. Be the first to contribute!</p>
-            <a href="https://github.com/AbdullahOztoprak/Platform/blob/main/CONTRIBUTING.md" 
+            <a href="https://github.com/AbdullahOztoprak/first-contribution-playground/blob/main/CONTRIBUTING.md"
                class="inline-block px-6 py-2 bg-primary-500 hover:bg-primary-600 rounded-lg transition">
               Submit a Game
             </a>
@@ -134,28 +134,28 @@ const languages = [...new Set(games.map(g => g.language))].sort();
     const language = document.getElementById('language') as HTMLSelectElement;
     const grid = document.getElementById('games-grid');
     const noResults = document.getElementById('no-results');
-    
+
     function filterGames() {
       const searchTerm = search.value.toLowerCase();
       const selectedCategory = category.value;
       const selectedDifficulty = difficulty.value;
       const selectedLanguage = language.value;
-      
+
       const cards = document.querySelectorAll('.game-card');
       let visibleCount = 0;
-      
+
       cards.forEach(card => {
         const el = card as HTMLElement;
         const name = el.dataset.name || '';
         const cat = el.dataset.category || '';
         const diff = el.dataset.difficulty || '';
         const lang = el.dataset.language || '';
-        
+
         const matchesSearch = name.includes(searchTerm);
         const matchesCategory = !selectedCategory || cat === selectedCategory;
         const matchesDifficulty = !selectedDifficulty || diff === selectedDifficulty;
         const matchesLanguage = !selectedLanguage || lang === selectedLanguage;
-        
+
         if (matchesSearch && matchesCategory && matchesDifficulty && matchesLanguage) {
           el.classList.remove('hidden');
           visibleCount++;
@@ -163,12 +163,12 @@ const languages = [...new Set(games.map(g => g.language))].sort();
           el.classList.add('hidden');
         }
       });
-      
+
       if (noResults) {
         noResults.classList.toggle('hidden', visibleCount > 0 || cards.length === 0);
       }
     }
-    
+
     search?.addEventListener('input', filterGames);
     category?.addEventListener('change', filterGames);
     difficulty?.addEventListener('change', filterGames);
