@@ -1,6 +1,6 @@
 # Rock Paper Scissors 🪨📄✂️
 
-**Author:** @platform-bot  
+**Author:** demo-contributor
 **Category:** Web Game  
 **Difficulty:** Beginner  
 **Language:** HTML / CSS / JavaScript

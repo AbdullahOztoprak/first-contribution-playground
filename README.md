@@ -46,6 +46,27 @@ The goal is not to be perfect. The goal is to learn the workflow: fork, branch, 
 
 ---
 
+## Maintainer Highlights
+
+This project is also a small open-source maintenance system, not just a collection of files:
+
+- Automated PR validation for games, translations, generated data, and security rules
+- Beginner-friendly issue labels that GitHub can surface to first-time contributors
+- GitHub Pages site generated from repository data
+- Generated game, contributor, and leaderboard indexes
+- Anti-abuse checks and friendly CI comments for new contributors
+- Separate workflows for translations, game submissions, labels, and community onboarding
+
+---
+
+## For Recruiters
+
+This repository demonstrates open-source maintenance, contributor onboarding, CI automation, documentation design, GitHub Actions, and community workflow thinking.
+
+The goal is intentionally practical: help beginners make small real pull requests while keeping the repository structured, validated, and easy to review.
+
+---
+
 ## Our Promise to Beginners
 
 - No question is too small.
@@ -147,8 +168,8 @@ Game submissions should stay small: max 5 files and max 500 lines.
 | Game | Type | Author | Language | Difficulty |
 |---|---|---|---|---|
 | [Dice Roller](games/cli/dice-roller/) | CLI | @AbdullahOztoprak | Python | Beginner |
-| [Number Guessing](games/cli/example-number-guessing/) | CLI | @platform-bot | Python | Beginner |
-| [Rock Paper Scissors](games/web/example-rock-paper-scissors/) | Web | @platform-bot | HTML/CSS/JS | Beginner |
+| [Number Guessing](games/cli/example-number-guessing/) | CLI | demo-contributor | Python | Beginner |
+| [Rock Paper Scissors](games/web/example-rock-paper-scissors/) | Web | demo-contributor | HTML/CSS/JS | Beginner |
 
 Want to add your own? Start with the [game contribution guide](CONTRIBUTING.md#submitting-a-game).
 

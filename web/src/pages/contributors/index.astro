@@ -14,6 +14,9 @@ try {
   console.log('Contributors data not found, using defaults');
 }
 
+const demoAuthors = new Set(['demo-contributor', 'platform-bot']);
+contributors = contributors.filter(contributor => !demoAuthors.has(String(contributor.username).toLowerCase()));
+
 // Sort by XP (descending)
 contributors.sort((a, b) => b.xp - a.xp);
 ---

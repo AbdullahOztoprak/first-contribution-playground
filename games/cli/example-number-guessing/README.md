@@ -1,6 +1,6 @@
 # 🎮 Number Guessing Game
 
-**Author:** @platform-bot  
+**Author:** demo-contributor
 **Category:** CLI Game  
 **Difficulty:** Beginner  
 **Language:** Python  

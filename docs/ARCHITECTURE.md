@@ -7,6 +7,25 @@
 
 ## PART 1 — Product Vision
 
+### Production Data Flow
+
+The public site is built from repository-owned data, so the flow stays reviewable and reproducible:
+
+```text
+games/ and translations/
+  -> pull request templates
+  -> CI validation and security checks
+  -> merge to main
+  -> scripts/build-data.ts
+  -> data/games.json, data/contributors.json, data/leaderboard.json
+  -> GitHub Pages build
+  -> games, contributors, and leaderboard pages
+```
+
+Demo game authors such as `demo-contributor` are allowed in example metadata, but they are excluded from contributor and leaderboard rankings so the public stats do not imply fake community activity.
+
+---
+
 ### Problem Statement
 
 **Junior developers face a "contribution gap":**

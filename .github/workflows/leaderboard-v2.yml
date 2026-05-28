@@ -106,6 +106,21 @@ jobs:
               leaderboardData = JSON.parse(fs.readFileSync('data/leaderboard.json', 'utf8'));
             } catch {}
 
+            const buildHistory = (existing, currentWeekId) => {
+              const weeks = [existing.current_week, ...(existing.history || [])].filter(Boolean);
+              const seen = new Set();
+              const history = [];
+
+              for (const week of weeks) {
+                if (!week.week_id || week.week_id === currentWeekId || seen.has(week.week_id)) continue;
+                seen.add(week.week_id);
+                history.push(week);
+                if (history.length >= 12) break;
+              }
+
+              return history;
+            };
+
             // Build new leaderboard
             const weekId = `${now.getFullYear()}-W${Math.ceil((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000))}`;
             const newLeaderboard = {
@@ -120,7 +135,7 @@ jobs:
                 total_games: entries.length,
               },
               all_time_top: entries.slice(0, 10),
-              history: [leaderboardData.current_week, ...(leaderboardData.history || [])].filter(Boolean).slice(0, 12),
+              history: buildHistory(leaderboardData, weekId),
             };
 
             fs.writeFileSync('data/leaderboard.json', JSON.stringify(newLeaderboard, null, 2));
