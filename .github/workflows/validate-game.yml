@@ -189,31 +189,34 @@ jobs:
               body += '---\n📖 See the [Contributing Guide](../CONTRIBUTING.md) for submission rules.';
             }
 
-            // Find existing bot comment to update
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const botComment = comments.data.find(c =>
-              c.user.type === 'Bot' && c.body.includes('Game Validation')
-            );
-
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: body,
-              });
-            } else {
-              await github.rest.issues.createComment({
+            try {
+              const comments = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: body,
               });
+
+              const botComment = comments.data.find(c =>
+                c.user.type === 'Bot' && c.body.includes('Game Validation')
+              );
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: body,
+                });
+              }
+            } catch (e) {
+              core.warning(`Could not post game validation comment: ${e.message}`);
             }
 
       - name: Apply validation label

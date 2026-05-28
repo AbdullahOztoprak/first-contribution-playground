@@ -53,7 +53,7 @@ jobs:
 
             const body = `## 🎉 Welcome @${author}!
 
-            Thank you for your **first contribution** to Platform! We're excited to have you here.
+            Thank you for your **first contribution** to First Contribution Playground! We're excited to have you here.
 
             ### What happens next?
 
@@ -78,12 +78,16 @@ jobs:
             ---
             *Every expert was once a beginner. You're doing great!* 🚀`;
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: body,
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            } catch (e) {
+              core.warning(`Could not post welcome comment: ${e.message}`);
+            }
 
       - name: Welcome returning contributor
         if: steps.check.outputs.is_first_time == 'false'
@@ -101,12 +105,16 @@ jobs:
 
             Keep up the great work! 🌟`;
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: body,
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            } catch (e) {
+              core.warning(`Could not post welcome-back comment: ${e.message}`);
+            }
 
   welcome-issue:
     name: Welcome Issue Author
@@ -149,9 +157,13 @@ jobs:
               body = `Thanks for opening this issue @${author}! A maintainer will look into it soon.`;
             }
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: body,
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            } catch (e) {
+              core.warning(`Could not post issue guide comment: ${e.message}`);
+            }

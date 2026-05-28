@@ -84,19 +84,27 @@ jobs:
             // ── Take action ──
             if (isSpam) {
               // Close the PR
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
-                state: 'closed',
-              });
+              try {
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: context.payload.pull_request.number,
+                  state: 'closed',
+                });
+              } catch (e) {
+                core.warning(`Could not close flagged PR: ${e.message}`);
+              }
 
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                body: `## 🚫 PR Automatically Closed\n\nThis PR was flagged as potential spam and has been automatically closed.\n\n**Reasons:**\n${reasons.map(r => `- ${r}`).join('\n')}\n\nIf this is a mistake, please contact a maintainer to reopen it.`,
-              });
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  body: `## 🚫 PR Automatically Closed\n\nThis PR was flagged as potential spam and has been automatically closed.\n\n**Reasons:**\n${reasons.map(r => `- ${r}`).join('\n')}\n\nIf this is a mistake, please contact a maintainer to reopen it.`,
+                });
+              } catch (e) {
+                core.warning(`Could not post spam comment: ${e.message}`);
+              }
 
               try {
                 await github.rest.issues.getLabel({
@@ -122,10 +130,14 @@ jobs:
 
             } else if (reasons.length > 0) {
               // Just warn, don't close
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                body: `## ⚠️ Automated Review Notes\n\n${reasons.map(r => `- ${r}`).join('\n')}\n\nThese are non-blocking warnings. A maintainer will review.`,
-              });
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  body: `## ⚠️ Automated Review Notes\n\n${reasons.map(r => `- ${r}`).join('\n')}\n\nThese are non-blocking warnings. A maintainer will review.`,
+                });
+              } catch (e) {
+                core.warning(`Could not post anti-spam warning: ${e.message}`);
+              }
             }

@@ -50,7 +50,7 @@ jobs:
               body = [
                 `## 🎉 Welcome @${author}!`,
                 '',
-                'Thank you for your **first contribution** to Platform!',
+                'Thank you for your **first contribution** to First Contribution Playground!',
                 '',
                 '### What happens next?',
                 '1. 🤖 Automated checks will validate your submission',
@@ -74,12 +74,16 @@ jobs:
               ].join('\n');
             }
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: number,
-              body,
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: number,
+                body,
+              });
+            } catch (e) {
+              core.warning(`Could not post welcome comment: ${e.message}`);
+            }
 
   # ─────────────────────────────────────────────────────────
   # ANTI-SPAM: Rate limit and abuse detection
@@ -134,25 +138,37 @@ jobs:
 
             // Take action on severe issues
             if (issues.some(i => i.includes('No file changes') || i.includes('Rate limit'))) {
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-                state: 'closed',
-              });
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: `## 🚫 PR Closed\n\nThis PR was flagged:\n${issues.map(i => `- ${i}`).join('\n')}\n\nContact a maintainer if this is a mistake.`,
-              });
+              try {
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                  state: 'closed',
+                });
+              } catch (e) {
+                core.warning(`Could not close flagged PR: ${e.message}`);
+              }
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: `## 🚫 PR Closed\n\nThis PR was flagged:\n${issues.map(i => `- ${i}`).join('\n')}\n\nContact a maintainer if this is a mistake.`,
+                });
+              } catch (e) {
+                core.warning(`Could not post anti-spam comment: ${e.message}`);
+              }
             } else if (issues.length > 0) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: `## ⚠️ Review Notes\n\n${issues.map(i => `- ${i}`).join('\n')}\n\nA maintainer will review.`,
-              });
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: `## ⚠️ Review Notes\n\n${issues.map(i => `- ${i}`).join('\n')}\n\nA maintainer will review.`,
+                });
+              } catch (e) {
+                core.warning(`Could not post anti-spam note: ${e.message}`);
+              }
             }
 
   # ─────────────────────────────────────────────────────────
