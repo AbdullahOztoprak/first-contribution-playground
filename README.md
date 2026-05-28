@@ -167,7 +167,7 @@ first-contribution-playground/
 
 1. Fork this repository.
 2. Create a branch: `git checkout -b game/your-game-name`.
-3. Add your game in `games/<category>/your-game-name/`.
+3. Add your game in `games/{category}/your-game-name/`.
 4. Include:
    - `README.md` with how to play and what you learned
    - `metadata.json` with game info
