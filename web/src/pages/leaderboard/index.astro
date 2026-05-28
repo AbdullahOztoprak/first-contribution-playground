@@ -15,7 +15,14 @@ try {
 }
 
 const currentWeek = leaderboard.current_week || { entries: [], week_start: '', week_end: '' };
-const history = leaderboard.history || [];
+const history = [];
+const seenWeeks = new Set<string>();
+
+for (const week of leaderboard.history || []) {
+  if (!week?.week_id || week.week_id === currentWeek.week_id || seenWeeks.has(week.week_id)) continue;
+  seenWeeks.add(week.week_id);
+  history.push(week);
+}
 ---
 
 <BaseLayout title="Leaderboard" description="Weekly game rankings based on community votes">

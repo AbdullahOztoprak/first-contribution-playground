@@ -1,6 +1,6 @@
 """
 Number Guessing Game - Example Submission
-Author: @platform-bot
+Author: demo-contributor
 Category: CLI Game
 Difficulty: Beginner
 

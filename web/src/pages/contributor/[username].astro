@@ -29,12 +29,6 @@ if (!contributor) {
 
 const baseUrl = import.meta.env.BASE_URL;
 
-// XP progress to next level
-const levelThresholds = [0, 100, 300, 600, 1000, 2000, 5000, 10000];
-const currentLevelXP = levelThresholds[contributor.level - 1] || 0;
-const nextLevelXP = levelThresholds[contributor.level] || levelThresholds[levelThresholds.length - 1];
-const progressPercent = Math.min(100, ((contributor.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100);
-
 // Badge rarity colors
 const rarityColors: Record<string, string> = {
   common: 'border-gray-500',
@@ -77,21 +71,10 @@ export async function getStaticPaths() {
           
           <div class="flex-1 text-center md:text-left">
             <h1 class="text-3xl font-bold mb-2">@{contributor.username}</h1>
-            <p class="text-dark-muted mb-4">Level {contributor.level} Contributor</p>
-            
-            <!-- XP Progress -->
-            <div class="max-w-md mx-auto md:mx-0">
-              <div class="flex justify-between text-sm text-dark-muted mb-1">
-                <span>{contributor.xp.toLocaleString()} XP</span>
-                <span>{nextLevelXP.toLocaleString()} XP</span>
-              </div>
-              <div class="h-3 bg-dark-bg rounded-full overflow-hidden">
-                <div 
-                  class="h-full bg-gradient-to-r from-primary-500 to-cyan-500 rounded-full transition-all"
-                  style={`width: ${progressPercent}%`}
-                ></div>
-              </div>
-            </div>
+            <p class="text-dark-muted mb-4">Contributor profile generated from repository data.</p>
+            <p class="text-sm text-dark-muted">
+              First contribution: {contributor.first_contribution || 'Not recorded yet'}
+            </p>
           </div>
           
           <div class="text-center">

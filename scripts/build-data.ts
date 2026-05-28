@@ -36,6 +36,11 @@ import {
 const ROOT = path.resolve(__dirname, '..');
 const GAMES_DIR = path.join(ROOT, 'games');
 const DATA_DIR = path.join(ROOT, 'data');
+const DEMO_AUTHORS = new Set(['demo-contributor', 'platform-bot']);
+
+function isDemoAuthor(username: string): boolean {
+  return DEMO_AUTHORS.has(username.toLowerCase());
+}
 
 function loadExistingGames(): Map<string, Partial<GameMetadata>> {
   const existing = new Map<string, Partial<GameMetadata>>();
@@ -150,6 +155,8 @@ function buildContributorIndex(games: GameMetadata[]): ContributorIndex {
 
   // Aggregate from games
   for (const game of games) {
+    if (isDemoAuthor(game.author)) continue;
+
     const username = game.author;
     if (!contributorMap.has(username)) {
       contributorMap.set(username, createEmptyContributor(username));
@@ -265,7 +272,7 @@ function buildLeaderboard(games: GameMetadata[]): LeaderboardData {
 
   // Build current week entries (votes come from GitHub Actions workflow)
   const entries: LeaderboardEntry[] = games
-    .filter(g => g.votes && g.votes > 0)
+    .filter(g => !isDemoAuthor(g.author) && g.votes && g.votes > 0)
     .map((g, i) => ({
       rank: 0,
       username: g.author,
@@ -295,11 +302,7 @@ function buildLeaderboard(games: GameMetadata[]): LeaderboardData {
   // Build all-time top 10
   const allTimeTop = [...entries].slice(0, 10);
 
-  // Preserve history
-  let history: WeeklyLeaderboard[] = existingData?.history || [];
-  if (history.length > 0 && history[0].week_id !== weekId) {
-    history = [existingData!.current_week, ...history].slice(0, 12);
-  }
+  const history = buildLeaderboardHistory(existingData, weekId);
 
   return {
     version: 1,
@@ -308,6 +311,27 @@ function buildLeaderboard(games: GameMetadata[]): LeaderboardData {
     all_time_top: allTimeTop,
     history,
   };
+}
+
+function buildLeaderboardHistory(existingData: LeaderboardData | null, currentWeekId: string): WeeklyLeaderboard[] {
+  if (!existingData) return [];
+
+  const weeks = [
+    existingData.current_week,
+    ...(existingData.history || []),
+  ].filter(Boolean);
+
+  const seen = new Set<string>();
+  const history: WeeklyLeaderboard[] = [];
+
+  for (const week of weeks) {
+    if (!week.week_id || week.week_id === currentWeekId || seen.has(week.week_id)) continue;
+    seen.add(week.week_id);
+    history.push(week);
+    if (history.length >= 12) break;
+  }
+
+  return history;
 }
 
 function getWeekStart(date: Date): string {

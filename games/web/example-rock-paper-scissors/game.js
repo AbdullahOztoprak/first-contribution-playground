@@ -1,6 +1,6 @@
 /**
  * Rock Paper Scissors - Example Web Game Submission
- * Author: @platform-bot
+ * Author: demo-contributor
  * Category: Web Game
  * Difficulty: Beginner
  */
