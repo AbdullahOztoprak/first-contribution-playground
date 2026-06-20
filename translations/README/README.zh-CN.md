@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-<h1 align="center">🎮 First Contribution Playground</h1>
-=======
 <h1 align="center">First Contribution Playground</h1>
->>>>>>> Stashed changes
 <p align="center">
   <strong>一个小型开源练习场，帮助初学者完成他们第一次真正的 pull request。</strong>
 </p>
@@ -10,43 +6,20 @@
   从一个微小的文档修正、README 翻译、入门小游戏，或一个小的 UI 改进开始。
 </p>
 <p align="center">
-<<<<<<< Updated upstream
-  <a href="https://abdullahoztoprak.github.io/first-contribution-playground">🌐 在线站点</a> •
-  <a href="#-快速开始">快速开始</a> •
-  <a href="#-如何贡献">贡献方式</a> •
-  <a href="#-游戏化机制">游戏化机制</a> •
-=======
   <a href="https://abdullahoztoprak.github.io/first-contribution-playground">在线站点</a> |
   <a href="https://github.com/AbdullahOztoprak/first-contribution-playground/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">适合新手的 Issue</a> |
   <a href="#选择你的第一次贡献">选择贡献路径</a> |
->>>>>>> Stashed changes
   <a href="../../CONTRIBUTING.md">贡献指南</a>
 </p>
 <p align="center">
   <img src="https://img.shields.io/github/stars/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="Star 数">
   <img src="https://img.shields.io/github/forks/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="Fork 数">
   <img src="https://img.shields.io/github/contributors/AbdullahOztoprak/first-contribution-playground?style=flat-square" alt="贡献者数">
-<<<<<<< Updated upstream
-=======
   <img src="https://img.shields.io/github/issues/AbdullahOztoprak/first-contribution-playground/good%20first%20issue?style=flat-square" alt="适合新手的 Issue 数">
->>>>>>> Stashed changes
 </p>
 
 ---
 
-<<<<<<< Updated upstream
-## 🚀 什么是 First Contribution Playground？
-
-**First Contribution Playground** 是一个基于 GitHub 的社区，帮助初级开发者通过以下方式完成自己的第一次开源贡献：
-
-- 🎮 **提交简单游戏** - CLI、网页或算法类游戏
-- 🌍 **参与翻译** - 帮助我们服务全球开发者
-- 🏆 **参与排行榜竞争** - 社区每周通过投票评选最佳游戏
-- 📊 **积累 GitHub 贡献记录** - 每个合并的 PR 都会出现在你的个人主页
-- 🎓 **学习真实协作流程** - PR、代码评审、CI/CD 和自动化
-
-> **每位专家都曾是初学者。** 这里就是你开源之旅的起点。
-=======
 ## 项目状态
 
 - 项目仍处于早期阶段，但有人持续维护
@@ -54,16 +27,11 @@
 - 接受翻译、游戏、文档和小型网站改进
 - 维护者活跃时，典型评审时间为 24-72 小时
 - 最适合的第一步：先挑一个 `good first issue`
->>>>>>> Stashed changes
 
 ---
 
 ## 这是什么项目？
 
-<<<<<<< Updated upstream
-```
-First Contribution Playground/
-=======
 **First Contribution Playground** 是一个对初学者友好的开源仓库，用来练习真实的 GitHub 协作流程。
 
 你可以通过以下方式参与贡献：
@@ -168,7 +136,6 @@ First Contribution Playground/
 
 ```text
 first-contribution-playground/
->>>>>>> Stashed changes
 ├── games/
 │   ├── cli/              # 终端游戏
 │   ├── web/              # 浏览器游戏
@@ -219,16 +186,9 @@ first-contribution-playground/
 | [Number Guessing](../../games/cli/example-number-guessing/) | CLI | demo-contributor | Python | 入门 |
 | [Rock Paper Scissors](../../games/web/example-rock-paper-scissors/) | Web | demo-contributor | HTML/CSS/JS | 入门 |
 
-<<<<<<< Updated upstream
-| 游戏 | 作者 | 语言 | 难度 |
-|------|--------|----------|------------|
-| [Rock Paper Scissors](../../games/web/example-rock-paper-scissors/) | @platform-bot | HTML/CSS/JS | Beginner |
-➡️ *想在这里看到你的游戏吗？[现在就提交！](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new?template=game-submission.yml)*
-=======
 `demo-contributor` 表示这是入门示例，用来展示期望的提交格式。示例作者不会被计入真实贡献者或排行榜统计。
 
 想添加你自己的游戏？从[游戏贡献指南](../../CONTRIBUTING.md#submitting-a-game)开始。
->>>>>>> Stashed changes
 
 ---
 
@@ -319,82 +279,15 @@ first-contribution-playground/
 
 ## 社区
 
-<<<<<<< Updated upstream
-| 语言 | README | 贡献指南 | 新手指南 |
-|----------|--------|-------------|-----------------|
-| 🇬🇧 English | ✅ | ✅ | ✅ |
-| 🇹🇷 Turkish | ❌ 需要帮助！ | ❌ | ❌ |
-| 🇪🇸 Spanish | ❌ 需要帮助！ | ❌ | ❌ |
-| 🇫🇷 French | ❌ 需要帮助！ | ❌ | ❌ |
-| 🇩🇪 German | ❌ 需要帮助！ | ❌ | ❌ |
-| 🇯🇵 Japanese | ❌ 需要帮助！ | ❌ | ❌ |
-| 🇧🇷 Portuguese | ❌ 需要帮助！ | ❌ | ❌ |
-
-➡️ *选一种语言，然后[开始翻译吧！](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new?template=translation.yml)*
-=======
 - 在 [Discussions](https://github.com/AbdullahOztoprak/first-contribution-playground/discussions) 中提问
 - 使用 [Issue 模板](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new/choose) 报告 Bug
 - 从[适合新手的 Issue](https://github.com/AbdullahOztoprak/first-contribution-playground/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)中挑一个小任务开始
->>>>>>> Stashed changes
 
 ---
 
 ## 许可证
 
-<<<<<<< Updated upstream
-- 📋 [贡献指南](../../CONTRIBUTING.md) - 规则、模板和流程
-- 📖 [Beginner's Guide](../../docs/BEGINNER_GUIDE.md) - 面向初次贡献者的分步说明
-- 🔒 [安全策略](../../SECURITY.md) - 我们如何保障提交安全
-- 📜 [行为准则](../../CODE_OF_CONDUCT.md) - 社区规范
-- 🗺️ [路线图](../../docs/ROADMAP.md) - 后续计划
-
----
-
-## 🛡️ 安全
-
-我们非常重视安全性。游戏提交会经过以下检查：
-
-- ✅ 扫描危险函数（`eval`、`exec`、`subprocess` 等）
-- ✅ 检查是否尝试网络访问
-- ✅ 校验是否只使用允许的文件类型
-- ✅ 限制每次提交最多 5 个文件、500 行代码
-- ✅ 在合并前由维护者进行审查
-
-完整细节见我们的[安全策略](../../SECURITY.md)。
-
----
-
-## 🗺️ 路线图
-
-- [x] 仓库核心结构
-- [x] GitHub Actions 自动化
-- [x] 游戏化与排行榜系统
-- [x] 反垃圾与安全防护
-- [x] 用于浏览游戏的 Web 前端界面
-- [ ] 贡献者个人主页与徽章（部分完成）
-- [ ] 游戏元数据 API
-- [ ] 托管式游戏游乐场（在浏览器中试玩游戏）
-- [ ] 每月社区挑战
-- [ ] 与 Discord/Slack 集成
-
-更多细节请查看完整的[路线图](../../docs/ROADMAP.md)。
-
----
-
-## ⭐ 给仓库点个 Star
-
-如果你觉得这个项目有用，请给这个仓库点个 ⭐ Star！这有助于让更多人发现 First Contribution Playground。
-
----
-
-## 📄 许可证
-
-本项目使用 [MIT License](../../LICENSE) 授权。
-
----
-=======
 本项目采用 [MIT License](../../LICENSE)。
->>>>>>> Stashed changes
 
 <p align="center">
   <strong>每一份贡献都很重要。从小处开始，学会工作流，然后继续成长。</strong>
