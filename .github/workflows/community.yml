@@ -1,6 +1,6 @@
 # ============================================================
 # Community: Welcome bot, anti-spam, stale management
-# Replaces: welcome.yml, anti-spam.yml, stale.yml
+# Handles welcome messages, abuse signals, and stale-item cleanup.
 # ============================================================
 name: Community
 
@@ -26,7 +26,7 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'issues'
     steps:
       - name: Welcome contributor
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const isPR = context.eventName === 'pull_request';
@@ -37,30 +37,33 @@ jobs:
               ? context.payload.pull_request.number 
               : context.payload.issue.number;
 
-            // Check if first-time contributor
-            const { data: items } = isPR
-              ? await github.rest.pulls.list({ owner: context.repo.owner, repo: context.repo.repo, state: 'all', per_page: 5 })
-              : await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'all', per_page: 5 });
-
-            const previousByAuthor = items.filter(i => i.user.login === author && i.number !== number);
-            const isFirstTime = previousByAuthor.length === 0;
+            const item = isPR ? context.payload.pull_request : context.payload.issue;
+            const isFirstTime = ['FIRST_TIMER', 'FIRST_TIME_CONTRIBUTOR'].includes(item.author_association);
 
             let body = '';
             if (isFirstTime) {
               body = [
                 `## 🎉 Welcome @${author}!`,
                 '',
-                'Thank you for your **first contribution** to First Contribution Playground!',
+                isPR
+                  ? 'Thank you for your **first contribution** to First Contribution Playground!'
+                  : 'Thank you for opening your first issue in First Contribution Playground!',
                 '',
                 '### What happens next?',
-                '1. 🤖 Automated checks will validate your submission',
-                `2. 📋 A maintainer will review${isPR ? ' your PR' : ''}`,
-                `3. ✅ Once approved, ${isPR ? "your contribution will be merged" : "we'll get back to you"}`,
+                isPR
+                  ? '1. 🤖 Automated checks will validate your submission'
+                  : '1. 📋 A maintainer will review the issue',
+                isPR
+                  ? '2. 📋 A maintainer will review your PR'
+                  : '2. 💬 We may ask for a little more detail',
+                isPR
+                  ? '3. ✅ Once approved, your contribution will be merged'
+                  : "3. ✅ We'll confirm the next step",
                 '',
                 '### Resources',
-                '- 📖 [Contributing Guide](../CONTRIBUTING.md)',
-                "- 📖 [Beginner's Guide](../docs/BEGINNER_GUIDE.md)",
-                '- 💬 [Discussions](../../discussions)',
+                `- 📖 [Contributing Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md)`,
+                `- 📖 [Beginner's Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/BEGINNER_GUIDE.md)`,
+                `- 💬 [Discussions](https://github.com/${context.repo.owner}/${context.repo.repo}/discussions)`,
                 '',
                 '*Every expert was once a beginner!* 🚀',
               ].join('\n');
@@ -70,7 +73,7 @@ jobs:
                 '',
                 'Great to see you contributing again! 🌟',
                 '',
-                '🤖 Automated checks are running now.',
+                isPR ? '🤖 Automated checks are running now.' : 'A maintainer will review the issue.',
               ].join('\n');
             }
 
@@ -94,7 +97,7 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - name: Check for spam
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const author = context.payload.pull_request.user.login;
@@ -115,10 +118,14 @@ jobs:
             }
 
             // 2. Account age
-            const { data: user } = await github.rest.users.getByUsername({ username: author });
-            const ageInDays = (Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24);
-            if (ageInDays < 3) {
-              issues.push(`New account: ${Math.floor(ageInDays)} days old`);
+            try {
+              const { data: user } = await github.rest.users.getByUsername({ username: author });
+              const ageInDays = (Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24);
+              if (ageInDays < 3) {
+                issues.push(`New account: ${Math.floor(ageInDays)} days old`);
+              }
+            } catch (e) {
+              core.warning(`Could not check account age: ${e.message}`);
             }
 
             // 3. Empty PR
@@ -136,35 +143,15 @@ jobs:
               issues.push('No file changes');
             }
 
-            // Take action on severe issues
-            if (issues.some(i => i.includes('No file changes') || i.includes('Rate limit'))) {
-              try {
-                await github.rest.pulls.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: prNumber,
-                  state: 'closed',
-                });
-              } catch (e) {
-                core.warning(`Could not close flagged PR: ${e.message}`);
-              }
+            // Flag suspicious activity for review. Closing a beginner's PR is a
+            // maintainer decision because rate and account-age signals can be noisy.
+            if (issues.length > 0) {
               try {
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: prNumber,
-                  body: `## 🚫 PR Closed\n\nThis PR was flagged:\n${issues.map(i => `- ${i}`).join('\n')}\n\nContact a maintainer if this is a mistake.`,
-                });
-              } catch (e) {
-                core.warning(`Could not post anti-spam comment: ${e.message}`);
-              }
-            } else if (issues.length > 0) {
-              try {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: prNumber,
-                  body: `## ⚠️ Review Notes\n\n${issues.map(i => `- ${i}`).join('\n')}\n\nA maintainer will review.`,
+                  body: `## ⚠️ Automated Review Notes\n\n${issues.map(i => `- ${i}`).join('\n')}\n\nThese signals are non-blocking. A maintainer will review them.`,
                 });
               } catch (e) {
                 core.warning(`Could not post anti-spam note: ${e.message}`);
@@ -179,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule'
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v11
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           stale-issue-message: 'This issue has been marked stale due to inactivity. It will close in 7 days.'
@@ -188,5 +175,5 @@ jobs:
           days-before-close: 7
           stale-issue-label: '⏰ stale'
           stale-pr-label: '⏰ stale'
-          exempt-issue-labels: '📌 pinned'
+          exempt-issue-labels: '📌 pinned,🌍 translation,good first issue,claimed'
           exempt-pr-labels: '📌 pinned'

@@ -11,7 +11,7 @@
 # Game submissions - require maintainer review
 /games/                 @AbdullahOztoprak
 
-# Translations - auto-merge handles these, but assign for visibility
+# Translations - require maintainer review
 /translations/          @AbdullahOztoprak
 
 # Workflow changes - restrict to owner only

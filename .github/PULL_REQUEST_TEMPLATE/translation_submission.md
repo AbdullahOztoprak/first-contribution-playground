@@ -33,4 +33,4 @@
 
 ---
 
-> ✅ Translation PRs can be **auto-merged** if all checks pass!
+> ✅ Automated checks provide feedback; a maintainer reviews every translation before merge.

@@ -26,6 +26,7 @@ const CONFIG = {
   allowedExtensions: ['.py', '.js', '.html', '.css', '.json', '.md', '.txt'],
   requiredFiles: ['README.md', 'metadata.json'],
   metadataRequiredFields: ['name', 'author', 'category', 'difficulty', 'language', 'description', 'entry_point'],
+  translationDirectories: ['README', 'CONTRIBUTING', 'guides'],
 };
 
 const SECURITY_PATTERNS = {
@@ -75,7 +76,7 @@ interface FileInfo {
 // VALIDATION FUNCTIONS
 // ============================================================
 
-function validateStructure(files: FileInfo[], gameDir: string): { errors: string[]; warnings: string[] } {
+function validateStructure(files: FileInfo[], gameDir: string, basePath: string): { errors: string[]; warnings: string[] } {
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -93,9 +94,8 @@ function validateStructure(files: FileInfo[], gameDir: string): { errors: string
   }
 
   // Check required files
-  const filenames = files.map(f => path.basename(f.path));
   for (const required of CONFIG.requiredFiles) {
-    if (!filenames.includes(required)) {
+    if (!fs.existsSync(path.join(basePath, gameDir, required))) {
       errors.push(`Missing required file: ${required}`);
     }
   }
@@ -230,6 +230,13 @@ export function validateGameSubmission(changedFiles: string[], basePath: string)
     return result; // No game files, nothing to validate
   }
 
+  for (const file of gameFiles) {
+    const [, category, gameName] = file.split('/');
+    if (!category || !gameName || !['cli', 'web', 'algorithm'].includes(category)) {
+      result.errors.push(`Invalid game path: ${file} (expected games/{cli|web|algorithm}/{game-name}/...)`);
+    }
+  }
+
   // Detect game directory
   const gameDirs = [...new Set(gameFiles.map(f => {
     const parts = f.split('/');
@@ -247,12 +254,15 @@ export function validateGameSubmission(changedFiles: string[], basePath: string)
       }));
 
     // Structure validation
-    const structureResult = validateStructure(filesInGame, gameDir!);
+    const structureResult = validateStructure(filesInGame, gameDir!, basePath);
     result.errors.push(...structureResult.errors);
     result.warnings.push(...structureResult.warnings);
 
     // Metadata validation
-    const metadataFile = filesInGame.find(f => f.path.endsWith('metadata.json'));
+    const metadataPath = path.join(basePath, gameDir!, 'metadata.json');
+    const metadataFile = fs.existsSync(metadataPath)
+      ? { path: `${gameDir}/metadata.json`, content: fs.readFileSync(metadataPath, 'utf-8') }
+      : undefined;
     if (metadataFile) {
       const metadataResult = validateMetadata(metadataFile);
       result.errors.push(...metadataResult.errors);
@@ -264,8 +274,80 @@ export function validateGameSubmission(changedFiles: string[], basePath: string)
     result.security = securityResult;
   }
 
-  result.valid = result.errors.length === 0 && result.security.severity !== 'critical';
+  result.valid = result.errors.length === 0 && !['critical', 'high'].includes(result.security.severity);
   return result;
+}
+
+export function validateTranslationSubmission(changedFiles: string[], basePath: string): ValidationResult {
+  const result: ValidationResult = {
+    valid: true,
+    errors: [],
+    warnings: [],
+    security: { severity: 'safe', issues: [] },
+  };
+
+  const translationFiles = changedFiles.filter(file => file.startsWith('translations/'));
+  if (translationFiles.length === 0) return result;
+
+  for (const file of translationFiles) {
+    const relativePath = file.slice('translations/'.length);
+    const parts = relativePath.split('/');
+    const basename = path.basename(file);
+    const absolutePath = path.join(basePath, file);
+
+    if (file.endsWith('.gitkeep')) continue;
+    if (path.extname(file).toLowerCase() !== '.md') {
+      result.errors.push(`Invalid translation file type: ${file} (only .md files are allowed)`);
+      continue;
+    }
+
+    // translations/README.md is the translation index; submitted translations
+    // belong in one of the documented subdirectories.
+    if (relativePath !== 'README.md') {
+      if (parts.length !== 2 || !CONFIG.translationDirectories.includes(parts[0])) {
+        result.errors.push(`Invalid translation path: ${file}`);
+      }
+
+      const expectedPrefix = parts[0] === 'guides'
+        ? '[document-name]'
+        : parts[0];
+      const languageSuffix = /^[^.]+\.[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*\.md$/;
+      if (!languageSuffix.test(basename)) {
+        result.errors.push(
+          `Invalid translation filename: ${basename} (expected ${expectedPrefix}.LANG_CODE.md)`,
+        );
+      }
+    }
+
+    // Deleted translations are reviewable changes; content checks only apply to
+    // files that still exist in the pull request checkout.
+    if (!fs.existsSync(absolutePath)) continue;
+    const content = fs.readFileSync(absolutePath, 'utf-8');
+    if (content.trim().length === 0) {
+      result.errors.push(`Translation file is empty: ${file}`);
+    } else if (content.split(/\r?\n/).length < 5) {
+      result.errors.push(`Translation is too short: ${file} (minimum 5 lines)`);
+    }
+  }
+
+  result.valid = result.errors.length === 0;
+  return result;
+}
+
+export function validateSubmission(changedFiles: string[], basePath: string): ValidationResult {
+  const game = validateGameSubmission(changedFiles, basePath);
+  const translation = validateTranslationSubmission(changedFiles, basePath);
+  const severityOrder = { safe: 0, medium: 1, high: 2, critical: 3 } as const;
+  const security = severityOrder[game.security.severity] >= severityOrder[translation.security.severity]
+    ? game.security
+    : translation.security;
+
+  return {
+    valid: game.valid && translation.valid,
+    errors: [...game.errors, ...translation.errors],
+    warnings: [...game.warnings, ...translation.warnings],
+    security,
+  };
 }
 
 // ============================================================
@@ -292,7 +374,7 @@ if (isMainModule) {
   }
 
   const basePath = args[1] || process.cwd();
-  const result = validateGameSubmission(changedFiles, basePath);
+  const result = validateSubmission(changedFiles, basePath);
 
   console.log(JSON.stringify(result, null, 2));
   process.exit(result.valid ? 0 : 1);
