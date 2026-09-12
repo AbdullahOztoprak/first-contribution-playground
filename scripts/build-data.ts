@@ -42,6 +42,19 @@ function isDemoAuthor(username: string): boolean {
   return DEMO_AUTHORS.has(username.toLowerCase());
 }
 
+function normalizeVoteBreakdown(value: unknown): NonNullable<GameMetadata['vote_breakdown']> {
+  const breakdown = value && typeof value === 'object'
+    ? value as Record<string, unknown>
+    : {};
+
+  return {
+    thumbs_up: Number(breakdown.thumbs_up) || 0,
+    rocket: Number(breakdown.rocket) || 0,
+    // Older generated data used a non-existent GitHub "fire" reaction.
+    heart: Number(breakdown.heart ?? breakdown.fire) || 0,
+  };
+}
+
 function loadExistingGames(): Map<string, Partial<GameMetadata>> {
   const existing = new Map<string, Partial<GameMetadata>>();
   const existingPath = path.join(DATA_DIR, 'games.json');
@@ -103,7 +116,7 @@ function scanGames(): GameMetadata[] {
           entry_point: metadata.entry_point || 'index.html',
           path: `games/${category}/${folder.name}`,
           votes: existing.votes || 0,
-          vote_breakdown: existing.vote_breakdown || { thumbs_up: 0, rocket: 0, fire: 0 },
+          vote_breakdown: normalizeVoteBreakdown(existing.vote_breakdown),
           pr_number: existing.pr_number,
           merged_at: existing.merged_at,
         };
@@ -270,10 +283,9 @@ function buildLeaderboard(games: GameMetadata[]): LeaderboardData {
     } catch {}
   }
 
-  // Build current week entries (votes come from GitHub Actions workflow)
   const entries: LeaderboardEntry[] = games
-    .filter(g => !isDemoAuthor(g.author) && g.votes && g.votes > 0)
-    .map((g, i) => ({
+    .filter(g => !isDemoAuthor(g.author))
+    .map(g => ({
       rank: 0,
       username: g.author,
       avatar_url: `https://github.com/${g.author}.png`,
@@ -290,19 +302,35 @@ function buildLeaderboard(games: GameMetadata[]): LeaderboardData {
   // Assign ranks
   entries.forEach((e, i) => e.rank = i + 1);
 
+  const weekStartDate = new Date(`${weekStart}T00:00:00.000Z`);
+  const nextWeekDate = new Date(`${weekEnd}T00:00:00.000Z`);
+  nextWeekDate.setUTCDate(nextWeekDate.getUTCDate() + 1);
+  const currentGameIds = new Set(
+    games
+      .filter(game => {
+        if (isDemoAuthor(game.author) || !game.merged_at) return false;
+        const mergedAt = new Date(game.merged_at);
+        return mergedAt >= weekStartDate && mergedAt < nextWeekDate;
+      })
+      .map(game => game.id),
+  );
+  const currentEntries = entries
+    .filter(entry => currentGameIds.has(entry.game_id))
+    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+
   const currentWeek: WeeklyLeaderboard = {
     week_id: weekId,
     week_start: weekStart,
     week_end: weekEnd,
-    entries: entries.slice(0, 10),
-    total_votes: entries.reduce((sum, e) => sum + e.votes, 0),
-    total_games: entries.length,
+    entries: currentEntries.slice(0, 10),
+    total_votes: currentEntries.reduce((sum, e) => sum + e.votes, 0),
+    total_games: currentEntries.length,
   };
 
   // Build all-time top 10
   const allTimeTop = [...entries].slice(0, 10);
 
-  const history = buildLeaderboardHistory(existingData, weekId);
+  const history = buildLeaderboardHistory(existingData, weekId, `${weekStart}:${weekEnd}`);
 
   return {
     version: 1,
@@ -313,7 +341,11 @@ function buildLeaderboard(games: GameMetadata[]): LeaderboardData {
   };
 }
 
-function buildLeaderboardHistory(existingData: LeaderboardData | null, currentWeekId: string): WeeklyLeaderboard[] {
+function buildLeaderboardHistory(
+  existingData: LeaderboardData | null,
+  currentWeekId: string,
+  currentRange: string,
+): WeeklyLeaderboard[] {
   if (!existingData) return [];
 
   const weeks = [
@@ -321,12 +353,20 @@ function buildLeaderboardHistory(existingData: LeaderboardData | null, currentWe
     ...(existingData.history || []),
   ].filter(Boolean);
 
-  const seen = new Set<string>();
+  const seenIds = new Set<string>();
+  const seenRanges = new Set<string>([currentRange]);
   const history: WeeklyLeaderboard[] = [];
 
   for (const week of weeks) {
-    if (!week.week_id || week.week_id === currentWeekId || seen.has(week.week_id)) continue;
-    seen.add(week.week_id);
+    const range = `${week.week_start || ''}:${week.week_end || ''}`;
+    if (
+      !week.week_id ||
+      week.week_id === currentWeekId ||
+      seenIds.has(week.week_id) ||
+      (range !== ':' && seenRanges.has(range))
+    ) continue;
+    seenIds.add(week.week_id);
+    if (range !== ':') seenRanges.add(range);
     history.push(week);
     if (history.length >= 12) break;
   }
@@ -335,24 +375,25 @@ function buildLeaderboardHistory(existingData: LeaderboardData | null, currentWe
 }
 
 function getWeekStart(date: Date): string {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  d.setDate(diff);
+  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() - day + 1);
   return d.toISOString().split('T')[0];
 }
 
 function getWeekEnd(date: Date): string {
-  const d = new Date(getWeekStart(date));
-  d.setDate(d.getDate() + 6);
+  const d = new Date(`${getWeekStart(date)}T00:00:00.000Z`);
+  d.setUTCDate(d.getUTCDate() + 6);
   return d.toISOString().split('T')[0];
 }
 
 function getWeekId(date: Date): string {
-  const d = new Date(date);
-  const year = d.getFullYear();
-  const oneJan = new Date(year, 0, 1);
-  const week = Math.ceil(((d.getTime() - oneJan.getTime()) / 86400000 + oneJan.getDay() + 1) / 7);
+  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const year = d.getUTCFullYear();
+  const yearStart = new Date(Date.UTC(year, 0, 1));
+  const week = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
   return `${year}-W${week.toString().padStart(2, '0')}`;
 }
 

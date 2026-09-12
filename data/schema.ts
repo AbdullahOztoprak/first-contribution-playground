@@ -1,6 +1,6 @@
 /**
- * Platform Data Schema
- * TypeScript interfaces for all platform data structures
+ * Project Data Schema
+ * TypeScript interfaces for generated project data structures
  * Used by both build scripts and web frontend
  */
 
@@ -28,7 +28,7 @@ export interface GameMetadata {
   vote_breakdown?: {
     thumbs_up: number;
     rocket: number;
-    fire: number;
+    heart: number;
   };
   play_url?: string;             // For web games
 }

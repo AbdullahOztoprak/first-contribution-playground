@@ -12,10 +12,10 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: '18'
+          node-version: '24'
       - name: Install dependencies
         run: npm ci
       - name: Run update votes script
@@ -24,7 +24,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: npx tsx scripts/update-votes.ts
       - name: Open pull request for vote updates
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: automation/update-votes

@@ -4,8 +4,11 @@ const BASE = process.env.BASE_BRANCH || process.env.GITHUB_BASE_REF || 'main';
 const TOKEN = process.env.GITHUB_TOKEN;
 const REPOSITORY = process.env.GITHUB_REPOSITORY;
 const PR_NUMBER = process.env.PR_NUMBER;
-// treat any file under data/ as generated
-const forbiddenPrefix = 'data/';
+const GENERATED_FILES = new Set([
+  'data/games.json',
+  'data/contributors.json',
+  'data/leaderboard.json',
+]);
 
 async function getFilesFromPullRequest(): Promise<string[] | null> {
   if (!TOKEN || !REPOSITORY || !PR_NUMBER) return null;
@@ -60,7 +63,7 @@ async function main() {
   const files = await getFilesFromPullRequest() ?? getFilesFromGitDiff();
   console.log(`Checking ${files.length} changed file(s) for generated data changes.`);
 
-  const matches = files.filter(f => f.startsWith(forbiddenPrefix));
+  const matches = files.filter(file => GENERATED_FILES.has(file));
   if (matches.length > 0) {
     console.error('Detected changes to generated data files in this PR:');
     for (const m of matches) console.error(` - ${m}`);
