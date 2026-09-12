@@ -23,6 +23,10 @@ if (!game) {
 
 const baseUrl = import.meta.env.BASE_URL;
 const gamePath = game.path || `games/${game.id}`;
+const isDemoAuthor = ['demo-contributor', 'platform-bot'].includes(String(game.author).toLowerCase());
+const voteUrl = game.pr_number
+  ? `https://github.com/AbdullahOztoprak/first-contribution-playground/pull/${game.pr_number}`
+  : `https://github.com/AbdullahOztoprak/first-contribution-playground/pulls?q=${encodeURIComponent(`is:pr ${game.name}`)}`;
 
 const entryPoint = game.entry_point || 'index.html';
 const entryExt = entryPoint.split('.').pop()?.toLowerCase() || '';
@@ -68,14 +72,23 @@ export async function getStaticPaths() {
             <div>
               <h1 class="text-3xl font-bold mb-2">{game.name}</h1>
               <div class="flex items-center gap-3">
-                <img 
-                  src={`https://github.com/${game.author}.png`}
-                  alt={game.author}
-                  class="w-6 h-6 rounded-full"
-                />
-                <a href={withBase(baseUrl, `/contributor/${game.author}`)} class="text-primary-400 hover:text-primary-300">
-                  @{game.author}
-                </a>
+                {isDemoAuthor ? (
+                  <>
+                    <span class="w-6 h-6 rounded-full bg-dark-border flex items-center justify-center text-xs">D</span>
+                    <span class="text-dark-muted">Demo example</span>
+                  </>
+                ) : (
+                  <>
+                    <img
+                      src={`https://github.com/${game.author}.png`}
+                      alt={game.author}
+                      class="w-6 h-6 rounded-full"
+                    />
+                    <a href={withBase(baseUrl, `/contributor/${game.author}`)} class="text-primary-400 hover:text-primary-300">
+                      @{game.author}
+                    </a>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -109,11 +122,17 @@ export async function getStaticPaths() {
           View Source Code
         </a>
         
-        <a href={`https://github.com/AbdullahOztoprak/first-contribution-playground/pulls?q=is:pr+${game.name}`}
-           target="_blank"
-           class="flex items-center justify-center gap-2 px-6 py-4 bg-primary-500 hover:bg-primary-600 rounded-xl transition">
-          👍 Vote on Pull Request
-        </a>
+        {isDemoAuthor ? (
+          <div class="flex items-center justify-center px-6 py-4 bg-dark-card border border-dark-border rounded-xl text-dark-muted">
+            Starter example — not ranked
+          </div>
+        ) : (
+          <a href={voteUrl}
+             target="_blank"
+             class="flex items-center justify-center gap-2 px-6 py-4 bg-primary-500 hover:bg-primary-600 rounded-xl transition">
+            👍 Vote on Pull Request
+          </a>
+        )}
       </div>
 
       <!-- How to Play -->
@@ -160,8 +179,8 @@ export async function getStaticPaths() {
             <div class="text-lg font-semibold">{game.vote_breakdown?.rocket || 0}</div>
           </div>
           <div>
-            <div class="text-2xl">🔥</div>
-            <div class="text-lg font-semibold">{game.vote_breakdown?.fire || 0}</div>
+            <div class="text-2xl">❤️</div>
+            <div class="text-lg font-semibold">{game.vote_breakdown?.heart || 0}</div>
           </div>
         </div>
       </div>

@@ -30,7 +30,7 @@
 
 ### Submission Checklist
 
-- [ ] My game is in the correct folder: `games/<category>/my-game-name/`
+- [ ] My game is in the correct folder: `games/{category}/my-game-name/`
 - [ ] I included a `README.md` with description, instructions, and what I learned
 - [ ] I included a `metadata.json` with correct fields
 - [ ] My game is **original** or significantly modified from any tutorial

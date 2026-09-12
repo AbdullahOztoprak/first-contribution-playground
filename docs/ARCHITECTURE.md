@@ -12,12 +12,12 @@ First Contribution Playground is a static-first GitHub Pages project. The early 
 ## Data Flow
 
 ```text
-games/ and translations/
+games/ and documentation sources
   -> pull request templates
   -> CI validation and security checks
   -> maintainer review
   -> merge to main
-  -> scripts/build-data.ts
+  -> scripts/build-data.ts (game metadata only)
   -> data/games.json, data/contributors.json, data/leaderboard.json
   -> Astro static build
   -> GitHub Pages
@@ -43,7 +43,7 @@ The site reads from generated JSON files:
 - `data/contributors.json`
 - `data/leaderboard.json`
 
-Contributors should not edit these directly. Source files under `games/`, `translations/`, docs, and workflow scripts are the reviewable inputs.
+Contributors should not edit these directly. Game metadata is the current input to the data build; translations and documentation are published as repository content rather than indexed into these JSON files.
 
 ## Validation
 

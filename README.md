@@ -25,7 +25,7 @@
 - Early-stage project with active maintenance
 - Beginner pull requests are welcome
 - Translations, games, docs, and small website improvements are accepted
-- Typical review time: 24-72 hours when maintainers are active
+- Review timing depends on maintainer availability
 - Best first step: pick a `good first issue`
 
 ---
@@ -63,7 +63,7 @@ This project is intentionally simple, but it includes the maintenance pieces a r
 - GitHub Pages site generated from repository data
 - Generated game, contributor, and leaderboard indexes
 - Anti-abuse checks and friendly CI comments for new contributors
-- Separate workflows for translation, game, label, and community onboarding tasks
+- Consolidated workflows for validation, deployment, data refreshes, and community onboarding
 
 ---
 
@@ -222,15 +222,13 @@ Use these as examples for PR size, file placement, and formatting.
 <!-- LEADERBOARD:WEEKLY:END -->
 
 <!-- LEADERBOARD:CONTRIBUTORS:START -->
-### Top Contributors
+### Contributors
 
-| Rank | Contributor | Contributions |
-|---|---|---:|
-| 1 | [@AbdullahOztoprak](https://github.com/AbdullahOztoprak) | 8 |
+Contributor rankings are generated from submitted game metadata. Starter examples are excluded. [Browse the current contributor data on the site](https://abdullahoztoprak.github.io/first-contribution-playground/contributors/).
 
 <!-- LEADERBOARD:CONTRIBUTORS:END -->
 
-Community members can vote on game PRs with 👍 reactions.
+Community members can vote on game PRs with 👍, 🚀, or ❤️ reactions.
 
 ---
 

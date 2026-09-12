@@ -89,7 +89,7 @@ function gameIssue(title: string, category: string, timeLabel: string, body: str
 
 ## Requirements
 
-- Add the game under \`games/${category}/<game-name>/\`
+- Add the game under \`games/${category}/{game-name}/\`
 - Include \`README.md\`
 - Include \`metadata.json\`
 - Keep the submission under 5 files and 500 lines

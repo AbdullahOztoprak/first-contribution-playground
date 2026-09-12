@@ -94,8 +94,8 @@ export async function getStaticPaths() {
           <p class="text-sm text-dark-muted">Games</p>
         </div>
         <div class="bg-dark-card border border-dark-border rounded-xl p-6 text-center">
-          <p class="text-3xl font-bold">{contributor.prs_merged || 0}</p>
-          <p class="text-sm text-dark-muted">PRs Merged</p>
+          <p class="text-3xl font-bold">{contributor.total_contributions || 0}</p>
+          <p class="text-sm text-dark-muted">Contributions</p>
         </div>
         <div class="bg-dark-card border border-dark-border rounded-xl p-6 text-center">
           <p class="text-3xl font-bold">{contributor.reviews_given || 0}</p>
@@ -146,14 +146,6 @@ export async function getStaticPaths() {
             <p class="text-sm">Be the first to contribute!</p>
           </div>
         )}
-      </div>
-
-      <!-- Embed Badge -->
-      <div class="mt-8 text-center">
-        <p class="text-sm text-dark-muted mb-2">Add to your GitHub profile:</p>
-        <code class="text-xs bg-dark-card px-3 py-2 rounded border border-dark-border">
-          ![First Contribution Playground Contributor](https://abdullahoztoprak.github.io/first-contribution-playground/api/badge/{contributor.username}.svg)
-        </code>
       </div>
     </div>
   </section>

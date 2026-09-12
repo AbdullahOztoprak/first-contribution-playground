@@ -16,7 +16,7 @@ Welcome! If this is your **first time contributing to open source**, this guide 
 
 ## What You'll Need
 
-- A **GitHub account** (free) — [Sign up here](https://github.com/join)
+- A free **GitHub account**
 - **Git** installed on your computer — [Download here](https://git-scm.com/downloads)
 - A **text editor** (we recommend [VS Code](https://code.visualstudio.com/))
 - Basic knowledge of at least one programming language (Python or JavaScript recommended)
@@ -222,8 +222,7 @@ Translation PRs can be **automatically merged** if all checks pass!
 
 ### Review Timeline
 
-- **Translations**: Minutes (auto-merge if checks pass)
-- **Games**: 1-3 days (requires human review)
+- **Translations and games**: timing depends on maintainer availability; both receive human review
 
 ### If You Get Feedback
 
@@ -246,7 +245,7 @@ git push origin your-branch-name
 | Mistake | Solution |
 |---------|----------|
 | Forgetting `metadata.json` | Always include it — copy the template from CONTRIBUTING.md |
-| Wrong folder structure | Check: `games/<category>/your-game-name/` |
+| Wrong folder structure | Check: `games/{category}/your-game-name/` |
 | Too many files (> 5) | Keep it simple! One main file + README + metadata |
 | Using network requests | Not allowed — games must work offline |
 | Not filling out PR template | All checkboxes must be checked |

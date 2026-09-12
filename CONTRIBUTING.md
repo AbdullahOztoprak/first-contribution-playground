@@ -75,7 +75,7 @@ We accept three types of games:
 
 1. **Fork** this repository
 2. **Create a new branch**: `git checkout -b game/your-game-name`
-3. **Create your game folder**: `games/<category>/your-game-name/`
+3. **Create your game folder**: `games/{category}/your-game-name/`
 4. **Required files in your folder:**
    - `README.md` — Description, how to play, what you learned
    - `metadata.json` — Game metadata (see template below)
@@ -177,8 +177,8 @@ If you're unsure, paste the CI failure output into a Discussion or open an Issue
 
 ## Gamification & Leaderboard
 
-- Community members can **vote** on game submissions using 👍 reactions on the PR
-- Every week, a bot calculates votes and updates the **Leaderboard** in README.md
+- Community members can **vote** on game submissions using 👍, 🚀, or ❤️ reactions on the PR
+- A scheduled job refreshes votes and the weekly leaderboard data
 - **Top 3 weekly games** get featured!
 - Active contributors earn recognition in our Hall of Fame
 
@@ -192,7 +192,7 @@ The repository generates a set of JSON files from the source-of-truth content (t
 - `data/contributors.json`
 - `data/leaderboard.json`
 
-Please do NOT edit or commit these generated files in feature branches. Any pull request that includes changes to these files will fail an automated check and must be updated to remove those changes. The project provides automation that regenerates and commits the canonical data on the `main` branch.
+Please do NOT edit or commit these generated files in feature branches. Any contributor pull request that includes changes to these files will fail an automated check and must be updated to remove those changes. Only the repository's dedicated `automation/regenerate-data` and `automation/update-votes` branches may update them.
 
 If you need to run the data generation locally for testing, run:
 
@@ -206,8 +206,8 @@ This will update the files in your working tree for local testing only — do no
 
 ## Getting Help
 
-- 💬 Open a [Discussion](../../discussions) for questions
-- 🐛 Use [Issue Templates](../../issues/new/choose) for bugs or requests
+- 💬 Open a [Discussion](https://github.com/AbdullahOztoprak/first-contribution-playground/discussions) for questions
+- 🐛 Use [Issue Templates](https://github.com/AbdullahOztoprak/first-contribution-playground/issues/new/choose) for bugs or requests
 - 📖 Read the [Beginner's Guide](docs/BEGINNER_GUIDE.md) for step-by-step instructions
 
 ---

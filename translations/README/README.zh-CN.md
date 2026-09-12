@@ -63,7 +63,7 @@
 - 基于仓库数据生成的 GitHub Pages 网站
 - 自动生成的游戏、贡献者和排行榜索引
 - 面向新贡献者的反滥用检查和友好的 CI 评论
-- 面向翻译、游戏、标签和社区引导任务的独立工作流
+- 面向校验、部署、数据刷新和社区引导任务的整合工作流
 
 ---
 
@@ -222,15 +222,13 @@ first-contribution-playground/
 <!-- LEADERBOARD:WEEKLY:END -->
 
 <!-- LEADERBOARD:CONTRIBUTORS:START -->
-### 顶级贡献者
+### 贡献者
 
-| 排名 | 贡献者 | 贡献数 |
-|---|---|---:|
-| 1 | [@AbdullahOztoprak](https://github.com/AbdullahOztoprak) | 8 |
+贡献者排名根据已提交游戏的元数据自动生成，并排除入门示例。[在网站上查看当前贡献者数据](https://abdullahoztoprak.github.io/first-contribution-playground/contributors/)。
 
 <!-- LEADERBOARD:CONTRIBUTORS:END -->
 
-社区成员可以通过在游戏 PR 上添加 👍 表情来投票。
+社区成员可以通过在游戏 PR 上添加 👍、🚀 或 ❤️ 表情来投票。
 
 ---
 
